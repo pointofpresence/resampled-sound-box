@@ -106,23 +106,29 @@
 
                             ctx.strokeStyle = "rgb(255,255,255)";
 
+                            var k;
+
                             // Plot left channel.
                             ctx.beginPath();
                             ctx.moveTo(0, 50 + 90 * data[0]);
-                            for (var k = 1; k < 300; ++k) {
+
+                            for (k = 1; k < 300; ++k) {
                                 ctx.lineTo(k, 50 + 90 * data[k * 2]);
                             }
+
                             ctx.stroke();
 
                             // Plot right channel.
                             ctx.beginPath();
                             ctx.moveTo(0, 150 + 90 * data[1]);
-                            for (var k = 1; k < 300; ++k) {
+
+                            for (k = 1; k < 300; ++k) {
                                 ctx.lineTo(k, 150 + 90 * data[k * 2 + 1]);
                             }
+
                             ctx.stroke();
                         }, 16);
                     }
                 }, 0);
             }
-        </script></head><body onload="startDemo();" style="font-family: arial, sans-serif;background: #000;color: #fff;"><h1>ReSampled SoundBox demo</h1><p id="status">Generating</p><canvas id="canvas" width="300" height="200"></canvas></body></html>
+        </script></head><body onload="startDemo();" style="font-family: arial, sans-serif;background: #000;color: #fff;"><h1>ReSampled SoundBox demo</h1><p id="status">Generating</p><canvas id="canvas" width="300" height="200"></canvas><br><a href="/demo/player-demo.zip">Download source</a></body></html>
