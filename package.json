@@ -1,0 +1,33 @@
+{
+  "name": "resampled-sound-box",
+  "title": "ReSampled.SoundBox",
+  "version": "0.0.1",
+  "description": "Online music tracker",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "https://github.com/pointofpresence/resampled-sound-box",
+  "author": "pointofpresence",
+  "license": "GPLv3",
+  "devDependencies": {
+    "chalk": "^1.0.0",
+    "dateformat": "^1.0.11",
+    "gulp": "^3.8.11",
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-concat": "^2.5.2",
+    "gulp-csso": "^1.0.0",
+    "gulp-ejsmin": "0.0.1",
+    "gulp-header": "^1.2.2",
+    "gulp-jade": "^1.0.1",
+    "gulp-less": "^3.0.3",
+    "gulp-minify-html": "^1.0.3",
+    "gulp-out": "0.0.1",
+    "gulp-replace": "^0.5.3",
+    "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.5",
+    "mkdirp": "^0.5.1",
+    "resampled-json-io": "0.0.1"
+  },
+  "lastBuildDate": "2015-07-12T15:32:34Z",
+  "lastBuildDateHuman": "Sun Jul 12 2015 21:32:34"
+}
