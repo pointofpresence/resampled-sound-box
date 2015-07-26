@@ -8,7 +8,7 @@
   },
   "repository": "https://github.com/pointofpresence/resampled-sound-box",
   "author": "pointofpresence",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "devDependencies": {
     "chalk": "^1.0.0",
     "dateformat": "^1.0.11",
@@ -25,8 +25,10 @@
     "gulp-replace": "^0.5.3",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.5",
+    "gulp-zip": "^3.0.2",
     "mkdirp": "^0.5.1",
-    "resampled-json-io": "0.0.1"
+    "resampled-json-io": "0.0.1",
+    "run-sequence": "^1.1.2"
   },
   "lastBuildDate": "2015-07-12T15:32:34Z",
   "lastBuildDateHuman": "Sun Jul 12 2015 21:32:34"
