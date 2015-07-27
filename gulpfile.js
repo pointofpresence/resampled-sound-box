@@ -164,7 +164,5 @@ gulp.task("buildJs", buildJs);
 
 // watcher
 gulp.task("watch", function () {
-    gulp.watch(DEMO + "/src/demo.html", function () {
-        buildCss(name)
-    });
+    gulp.watch(DEMO + "/src/demo.html", buildDemoHtml);
 });
