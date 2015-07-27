@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 
 function rle_encode(data) {
-    var out = "", i, j, len, code, code2;
+    var out = "", i, len, code, code2;
 
     for (i = 0; i < data.length;) {
         // Next byte from the data stream
@@ -14,8 +14,9 @@ function rle_encode(data) {
         for (len = 1; len < 255 && (i + len) < data.length; len++) {
             code2 = data.charCodeAt(i + len);
 
-            if (code2 != code)
+            if (code2 != code) {
                 break;
+            }
         }
 
         // Emit run length code?
@@ -26,8 +27,9 @@ function rle_encode(data) {
         } else {
             out += String.fromCharCode(code);
 
-            if (code == 254)
+            if (code == 254) {
                 out += String.fromCharCode(0);  // zero length indicates the marker byte
+            }
 
             len = 1;
         }
@@ -48,19 +50,22 @@ function rle_decode(data) {
 
         // Is this a marker byte (254)?
         if (code === 254) {
-            if (i < 1)
+            if (i < 1) {
                 break;
+            }
 
             len = data.charCodeAt(i++);
 
             if (len != 0) {
-                if (i < 1)
+                if (i < 1) {
                     break;
+                }
 
                 code = data.charCodeAt(i++);
 
-                for (j = 0; j < len; j++)
+                for (j = 0; j < len; j++) {
                     out += String.fromCharCode(code);
+                }
 
                 continue;
             }
