@@ -743,17 +743,24 @@ var CGUI = function () {
             // Patterns
             var song_rows = version < 9 ? 48 : MAX_SONG_ROWS;
             instr.p = [];
-            for (j = 0; j < song_rows; j++)
+
+            for (j = 0; j < song_rows; j++) {
                 instr.p[j] = bin.getUBYTE();
-            for (j = song_rows; j < MAX_SONG_ROWS; j++)
+            }
+
+            for (j = song_rows; j < MAX_SONG_ROWS; j++) {
                 instr.p[j] = 0;
+            }
 
             // Columns
             var num_patterns = version < 9 ? 10 : MAX_PATTERNS;
+
             instr.c = [];
+
             for (j = 0; j < num_patterns; j++) {
                 col = {};
                 col.n = [];
+
                 if (version == 1) {
                     for (k = 0; k < song.patternLen; k++) {
                         col.n[k] = bin.getUBYTE();
@@ -761,45 +768,64 @@ var CGUI = function () {
                         col.n[k + 2 * song.patternLen] = 0;
                         col.n[k + 3 * song.patternLen] = 0;
                     }
-                }
-                else {
-                    for (k = 0; k < song.patternLen * 4; k++)
+                } else {
+                    for (k = 0; k < song.patternLen * 4; k++) {
                         col.n[k] = bin.getUBYTE();
+                    }
                 }
+
                 col.f = [];
+
                 if (version < 4) {
-                    for (k = 0; k < song.patternLen * 2; k++)
+                    for (k = 0; k < song.patternLen * 2; k++) {
                         col.f[k] = 0;
-                }
-                else {
-                    for (k = 0; k < song.patternLen * 2; k++)
+                    }
+                } else {
+                    for (k = 0; k < song.patternLen * 2; k++) {
                         col.f[k] = bin.getUBYTE();
+                    }
                 }
+
                 instr.c[j] = col;
             }
+
             for (j = num_patterns; j < MAX_PATTERNS; j++) {
                 col = {};
                 col.n = [];
-                for (k = 0; k < song.patternLen * 4; k++)
+
+                for (k = 0; k < song.patternLen * 4; k++) {
                     col.n[k] = 0;
+                }
+
                 col.f = [];
-                for (k = 0; k < song.patternLen * 2; k++)
+
+                for (k = 0; k < song.patternLen * 2; k++) {
                     col.f[k] = 0;
+                }
+
                 instr.c[j] = col;
             }
 
             // Fixup conversions
             if (version < 3) {
-                if (instr.i[OSC1_WAVEFORM] == 2)
+                if (instr.i[OSC1_WAVEFORM] == 2) {
                     instr.i[OSC1_VOL] = Math.round(instr.i[OSC1_VOL] / 2);
-                if (instr.i[OSC2_WAVEFORM] == 2)
+                }
+
+                if (instr.i[OSC2_WAVEFORM] == 2) {
                     instr.i[OSC2_VOL] = Math.round(instr.i[OSC2_VOL] / 2);
-                if (instr.i[LFO_WAVEFORM] == 2)
+                }
+
+                if (instr.i[LFO_WAVEFORM] == 2) {
                     instr.i[LFO_AMT] = Math.round(instr.i[LFO_AMT] / 2);
+                }
+
                 instr.i[FX_DRIVE] = instr.i[FX_DRIVE] < 224 ? instr.i[FX_DRIVE] + 32 : 255;
             }
-            if (version < 7)
+
+            if (version < 7) {
                 instr.i[FX_RESONANCE] = 255 - instr.i[FX_RESONANCE];
+            }
 
             song.songData[i] = instr;
         }
@@ -809,13 +835,16 @@ var CGUI = function () {
 
     var sonantBinToSong = function (d) {
         // Check if this is a sonant song (correct length & reasonable end pattern)
-        if (d.length != 3333)
+        if (d.length != 3333) {
             return undefined;
-        if ((d.charCodeAt(3332) & 255) > 48)
-            return undefined;
+        }
 
-        var bin = new CBinParser(d);
-        var song = {};
+        if ((d.charCodeAt(3332) & 255) > 48) {
+            return undefined;
+        }
+
+        var bin = new CBinParser(d),
+            song = {};
 
         // Row length
         song.rowLen = bin.getULONG();
@@ -826,6 +855,7 @@ var CGUI = function () {
         // All 8 instruments
         song.songData = [];
         var i, j, k, instr, col, master;
+
         for (i = 0; i < 8; i++) {
             instr = {};
             instr.i = [];
@@ -880,35 +910,52 @@ var CGUI = function () {
 
             // Patterns
             instr.p = [];
-            for (j = 0; j < 48; j++)
+
+            for (j = 0; j < 48; j++) {
                 instr.p[j] = bin.getUBYTE();
-            for (j = 48; j < MAX_SONG_ROWS; j++)
+            }
+
+            for (j = 48; j < MAX_SONG_ROWS; j++) {
                 instr.p[j] = 0;
+            }
 
             // Columns
             instr.c = [];
+
             for (j = 0; j < 10; j++) {
                 col = {};
                 col.n = [];
+
                 for (k = 0; k < 32; k++) {
                     col.n[k] = bin.getUBYTE();
                     col.n[k + 32] = 0;
                     col.n[k + 64] = 0;
                     col.n[k + 96] = 0;
                 }
+
                 col.f = [];
-                for (k = 0; k < 32 * 2; k++)
+
+                for (k = 0; k < 32 * 2; k++) {
                     col.f[k] = 0;
+                }
+
                 instr.c[j] = col;
             }
+
             for (j = 10; j < MAX_PATTERNS; j++) {
                 col = {};
                 col.n = [];
-                for (k = 0; k < 32 * 4; k++)
+
+                for (k = 0; k < 32 * 4; k++) {
                     col.n[k] = 0;
+                }
+
                 col.f = [];
-                for (k = 0; k < 32 * 2; k++)
+
+                for (k = 0; k < 32 * 2; k++) {
                     col.f[k] = 0;
+                }
+
                 instr.c[j] = col;
             }
 
@@ -920,15 +967,23 @@ var CGUI = function () {
                 instr.i[FX_FILTER] = 2;
                 instr.i[FX_FREQ] = 255; // 11025;
             }
+
             instr.i[OSC1_VOL] *= master / 255;
             instr.i[OSC2_VOL] *= master / 255;
             instr.i[NOISE_VOL] *= master / 255;
-            if (instr.i[OSC1_WAVEFORM] == 2)
+
+            if (instr.i[OSC1_WAVEFORM] == 2) {
                 instr.i[OSC1_VOL] /= 2;
-            if (instr.i[OSC2_WAVEFORM] == 2)
+            }
+
+            if (instr.i[OSC2_WAVEFORM] == 2) {
                 instr.i[OSC2_VOL] /= 2;
-            if (instr.i[LFO_WAVEFORM] == 2)
+            }
+
+            if (instr.i[LFO_WAVEFORM] == 2) {
                 instr.i[LFO_AMT] /= 2;
+            }
+
             instr.i[OSC1_VOL] = Math.round(instr.i[OSC1_VOL]);
             instr.i[OSC2_VOL] = Math.round(instr.i[OSC2_VOL]);
             instr.i[NOISE_VOL] = Math.round(instr.i[NOISE_VOL]);
@@ -948,8 +1003,9 @@ var CGUI = function () {
         var song = soundboxBinToSong(d);
 
         // Try to parse the binary data as a Sonant song
-        if (!song)
+        if (!song) {
             song = sonantBinToSong(d);
+        }
 
         // If we couldn't parse the song, just make a clean new song
         if (!song) {
@@ -961,8 +1017,8 @@ var CGUI = function () {
     };
 
     var songToJS = function (song) {
-        var i, j, k, pattern;
-        var jsData = "";
+        var i, j, k, pattern,
+            jsData = "";
 
         jsData += "    // This music has been exported by SoundBox. You can use it with\n";
         jsData += "    // http://sb.bitsnbites.eu/player-small.js in your own product.\n\n";
@@ -974,8 +1030,10 @@ var CGUI = function () {
         jsData += "    var song = {\n";
 
         jsData += "      songData: [\n";
+
         for (i = 0; i < 8; i++) {
             var instr = song.songData[i];
+
             jsData += "        { // Instrument " + i + "\n";
             jsData += "          i: [\n";
             jsData += "          " + instr.i[OSC1_WAVEFORM] + ", // OSC1_WAVEFORM\n";
@@ -1009,26 +1067,32 @@ var CGUI = function () {
             // Sequencer data for this instrument
             jsData += "          // Patterns\n";
             jsData += "          p: [";
-            var lastRow = song.endPattern - 2;
-            var maxPattern = 0, lastNonZero = 0;
+
+            var lastRow = song.endPattern - 2,
+                maxPattern = 0, lastNonZero = 0;
+
             for (j = 0; j <= lastRow; j++) {
                 pattern = instr.p[j];
 
-                if (pattern > maxPattern)
+                if (pattern > maxPattern) {
                     maxPattern = pattern;
+                }
 
-                if (pattern)
+                if (pattern) {
                     lastNonZero = j;
+                }
             }
 
             for (j = 0; j <= lastNonZero; j++) {
                 pattern = instr.p[j];
 
-                if (pattern)
+                if (pattern) {
                     jsData += pattern;
+                }
 
-                if (j < lastNonZero)
+                if (j < lastNonZero) {
                     jsData += ",";
+                }
             }
 
             jsData += "],\n";
@@ -1036,44 +1100,66 @@ var CGUI = function () {
             // Pattern data for this instrument
             jsData += "          // Columns\n";
             jsData += "          c: [\n";
+
             for (j = 0; j < maxPattern; j++) {
                 jsData += "            {n: [";
                 lastNonZero = 0;
+
                 for (k = 0; k < song.patternLen * 4; k++) {
-                    if (instr.c[j].n[k])
+                    if (instr.c[j].n[k]) {
                         lastNonZero = k;
+                    }
                 }
+
                 for (k = 0; k <= lastNonZero; k++) {
                     var note = instr.c[j].n[k];
-                    if (note)
+
+                    if (note) {
                         jsData += note;
-                    if (k < lastNonZero)
+                    }
+
+                    if (k < lastNonZero) {
                         jsData += ",";
+                    }
                 }
+
                 jsData += "],\n";
                 jsData += "             f: [";
                 lastNonZero = 0;
+
                 for (k = 0; k < song.patternLen * 2; k++) {
-                    if (instr.c[j].f[k])
+                    if (instr.c[j].f[k]) {
                         lastNonZero = k;
+                    }
                 }
+
                 for (k = 0; k <= lastNonZero; k++) {
                     var fx = instr.c[j].f[k];
-                    if (fx)
+
+                    if (fx) {
                         jsData += fx;
-                    if (k < lastNonZero)
+                    }
+
+                    if (k < lastNonZero) {
                         jsData += ",";
+                    }
                 }
+
                 jsData += "]}";
-                if (j < maxPattern - 1)
+
+                if (j < maxPattern - 1) {
                     jsData += ",";
+                }
+
                 jsData += "\n";
             }
+
             jsData += "          ]\n";
             jsData += "        }";
 
-            if (i < 7)
+            if (i < 7) {
                 jsData += ",";
+            }
 
             jsData += "\n";
         }
@@ -1092,15 +1178,15 @@ var CGUI = function () {
     // Based on example code by Chris Wilson.
     //----------------------------------------------------------------------------
 
-    var mSelectMIDI;
-    var mMIDIAccess;
-    var mMIDIIn;
+    var mSelectMIDI,
+        mMIDIAccess,
+        mMIDIIn;
 
     var midiMessageReceived = function (ev) {
-        var cmd = ev.data[0] >> 4;
-        var channel = ev.data[0] & 0xf;
-        var noteNumber = ev.data[1];
-        var velocity = ev.data[2];
+        var cmd = ev.data[0] >> 4,
+            channel = ev.data[0] & 0xf,
+            noteNumber = ev.data[1],
+            velocity = ev.data[2];
 
         if (channel == 9) {
             return;
@@ -1136,6 +1222,7 @@ var CGUI = function () {
 
         for (i = 0; i < list.length; i++) {
             var str = list[i].name.toString().toLowerCase();
+
             if ((str.indexOf("keyboard") != -1)) {
                 preferredIndex = i;
                 break;
@@ -1184,8 +1271,9 @@ var CGUI = function () {
     };
 
     var initPresets = function () {
-        var parent = document.getElementById("instrPreset");
-        var o, instr;
+        var parent = document.getElementById("instrPreset"),
+            o, instr;
+
         for (var i = 0; i < gInstrumentPresets.length; ++i) {
             instr = gInstrumentPresets[i];
             o = document.createElement("option");
@@ -1197,6 +1285,7 @@ var CGUI = function () {
 
     var getElementPos = function (o) {
         var left = 0, top = 0;
+
         if (o.offsetParent) {
             do {
                 left += o.offsetLeft;
@@ -1213,13 +1302,15 @@ var CGUI = function () {
             e = window.event;
         }
 
-        if (e.target)
+        if (e.target) {
             o = e.target;
-        else if (e.srcElement)
+        } else if (e.srcElement) {
             o = e.srcElement;
+        }
 
-        if (o.nodeType == 3) // defeat Safari bug
+        if (o.nodeType == 3) { // defeat Safari bug
             o = o.parentNode;
+        }
 
         return o;
     };
@@ -1227,10 +1318,10 @@ var CGUI = function () {
     var getMousePos = function (e, rel) {
         // Get the mouse document position
         var p = [0, 0];
+
         if (e.pageX && e.pageY) {
             p = [e.pageX, e.pageY];
-        }
-        else if (e.clientX && e.clientY) {
+        } else if (e.clientX && e.clientY) {
             p = [
                 e.clientX + document.body.scrollLeft +
                 document.documentElement.scrollLeft,
@@ -1249,7 +1340,9 @@ var CGUI = function () {
             }
         }
 
-        if (!rel) return p;
+        if (!rel) {
+            return p;
+        }
 
         // Get the element document position
         var pElem = getElementPos(getEventElement(e));
@@ -1263,8 +1356,10 @@ var CGUI = function () {
     };
 
     var setEditMode = function (mode) {
-        if (mode === mEditMode)
+        if (mode === mEditMode) {
             return;
+        }
+
         mEditMode = mode;
 
         // Set the style for the different edit sections
@@ -1296,17 +1391,19 @@ var CGUI = function () {
                 if (!selectionOnly) {
                     var pat = mSong.songData[j].p[i];
 
-                    if (pat > 0)
+                    if (pat > 0) {
                         o.innerHTML = "" + (pat <= 10 ? pat - 1 : String.fromCharCode(64 + pat - 10));
-                    else
+                    } else {
                         o.innerHTML = "";
+                    }
                 }
 
                 if (i >= mSeqRow && i <= mSeqRow2 &&
-                    j >= mSeqCol && j <= mSeqCol2)
+                    j >= mSeqCol && j <= mSeqCol2) {
                     o.className = "selected";
-                else
+                } else {
                     o.className = "";
+                }
             }
         }
 
@@ -1315,20 +1412,21 @@ var CGUI = function () {
             o = document.getElementById("spr" + mSeqRow);
 
             if (o.scrollIntoView) {
-                var so = document.getElementById("sequencer");
-                var oy = o.offsetTop - so.scrollTop;
+                var so = document.getElementById("sequencer"),
+                    oy = o.offsetTop - so.scrollTop;
 
-                if (oy < 0 || (oy + 10) > so.offsetHeight)
+                if (oy < 0 || (oy + 10) > so.offsetHeight) {
                     o.scrollIntoView(oy < 0);
+                }
             }
         }
     };
 
     var updatePattern = function (scrollIntoView, selectionOnly) {
         buildPatternTable();
-        var singlePattern = (mSeqCol == mSeqCol2 && mSeqRow == mSeqRow2);
-        var pat = singlePattern ? mSong.songData[mSeqCol].p[mSeqRow] - 1 : -1;
-        var o;
+        var singlePattern = (mSeqCol == mSeqCol2 && mSeqRow == mSeqRow2),
+            pat = singlePattern ? mSong.songData[mSeqCol].p[mSeqRow] - 1 : -1,
+            o;
 
         for (var i = 0; i < mSong.patternLen; ++i) {
             for (var j = 0; j < 4; ++j) {
@@ -1343,19 +1441,22 @@ var CGUI = function () {
                             noteName = mNoteNames[n % 12] + Math.floor(n / 12);
                     }
 
-                    if (o.innerHTML != noteName)
+                    if (o.innerHTML != noteName) {
                         o.innerHTML = noteName;
+                    }
                 }
 
                 if (i >= mPatternRow && i <= mPatternRow2 &&
-                    j >= mPatternCol && j <= mPatternCol2)
+                    j >= mPatternCol && j <= mPatternCol2) {
                     o.className = "selected";
-                else
+                } else {
                     o.className = "";
+                }
             }
         }
 
         // Scroll the row into view? (only when needed)
+        //noinspection JSBitwiseOperatorUsage
         if (scrollIntoView & singlePattern) {
             o = document.getElementById("pc0r" + mPatternRow);
 
@@ -1363,60 +1464,69 @@ var CGUI = function () {
                 var so = document.getElementById("pattern");
                 var oy = o.offsetTop - so.scrollTop;
 
-                if (oy < 0 || (oy + 10) > so.offsetHeight)
+                if (oy < 0 || (oy + 10) > so.offsetHeight) {
                     o.scrollIntoView(oy < 0);
+                }
             }
         }
     };
 
     var toHex = function (num, count) {
-        var s = num.toString(16).toUpperCase();
-        var leadingZeros = count - s.length;
+        var s = num.toString(16).toUpperCase(),
+            leadingZeros = count - s.length;
 
-        for (var i = 0; i < leadingZeros; ++i)
+        for (var i = 0; i < leadingZeros; ++i) {
             s = "0" + s;
+        }
 
         return s;
     };
 
     var updateFxTrack = function (scrollIntoView, selectionOnly) {
         buildFxTable();
-        var singlePattern = (mSeqCol == mSeqCol2 && mSeqRow == mSeqRow2);
-        var pat = singlePattern ? mSong.songData[mSeqCol].p[mSeqRow] - 1 : -1;
-        var o;
+        var singlePattern = (mSeqCol == mSeqCol2 && mSeqRow == mSeqRow2),
+            pat = singlePattern ? mSong.songData[mSeqCol].p[mSeqRow] - 1 : -1,
+            o;
 
         for (var i = 0; i < mSong.patternLen; ++i) {
             o = document.getElementById("fxr" + i);
 
             if (!selectionOnly) {
                 var fxTxt = ":";
+
                 if (pat >= 0) {
                     var fxCmd = mSong.songData[mSeqCol].c[pat].f[i];
+
                     if (fxCmd) {
                         var fxVal = mSong.songData[mSeqCol].c[pat].f[i + mSong.patternLen];
                         fxTxt = toHex(fxCmd, 2) + ":" + toHex(fxVal, 2);
                     }
                 }
-                if (o.innerHTML != fxTxt)
+
+                if (o.innerHTML != fxTxt) {
                     o.innerHTML = fxTxt;
+                }
             }
 
-            if (i >= mFxTrackRow && i <= mFxTrackRow2)
+            if (i >= mFxTrackRow && i <= mFxTrackRow2) {
                 o.className = "selected";
-            else
+            } else {
                 o.className = "";
+            }
         }
 
         // Scroll the row into view? (only when needed)
+        //noinspection JSBitwiseOperatorUsage
         if (scrollIntoView & singlePattern) {
             o = document.getElementById("fxr" + mFxTrackRow);
 
             if (o.scrollIntoView) {
-                var so = document.getElementById("fxtrack");
-                var oy = o.offsetTop - so.scrollTop;
+                var so = document.getElementById("fxtrack"),
+                    oy = o.offsetTop - so.scrollTop;
 
-                if (oy < 0 || (oy + 10) > so.offsetHeight)
+                if (oy < 0 || (oy + 10) > so.offsetHeight) {
                     o.scrollIntoView(oy < 0);
+                }
             }
         }
     };
@@ -1431,10 +1541,11 @@ var CGUI = function () {
             for (var j = 0; j < 4; ++j) {
                 var o = document.getElementById("pc" + j + "r" + i);
 
-                if (i == row && j == col)
+                if (i == row && j == col) {
                     o.className = "selected";
-                else
+                } else {
                     o.className = "";
+                }
             }
         }
 
@@ -1450,12 +1561,14 @@ var CGUI = function () {
                 var o = document.getElementById("pc" + j + "r" + i);
 
                 if (i >= mPatternRow && i <= mPatternRow2 &&
-                    j >= mPatternCol && j <= mPatternCol2)
+                    j >= mPatternCol && j <= mPatternCol2) {
                     o.className = "selected";
-                else
+                } else {
                     o.className = "";
+                }
             }
         }
+
         updatePattern(false, true);
     };
 
@@ -1464,37 +1577,47 @@ var CGUI = function () {
         mSeqRow = row;
         mSeqCol2 = col;
         mSeqRow2 = row;
+
         updateSequencer(true, true);
     };
 
     var setSelectedSequencerCell2 = function (col, row) {
         mSeqCol2 = col >= mSeqCol ? col : mSeqCol;
         mSeqRow2 = row >= mSeqRow ? row : mSeqRow;
+
         updateSequencer(false, true);
     };
 
     var setSelectedFxTrackRow = function (row) {
         mFxTrackRow = row;
         mFxTrackRow2 = row;
+
         for (var i = 0; i < mSong.patternLen; ++i) {
             var o = document.getElementById("fxr" + i);
-            if (i >= mFxTrackRow && i <= mFxTrackRow2)
+
+            if (i >= mFxTrackRow && i <= mFxTrackRow2) {
                 o.className = "selected";
-            else
+            } else {
                 o.className = "";
+            }
         }
+
         updateFxTrack(true, true);
     };
 
     var setSelectedFxTrackRow2 = function (row) {
         mFxTrackRow2 = row >= mFxTrackRow ? row : mFxTrackRow;
+
         for (var i = 0; i < mSong.patternLen; ++i) {
             var o = document.getElementById("fxr" + i);
-            if (i >= mFxTrackRow && i <= mFxTrackRow2)
+
+            if (i >= mFxTrackRow && i <= mFxTrackRow2) {
                 o.className = "selected";
-            else
+            } else {
                 o.className = "";
+            }
         }
+
         updateFxTrack(false, true);
     };
 
@@ -1508,6 +1631,7 @@ var CGUI = function () {
             mSeqCol == mSeqCol2 && mSeqRow == mSeqRow2 &&
             mPatternCol == mPatternCol2 && mPatternRow == mPatternRow2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 mSong.songData[mSeqCol].c[pat].n[mPatternRow + mPatternCol * mSong.patternLen] = note;
                 setSelectedPatternCell(mPatternCol, (mPatternRow + 1) % mSong.patternLen);
@@ -1515,16 +1639,20 @@ var CGUI = function () {
                 return true;
             }
         }
+
         return false;
     };
 
     var updateSlider = function (o, x) {
-        var props = o.sliderProps;
-        var pos = (x - props.min) / (props.max - props.min);
+        var props = o.sliderProps,
+            pos = (x - props.min) / (props.max - props.min);
+
         pos = pos < 0 ? 0 : (pos > 1 ? 1 : pos);
+
         if (props.nonLinear) {
             pos = Math.sqrt(pos);
         }
+
         o.style.marginLeft = Math.round(191 * pos) + "px";
     };
 
@@ -1545,6 +1673,7 @@ var CGUI = function () {
         document.getElementById("osc1_wave_sqr").src = instr.i[OSC1_WAVEFORM] == 1 ? imgPath + "wave-sqr-sel.png" : imgPath + "wave-sqr.png";
         document.getElementById("osc1_wave_saw").src = instr.i[OSC1_WAVEFORM] == 2 ? imgPath + "wave-saw-sel.png" : imgPath + "wave-saw.png";
         document.getElementById("osc1_wave_tri").src = instr.i[OSC1_WAVEFORM] == 3 ? imgPath + "wave-tri-sel.png" : imgPath + "/wave-tri.png";
+
         updateSlider(document.getElementById("osc1_vol"), instr.i[OSC1_VOL]);
         updateSlider(document.getElementById("osc1_semi"), instr.i[OSC1_SEMI]);
         updateCheckBox(document.getElementById("osc1_xenv"), instr.i[OSC1_XENV]);
@@ -1554,6 +1683,7 @@ var CGUI = function () {
         document.getElementById("osc2_wave_sqr").src = instr.i[OSC2_WAVEFORM] == 1 ? imgPath + "wave-sqr-sel.png" : imgPath + "wave-sqr.png";
         document.getElementById("osc2_wave_saw").src = instr.i[OSC2_WAVEFORM] == 2 ? imgPath + "wave-saw-sel.png" : imgPath + "wave-saw.png";
         document.getElementById("osc2_wave_tri").src = instr.i[OSC2_WAVEFORM] == 3 ? imgPath + "wave-tri-sel.png" : imgPath + "wave-tri.png";
+
         updateSlider(document.getElementById("osc2_vol"), instr.i[OSC2_VOL]);
         updateSlider(document.getElementById("osc2_semi"), instr.i[OSC2_SEMI]);
         updateSlider(document.getElementById("osc2_det"), instr.i[OSC2_DETUNE]);
@@ -1590,8 +1720,9 @@ var CGUI = function () {
         updateSlider(document.getElementById("fx_drive"), instr.i[FX_DRIVE]);
 
         // Clear the preset selection?
-        if (resetPreset)
+        if (resetPreset) {
             clearPresetSelection();
+        }
 
         // Update the jammer instrument
         mJammer.updateInstr(instr.i);
@@ -1600,6 +1731,7 @@ var CGUI = function () {
     var updateSongSpeed = function () {
         // Determine song speed
         var bpm = parseInt(document.getElementById("bpm").value);
+
         if (bpm && (bpm >= 10) && (bpm <= 1000)) {
             mSong.rowLen = calcSamplesPerRow(bpm);
             mJammer.updateRowLen(mSong.rowLen);
@@ -1607,8 +1739,9 @@ var CGUI = function () {
     };
 
     var setPatternLength = function (length) {
-        if (mSong.patternLen === length)
+        if (mSong.patternLen === length) {
             return;
+        }
 
         // Stop song if it's currently playing (the song will be wrong and the
         // follower will be off)
@@ -1616,15 +1749,21 @@ var CGUI = function () {
 
         // Truncate/extend patterns
         var i, j, k, col, notes, fx;
+
         for (i = 0; i < 8; i++) {
             for (j = 0; j < MAX_PATTERNS; j++) {
                 col = mSong.songData[i].c[j];
                 notes = [];
                 fx = [];
-                for (k = 0; k < 4 * length; k++)
+
+                for (k = 0; k < 4 * length; k++) {
                     notes[k] = 0;
-                for (k = 0; k < 2 * length; k++)
+                }
+
+                for (k = 0; k < 2 * length; k++) {
                     fx[k] = 0;
+                }
+
                 for (k = 0; k < Math.min(mSong.patternLen, length); k++) {
                     notes[k] = col.n[k];
                     notes[k + length] = col.n[k + mSong.patternLen];
@@ -1633,6 +1772,7 @@ var CGUI = function () {
                     fx[k] = col.f[k];
                     fx[k + length] = col.f[k + mSong.patternLen];
                 }
+
                 col.n = notes;
                 col.f = fx;
             }
@@ -1644,6 +1784,7 @@ var CGUI = function () {
 
     var updatePatternLength = function () {
         var rpp = parseInt(document.getElementById("rpp").value);
+
         if (rpp && (rpp >= 1) && (rpp <= 256)) {
             // Update the pattern length of the song data
             setPatternLength(rpp);
@@ -1663,12 +1804,14 @@ var CGUI = function () {
         mSong.endPattern = MAX_SONG_ROWS + 1;
         for (i = MAX_SONG_ROWS - 1; i >= 0; --i) {
             emptyRow = true;
+
             for (j = 0; j < 8; ++j) {
                 if (mSong.songData[j].p[i] > 0) {
                     emptyRow = false;
                     break;
                 }
             }
+
             if (!emptyRow) break;
             mSong.endPattern--;
         }
@@ -1722,6 +1865,7 @@ var CGUI = function () {
 
     var loadSongFromData = function (songData) {
         var song = binToSong(songData);
+
         if (song) {
             stopAudio();
             mSong = song;
@@ -1754,13 +1898,17 @@ var CGUI = function () {
 
         // List demo songs...
         var demoSongsElements = [];
+
         for (var i = 0; i < gDemoSongs.length; i++) {
             o = document.createElement("input");
             o.type = "radio";
             o.name = "radiogroup1";
             o.value = gDemoSongs[i].name;
-            if (i === 0)
+
+            if (i === 0) {
                 o.checked = true;
+            }
+
             demoSongsElements.push(o);
             listDiv.appendChild(o);
             o = document.createElement("span");
@@ -1776,13 +1924,16 @@ var CGUI = function () {
         customURLRadioElement.value = "custom";
         listDiv.appendChild(customURLRadioElement);
         listDiv.appendChild(document.createTextNode(" Data URL: "));
+
         var customURLElement = document.createElement("input");
         customURLElement.type = "text";
         customURLElement.size = "45";
         customURLElement.title = "Paste a saved song data URL here";
+
         customURLElement.onchange = function () {
             customURLRadioElement.checked = true;
         };
+
         customURLElement.onkeydown = customURLElement.onchange;
         customURLElement.onclick = customURLElement.onchange;
         listDiv.appendChild(customURLElement);
@@ -1799,6 +1950,7 @@ var CGUI = function () {
         o.type = "submit";
         o.value = "Open";
         o.title = "Open song";
+
         o.onclick = function (e) {
             e.preventDefault();
             var songData = null;
@@ -1815,21 +1967,26 @@ var CGUI = function () {
                     if (e.checked) {
                         for (var j = 0; j < gDemoSongs.length; j++) {
                             if (gDemoSongs[j].name === e.value) {
-                                if (gDemoSongs[j].data)
+                                if (gDemoSongs[j].data) {
                                     songData = gDemoSongs[j].data;
-                                else
+                                } else {
                                     songData = getURLSongData(gDemoSongs[j].base64);
+                                }
+
                                 break;
                             }
                         }
+
                         break;
                     }
                 }
             }
 
             // Load the song
-            if (songData)
+            if (songData) {
                 loadSongFromData(songData);
+            }
+
             hideDialog();
         };
 
@@ -1879,24 +2036,26 @@ var CGUI = function () {
         o.type = "submit";
         o.value = "Save binary";
         o.title = "Save the song as a binary file.";
+
         o.onclick = function () {
             var dataURI = "data:application/octet-stream;base64," + btoa(songToBin(mSong));
             window.open(dataURI);
             hideDialog();
             return false;
         };
+
         form.appendChild(o);
         o = document.createElement("input");
         o.type = "submit";
         o.value = "Close";
+
         o.onclick = function () {
             hideDialog();
             return false;
         };
+
         form.appendChild(o);
-
         parent.appendChild(form);
-
         showDialog();
     };
 
@@ -1935,10 +2094,12 @@ var CGUI = function () {
         o = document.createElement("input");
         o.type = "submit";
         o.value = "Close";
+
         o.onclick = function () {
             hideDialog();
             return false;
         };
+
         form.appendChild(o);
         parent.appendChild(form);
 
@@ -1970,6 +2131,7 @@ var CGUI = function () {
         setSelectedPatternCell(0, 0);
         setSelectedSequencerCell(0, 0);
         setSelectedFxTrackRow(0);
+
         return false;
     };
 
@@ -1983,7 +2145,6 @@ var CGUI = function () {
         updateSongRanges();
 
         showSaveDialog();
-
         e.preventDefault();
     };
 
@@ -1998,6 +2159,7 @@ var CGUI = function () {
             var blob = new Blob([wave], {type: "application/octet-stream"});
             saveAs(blob, "SoundBox-music.wav");
         };
+
         generateAudio(doneFun);
     };
 
@@ -2008,12 +2170,13 @@ var CGUI = function () {
         // Generate JS song data
         var dataURI = "data:text/javascript;base64," + btoa(songToJS(mSong));
         window.open(dataURI);
+
         return false;
     };
 
     var setStatus = function (msg) {
         document.getElementById("statusText").innerHTML = msg;
-//    window.status = msg;
+        // window.status = msg;
     };
 
     var generateAudio = function (doneFun, opts) {
@@ -2050,6 +2213,7 @@ var CGUI = function () {
 
     var stopAudio = function () {
         stopFollower();
+
         if (mAudio) {
             mAudio.pause();
             mAudioTimer.reset();
@@ -2060,55 +2224,68 @@ var CGUI = function () {
     // Playback follower
     //----------------------------------------------------------------------------
 
-    var mFollowerTimerID = -1;
-    var mFollowerFirstRow = 0;
-    var mFollowerLastRow = 0;
-    var mFollowerFirstCol = 0;
-    var mFollowerLastCol = 0;
-    var mFollowerActive = false;
-    var mFollowerLastVULeft = 0;
-    var mFollowerLastVURight = 0;
+    var mFollowerTimerID = -1,
+        mFollowerFirstRow = 0,
+        mFollowerLastRow = 0,
+        mFollowerFirstCol = 0,
+        mFollowerLastCol = 0,
+        mFollowerActive = false,
+        mFollowerLastVULeft = 0,
+        mFollowerLastVURight = 0;
 
     var getSamplesSinceNote = function (t, chan) {
-        var nFloat = t * 44100 / mSong.rowLen;
-        var n = Math.floor(nFloat);
-        var seqPos0 = Math.floor(n / mSong.patternLen) + mFollowerFirstRow;
-        var patPos0 = n % mSong.patternLen;
+        var nFloat = t * 44100 / mSong.rowLen,
+            n = Math.floor(nFloat),
+            seqPos0 = Math.floor(n / mSong.patternLen) + mFollowerFirstRow,
+            patPos0 = n % mSong.patternLen;
+
         for (var k = 0; k < mSong.patternLen; ++k) {
-            var seqPos = seqPos0;
-            var patPos = patPos0 - k;
+            var seqPos = seqPos0,
+                patPos = patPos0 - k;
+
             while (patPos < 0) {
                 --seqPos;
-                if (seqPos < mFollowerFirstRow) return -1;
+
+                if (seqPos < mFollowerFirstRow) {
+                    return -1;
+                }
+
                 patPos += mSong.patternLen;
             }
+
             var pat = mSong.songData[chan].p[seqPos] - 1;
+
             for (var patCol = 0; patCol < 4; patCol++) {
-                if (pat >= 0 && mSong.songData[chan].c[pat].n[patPos + patCol * mSong.patternLen] > 0)
+                if (pat >= 0 && mSong.songData[chan].c[pat].n[patPos + patCol * mSong.patternLen] > 0) {
                     return (k + (nFloat - n)) * mSong.rowLen;
+                }
             }
         }
+
         return -1;
     };
 
     var redrawPlayerGfx = function (t) {
-        var o = document.getElementById("playGfxCanvas");
-        var w = mPlayGfxVUImg.width > 0 ? mPlayGfxVUImg.width : o.width;
-        var h = mPlayGfxVUImg.height > 0 ? mPlayGfxVUImg.height : 51;
-        var ctx = o.getContext("2d");
+        var o = document.getElementById("playGfxCanvas"),
+            w = mPlayGfxVUImg.width > 0 ? mPlayGfxVUImg.width : o.width,
+            h = mPlayGfxVUImg.height > 0 ? mPlayGfxVUImg.height : 51,
+            ctx = o.getContext("2d");
+
         if (ctx) {
             // Draw the VU meter BG
             ctx.drawImage(mPlayGfxVUImg, 0, 0);
 
             // Calculate singal powers
             var pl = 0, pr = 0;
+
             if (mFollowerActive && t >= 0) {
                 // Get the waveform
                 var wave = mPlayer.getData(t, 1000);
 
                 // Calculate volume
-                var i, l, r;
-                var sl = 0, sr = 0, l_old = 0, r_old = 0;
+                var i, l, r,
+                    sl = 0, sr = 0, l_old = 0, r_old = 0;
+
                 for (i = 1; i < wave.length; i += 2) {
                     l = wave[i - 1];
                     r = wave[i];
@@ -2116,6 +2293,7 @@ var CGUI = function () {
                     // Band-pass filter (low-pass + high-pass)
                     sl = 0.8 * l + 0.1 * sl - 0.3 * l_old;
                     sr = 0.8 * r + 0.1 * sr - 0.3 * r_old;
+
                     l_old = l;
                     r_old = r;
 
@@ -2127,6 +2305,7 @@ var CGUI = function () {
                 // Low-pass filtered mean power (RMS)
                 pl = Math.sqrt(pl / wave.length) * 0.2 + mFollowerLastVULeft * 0.8;
                 pr = Math.sqrt(pr / wave.length) * 0.2 + mFollowerLastVURight * 0.8;
+
                 mFollowerLastVULeft = pl;
                 mFollowerLastVURight = pr;
             }
@@ -2135,6 +2314,7 @@ var CGUI = function () {
             var a1 = pl > 0 ? 1.3 + 0.5 * Math.log(pl) : -1000;
             a1 = a1 < -1 ? -1 : a1 > 1 ? 1 : a1;
             a1 *= 0.57;
+
             var a2 = pr > 0 ? 1.3 + 0.5 * Math.log(pr) : -1000;
             a2 = a2 < -1 ? -1 : a2 > 1 ? 1 : a2;
             a2 *= 0.57;
@@ -2153,6 +2333,7 @@ var CGUI = function () {
             // Draw leds
             ctx.fillStyle = "rgb(0,0,0)";
             ctx.fillRect(0, h, w, 20);
+
             for (i = 0; i < 8; ++i) {
                 // Draw un-lit led
                 var x = Math.round(26 + 23.0 * i);
@@ -2163,9 +2344,12 @@ var CGUI = function () {
                     var env_a = mSong.songData[i].i[ENV_ATTACK],
                         env_s = mSong.songData[i].i[ENV_SUSTAIN],
                         env_r = mSong.songData[i].i[ENV_RELEASE];
+
                     env_a = env_a * env_a * 4;
                     env_r = env_s * env_s * 4 + env_r * env_r * 4;
+
                     var env_tot = env_a + env_r;
+
                     if (env_tot < 10000) {
                         env_tot = 10000;
                         env_r = env_tot - env_a;
@@ -2173,13 +2357,16 @@ var CGUI = function () {
 
                     // Get number of samples since last new note
                     var numSamp = getSamplesSinceNote(t, i);
+
                     if (numSamp >= 0 && numSamp < env_tot) {
                         // Calculate current envelope (same method as the synth, except sustain)
                         var alpha;
-                        if (numSamp < env_a)
+
+                        if (numSamp < env_a) {
                             alpha = numSamp / env_a;
-                        else
+                        } else {
                             alpha = 1 - (numSamp - env_a) / env_r;
+                        }
 
                         // Draw lit led with alpha blending
                         ctx.globalAlpha = alpha * alpha;
@@ -2192,8 +2379,9 @@ var CGUI = function () {
     };
 
     var updateFollower = function () {
-        if (mAudio == null)
+        if (mAudio == null) {
             return;
+        }
 
         // Get current time
         var t = mAudioTimer.currentTime(),
@@ -2207,6 +2395,7 @@ var CGUI = function () {
             mPatternRow = 0;
             mPatternRow2 = 0;
             updatePattern();
+
             mFxTrackRow = 0;
             mFxTrackRow2 = 0;
             updateFxTrack();
@@ -2215,13 +2404,13 @@ var CGUI = function () {
         }
 
         // Calculate current song position
-        var n = Math.floor(t * 44100 / mSong.rowLen);
-        var seqPos = Math.floor(n / mSong.patternLen) + mFollowerFirstRow;
-        var patPos = n % mSong.patternLen;
+        var n = Math.floor(t * 44100 / mSong.rowLen),
+            seqPos = Math.floor(n / mSong.patternLen) + mFollowerFirstRow,
+            patPos = n % mSong.patternLen;
 
         // Have we stepped?
-        var newSeqPos = (seqPos != mSeqRow);
-        var newPatPos = newSeqPos || (patPos != mPatternRow);
+        var newSeqPos = (seqPos != mSeqRow),
+            newPatPos = newSeqPos || (patPos != mPatternRow);
 
         // Update the sequencer
         if (newSeqPos) {
@@ -2243,10 +2432,12 @@ var CGUI = function () {
                 mPatternRow = patPos;
                 mPatternRow2 = patPos;
                 updatePattern(true, !newSeqPos);
+
                 mFxTrackRow = patPos;
                 mFxTrackRow2 = patPos;
                 updateFxTrack(true, !newSeqPos);
             }
+
             for (i = 0; i < mSong.patternLen; ++i) {
                 o = document.getElementById("ppr" + i);
                 o.className = (i == patPos ? "playpos" : "");
@@ -2262,6 +2453,7 @@ var CGUI = function () {
         mSeqRow = mFollowerFirstRow;
         mSeqRow2 = mFollowerFirstRow;
         mSeqCol2 = mSeqCol;
+
         updateSequencer(true, true);
         updatePattern();
         updateFxTrack();
@@ -2285,6 +2477,7 @@ var CGUI = function () {
             for (i = 0; i < MAX_SONG_ROWS; ++i) {
                 document.getElementById("spr" + i).className = "";
             }
+
             for (i = 0; i < mSong.patternLen; ++i) {
                 document.getElementById("ppr" + i).className = "";
             }
@@ -2337,11 +2530,11 @@ var CGUI = function () {
                 // Hack
                 mAudioTimer.reset();
                 mAudio.play();
-            }
-            catch (err) {
+            } catch (err) {
                 alert("Error playing: " + err.message);
             }
         };
+
         generateAudio(doneFun);
     };
 
@@ -2349,6 +2542,7 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         // Stop the currently playing audio
@@ -2388,11 +2582,11 @@ var CGUI = function () {
                 // Hack
                 mAudio.play();
                 mAudioTimer.reset();
-            }
-            catch (err) {
+            } catch (err) {
                 alert("Error playing: " + err.message);
             }
         };
+
         generateAudio(doneFun, opts);
     };
 
@@ -2400,6 +2594,7 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         if (mAudio == null) {
@@ -2438,8 +2633,10 @@ var CGUI = function () {
         if (mSeqCol == mSeqCol2) {
             mInstrCopyBuffer = [];
             var instr = mSong.songData[mSeqCol];
-            for (var i = 0; i <= instr.i.length; ++i)
+
+            for (var i = 0; i <= instr.i.length; ++i) {
                 mInstrCopyBuffer[i] = instr.i[i];
+            }
         }
     };
 
@@ -2453,9 +2650,12 @@ var CGUI = function () {
         if (mSeqCol == mSeqCol2 && mInstrCopyBuffer.length > 0) {
             var instr = mSong.songData[mSeqCol];
             instr.i = [];
-            for (var i = 0; i <= mInstrCopyBuffer.length; ++i)
+
+            for (var i = 0; i <= mInstrCopyBuffer.length; ++i) {
                 instr.i[i] = mInstrCopyBuffer[i];
+            }
         }
+
         updateInstrument(true);
     };
 
@@ -2468,13 +2668,17 @@ var CGUI = function () {
 
         if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 mPatCopyBuffer = [];
+
                 for (var row = mPatternRow; row <= mPatternRow2; ++row) {
                     var arr = [];
+
                     for (var col = mPatternCol; col <= mPatternCol2; ++col) {
                         arr.push(mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen]);
                     }
+
                     mPatCopyBuffer.push(arr);
                 }
             }
@@ -2490,12 +2694,14 @@ var CGUI = function () {
 
         if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 for (var row = mPatternRow, i = 0; row < mSong.patternLen && i < mPatCopyBuffer.length; ++row, ++i) {
                     for (var col = mPatternCol, j = 0; col < 4 && j < mPatCopyBuffer[i].length; ++col, ++j) {
                         mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen] = mPatCopyBuffer[i][j];
                     }
                 }
+
                 updatePattern();
             }
         }
@@ -2510,14 +2716,18 @@ var CGUI = function () {
 
         if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 for (var row = mPatternRow; row <= mPatternRow2; ++row) {
                     for (var col = mPatternCol; col <= mPatternCol2; ++col) {
                         var n = mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen];
-                        if (n > 0)
+
+                        if (n > 0) {
                             mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen] = n + 1;
+                        }
                     }
                 }
+
                 updatePattern();
             }
         }
@@ -2532,14 +2742,18 @@ var CGUI = function () {
 
         if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 for (var row = mPatternRow; row <= mPatternRow2; ++row) {
                     for (var col = mPatternCol; col <= mPatternCol2; ++col) {
                         var n = mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen];
-                        if (n > 1)
+
+                        if (n > 1) {
                             mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen] = n - 1;
+                        }
                     }
                 }
+
                 updatePattern();
             }
         }
@@ -2554,14 +2768,18 @@ var CGUI = function () {
 
         if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 for (var row = mPatternRow; row <= mPatternRow2; ++row) {
                     for (var col = mPatternCol; col <= mPatternCol2; ++col) {
                         var n = mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen];
-                        if (n > 0)
+
+                        if (n > 0) {
                             mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen] = n + 12;
+                        }
                     }
                 }
+
                 updatePattern();
             }
         }
@@ -2576,14 +2794,18 @@ var CGUI = function () {
 
         if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 for (var row = mPatternRow; row <= mPatternRow2; ++row) {
                     for (var col = mPatternCol; col <= mPatternCol2; ++col) {
                         var n = mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen];
-                        if (n > 12)
+
+                        if (n > 12) {
                             mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen] = n - 12;
+                        }
                     }
                 }
+
                 updatePattern();
             }
         }
@@ -2597,11 +2819,14 @@ var CGUI = function () {
         e.preventDefault();
 
         mSeqCopyBuffer = [];
+
         for (var row = mSeqRow; row <= mSeqRow2; ++row) {
             var arr = [];
+
             for (var col = mSeqCol; col <= mSeqCol2; ++col) {
                 arr.push(mSong.songData[col].p[row]);
             }
+
             mSeqCopyBuffer.push(arr);
         }
     };
@@ -2618,6 +2843,7 @@ var CGUI = function () {
                 mSong.songData[col].p[row] = mSeqCopyBuffer[i][j];
             }
         }
+
         updateSequencer();
     };
 
@@ -2625,16 +2851,19 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         for (var row = mSeqRow; row <= mSeqRow2; ++row) {
             for (var col = mSeqCol; col <= mSeqCol2; ++col) {
                 var pat = mSong.songData[col].p[row];
+
                 if (pat < MAX_PATTERNS) {
                     mSong.songData[col].p[row] = pat + 1;
                 }
             }
         }
+
         updateSequencer();
         updatePattern();
         updateFxTrack();
@@ -2644,16 +2873,19 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         for (var row = mSeqRow; row <= mSeqRow2; ++row) {
             for (var col = mSeqCol; col <= mSeqCol2; ++col) {
                 var pat = mSong.songData[col].p[row];
+
                 if (pat > 0) {
                     mSong.songData[col].p[row] = pat - 1;
                 }
             }
         }
+
         updateSequencer();
         updatePattern();
         updateFxTrack();
@@ -2663,14 +2895,17 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 mFxCopyBuffer = [];
                 for (var row = mFxTrackRow; row <= mFxTrackRow2; ++row) {
                     var arr = [];
+
                     arr.push(mSong.songData[mSeqCol].c[pat].f[row]);
                     arr.push(mSong.songData[mSeqCol].c[pat].f[row + mSong.patternLen]);
                     mFxCopyBuffer.push(arr);
@@ -2683,16 +2918,20 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
             if (pat >= 0) {
                 for (var row = mFxTrackRow, i = 0; row < mSong.patternLen && i < mFxCopyBuffer.length; ++row, ++i) {
                     var arr = mFxCopyBuffer[i];
+
                     mSong.songData[mSeqCol].c[pat].f[row] = arr[0];
                     mSong.songData[mSeqCol].c[pat].f[row + mSong.patternLen] = arr[1];
                 }
+
                 updateFxTrack();
             }
         }
@@ -2702,20 +2941,24 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         if (mSeqCol == mSeqCol2) {
             var o = getEventElement(e);
 
             // Check which instrument parameter was changed
             var fxCmd = -1;
-            if (o.id === "osc1_xenv")
+
+            if (o.id === "osc1_xenv") {
                 fxCmd = OSC1_XENV;
-            else if (o.id === "osc2_xenv")
+            } else if (o.id === "osc2_xenv") {
                 fxCmd = OSC2_XENV;
-            else if (o.id === "lfo_fxfreq")
+            } else if (o.id === "lfo_fxfreq") {
                 fxCmd = LFO_FX_FREQ;
+            }
 
             // Update the instrument (toggle boolean)
             var fxValue;
+
             if (fxCmd >= 0) {
                 fxValue = mSong.songData[mSeqCol].i[fxCmd] ? 0 : 1;
                 mSong.songData[mSeqCol].i[fxCmd] = fxValue;
@@ -2725,6 +2968,7 @@ var CGUI = function () {
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2 && fxCmd) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
                 if (pat >= 0) {
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = fxCmd + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = fxValue;
@@ -2742,22 +2986,32 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         if (mSeqCol == mSeqCol2) {
-            var o = getEventElement(e);
-            var wave = 0;
-            if (o.id === "osc1_wave_sin") wave = 0;
-            else if (o.id === "osc1_wave_sqr") wave = 1;
-            else if (o.id === "osc1_wave_saw") wave = 2;
-            else if (o.id === "osc1_wave_tri") wave = 3;
+            var o = getEventElement(e),
+                wave = 0;
+
+            if (o.id === "osc1_wave_sin") {
+                wave = 0;
+            } else if (o.id === "osc1_wave_sqr") {
+                wave = 1;
+            } else if (o.id === "osc1_wave_saw") {
+                wave = 2;
+            } else if (o.id === "osc1_wave_tri") {
+                wave = 3;
+            }
+
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
                 if (pat >= 0) {
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = OSC1_WAVEFORM + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = wave;
                     updateFxTrack();
                 }
             }
+
             mSong.songData[mSeqCol].i[OSC1_WAVEFORM] = wave;
             updateInstrument();
             unfocusHTMLInputElements();
@@ -2769,22 +3023,32 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         if (mSeqCol == mSeqCol2) {
-            var o = getEventElement(e);
-            var wave = 0;
-            if (o.id === "osc2_wave_sin") wave = 0;
-            else if (o.id === "osc2_wave_sqr") wave = 1;
-            else if (o.id === "osc2_wave_saw") wave = 2;
-            else if (o.id === "osc2_wave_tri") wave = 3;
+            var o = getEventElement(e),
+                wave = 0;
+
+            if (o.id === "osc2_wave_sin") {
+                wave = 0;
+            } else if (o.id === "osc2_wave_sqr") {
+                wave = 1;
+            } else if (o.id === "osc2_wave_saw") {
+                wave = 2;
+            } else if (o.id === "osc2_wave_tri") {
+                wave = 3;
+            }
+
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
                 if (pat >= 0) {
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = OSC2_WAVEFORM + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = wave;
                     updateFxTrack();
                 }
             }
+
             mSong.songData[mSeqCol].i[OSC2_WAVEFORM] = wave;
             updateInstrument(true);
             unfocusHTMLInputElements();
@@ -2796,22 +3060,32 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         if (mSeqCol == mSeqCol2) {
-            var o = getEventElement(e);
-            var wave = 0;
-            if (o.id === "lfo_wave_sin") wave = 0;
-            else if (o.id === "lfo_wave_sqr") wave = 1;
-            else if (o.id === "lfo_wave_saw") wave = 2;
-            else if (o.id === "lfo_wave_tri") wave = 3;
+            var o = getEventElement(e),
+                wave = 0;
+
+            if (o.id === "lfo_wave_sin") {
+                wave = 0;
+            } else if (o.id === "lfo_wave_sqr") {
+                wave = 1;
+            } else if (o.id === "lfo_wave_saw") {
+                wave = 2;
+            } else if (o.id === "lfo_wave_tri") {
+                wave = 3;
+            }
+
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
                 if (pat >= 0) {
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = LFO_WAVEFORM + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = wave;
                     updateFxTrack();
                 }
             }
+
             mSong.songData[mSeqCol].i[LFO_WAVEFORM] = wave;
             updateInstrument(true);
             unfocusHTMLInputElements();
@@ -2823,21 +3097,30 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         if (mSeqCol == mSeqCol2) {
-            var o = getEventElement(e);
-            var filt = 2;
-            if (o.id === "fx_filt_hp") filt = 1;
-            else if (o.id === "fx_filt_lp") filt = 2;
-            else if (o.id === "fx_filt_bp") filt = 3;
+            var o = getEventElement(e),
+                filt = 2;
+
+            if (o.id === "fx_filt_hp") {
+                filt = 1;
+            } else if (o.id === "fx_filt_lp") {
+                filt = 2;
+            } else if (o.id === "fx_filt_bp") {
+                filt = 3;
+            }
+
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
                 if (pat >= 0) {
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = FX_FILTER + 1
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = filt;
                     updateFxTrack();
                 }
             }
+
             mSong.songData[mSeqCol].i[FX_FILTER] = filt;
             updateInstrument(true);
             unfocusHTMLInputElements();
@@ -2849,6 +3132,7 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         if (mKeyboardOctave < 8) {
@@ -2861,6 +3145,7 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         if (mKeyboardOctave > 1) {
@@ -2873,16 +3158,21 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         if (mSeqCol == mSeqCol2) {
-            var o = getEventElement(e);
-            var val = o.options[o.selectedIndex].value;
+            var o = getEventElement(e),
+                val = o.options[o.selectedIndex].value;
+
             if (val !== "") {
                 val = parseInt(val);
+
                 if (val) {
                     // Clone instrument settings
                     var src = gInstrumentPresets[val];
-                    for (var i = 0; i < src.i.length; ++i)
+
+                    for (var i = 0; i < src.i.length; ++i) {
                         mSong.songData[mSeqCol].i[i] = src.i[i];
+                    }
 
                     updateInstrument(false);
                     e.preventDefault();
@@ -2895,10 +3185,12 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         var p = getMousePos(e, true);
 
         // Calculate keyboard position
         var n = 0;
+
         if (p[1] < 68) {
             // Possible black key
             for (var i = 0; i < mBlackKeyPos.length; i += 2) {
@@ -2909,13 +3201,24 @@ var CGUI = function () {
                 }
             }
         }
+
         if (!n) {
             // Must be a white key
             n = Math.floor((p[0] * 14) / 420) * 2;
             var comp = 0;
-            if (n >= 20) comp++;
-            if (n >= 14) comp++;
-            if (n >= 6) comp++;
+
+            if (n >= 20) {
+                comp++;
+            }
+
+            if (n >= 14) {
+                comp++;
+            }
+
+            if (n >= 6) {
+                comp++;
+            }
+
             n -= comp;
         }
 
@@ -2929,14 +3232,17 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         if (!mFollowerActive) {
-            var o = getEventElement(e);
-            var row = parseInt(o.id.slice(3));
+            var o = getEventElement(e),
+                row = parseInt(o.id.slice(3));
+
             setSelectedFxTrackRow(row);
             mSelectingFxRange = true;
         }
+
         setEditMode(EDIT_FXTRACK);
     };
 
@@ -2945,8 +3251,10 @@ var CGUI = function () {
             if (!e) {
                 e = window.event;
             }
-            var o = getEventElement(e);
-            var row = parseInt(o.id.slice(3));
+
+            var o = getEventElement(e),
+                row = parseInt(o.id.slice(3));
+
             setSelectedFxTrackRow2(row);
             e.preventDefault();
         }
@@ -2957,8 +3265,10 @@ var CGUI = function () {
             if (!e) {
                 e = window.event;
             }
-            var o = getEventElement(e);
-            var row = parseInt(o.id.slice(3));
+
+            var o = getEventElement(e),
+                row = parseInt(o.id.slice(3));
+
             setSelectedFxTrackRow2(row);
             mSelectingFxRange = false;
             e.preventDefault();
@@ -2969,15 +3279,18 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
+
         e.preventDefault();
 
         if (!mFollowerActive) {
-            var o = getEventElement(e);
-            var col = parseInt(o.id.slice(2, 3));
-            var row = parseInt(o.id.slice(4));
+            var o = getEventElement(e),
+                col = parseInt(o.id.slice(2, 3)),
+                row = parseInt(o.id.slice(4));
+
             setSelectedPatternCell(col, row);
             mSelectingPatternRange = true;
         }
+
         setEditMode(EDIT_PATTERN);
     };
 
@@ -2986,9 +3299,11 @@ var CGUI = function () {
             if (!e) {
                 e = window.event;
             }
-            var o = getEventElement(e);
-            var col = parseInt(o.id.slice(2, 3));
-            var row = parseInt(o.id.slice(4));
+
+            var o = getEventElement(e),
+                col = parseInt(o.id.slice(2, 3)),
+                row = parseInt(o.id.slice(4));
+
             setSelectedPatternCell2(col, row);
             e.preventDefault();
         }
@@ -2999,9 +3314,11 @@ var CGUI = function () {
             if (!e) {
                 e = window.event;
             }
-            var o = getEventElement(e);
-            var col = parseInt(o.id.slice(2, 3));
-            var row = parseInt(o.id.slice(4));
+
+            var o = getEventElement(e),
+                col = parseInt(o.id.slice(2, 3)),
+                row = parseInt(o.id.slice(4));
+
             setSelectedPatternCell2(col, row);
             mSelectingPatternRange = false;
             e.preventDefault();
@@ -3012,17 +3329,25 @@ var CGUI = function () {
         if (!e) {
             e = window.event;
         }
-        var o = getEventElement(e);
-        var col = parseInt(o.id.slice(2, 3));
-        var row;
-        if (!mFollowerActive)
+
+        var o = getEventElement(e),
+            col = parseInt(o.id.slice(2, 3)),
+            row;
+
+        if (!mFollowerActive) {
             row = parseInt(o.id.slice(4));
-        else
+        } else {
             row = mSeqRow;
+        }
+
         var newChannel = col != mSeqCol || mSeqCol != mSeqCol2;
+
         setSelectedSequencerCell(col, row);
-        if (!mFollowerActive)
+
+        if (!mFollowerActive) {
             mSelectingSeqRange = true;
+        }
+
         setEditMode(EDIT_SEQUENCE);
         updatePattern();
         updateFxTrack();
@@ -3035,9 +3360,11 @@ var CGUI = function () {
             if (!e) {
                 e = window.event;
             }
-            var o = getEventElement(e);
-            var col = parseInt(o.id.slice(2, 3));
-            var row = parseInt(o.id.slice(4));
+
+            var o = getEventElement(e),
+                col = parseInt(o.id.slice(2, 3)),
+                row = parseInt(o.id.slice(4));
+
             setSelectedSequencerCell2(col, row);
             updatePattern();
             updateFxTrack();
@@ -3051,10 +3378,12 @@ var CGUI = function () {
             if (!e) {
                 e = window.event;
             }
-            var o = getEventElement(e);
-            var col = parseInt(o.id.slice(2, 3));
-            var row = parseInt(o.id.slice(4));
-            var newChannel = col != mSeqCol2 || mSeqCol != mSeqCol2;
+
+            var o = getEventElement(e),
+                col = parseInt(o.id.slice(2, 3)),
+                row = parseInt(o.id.slice(4)),
+                newChannel = col != mSeqCol2 || mSeqCol != mSeqCol2;
+
             setSelectedSequencerCell2(col, row);
             mSelectingSeqRange = false;
             updatePattern();
@@ -3071,6 +3400,7 @@ var CGUI = function () {
             if (!e) {
                 e = window.event;
             }
+
             mActiveSlider = getEventElement(e);
             unfocusHTMLInputElements();
             e.preventDefault();
@@ -3085,45 +3415,70 @@ var CGUI = function () {
         // Handle slider?
         if (mActiveSlider) {
             // Calculate slider position
-            var pos = getMousePos(e, false);
-            var origin = getElementPos(mActiveSlider.parentNode);
-            var x = pos[0] - 6 - origin[0];
+            var pos = getMousePos(e, false),
+                origin = getElementPos(mActiveSlider.parentNode),
+                x = pos[0] - 6 - origin[0];
+
             x = x < 0 ? 0 : (x > 191 ? 1 : (x / 191));
 
             // Adapt to the range of the slider
-            if (mActiveSlider.sliderProps.nonLinear)
+            if (mActiveSlider.sliderProps.nonLinear) {
                 x = x * x;
-            var min = mActiveSlider.sliderProps.min;
-            var max = mActiveSlider.sliderProps.max;
+            }
+
+            var min = mActiveSlider.sliderProps.min,
+                max = mActiveSlider.sliderProps.max;
+
             x = Math.round(min + ((max - min) * x));
 
             // Check which instrument property to update
             var cmdNo = -1;
-            if (mActiveSlider.id == "osc1_vol")         cmdNo = OSC1_VOL;
-            else if (mActiveSlider.id == "osc1_semi")   cmdNo = OSC1_SEMI;
-            else if (mActiveSlider.id == "osc2_vol")    cmdNo = OSC2_VOL;
-            else if (mActiveSlider.id == "osc2_semi")   cmdNo = OSC2_SEMI;
-            else if (mActiveSlider.id == "osc2_det")    cmdNo = OSC2_DETUNE;
-            else if (mActiveSlider.id == "noise_vol")   cmdNo = NOISE_VOL;
-            else if (mActiveSlider.id == "env_att")     cmdNo = ENV_ATTACK;
-            else if (mActiveSlider.id == "env_sust")    cmdNo = ENV_SUSTAIN;
-            else if (mActiveSlider.id == "env_rel")     cmdNo = ENV_RELEASE;
-            else if (mActiveSlider.id == "lfo_amt")     cmdNo = LFO_AMT;
-            else if (mActiveSlider.id == "lfo_freq")    cmdNo = LFO_FREQ;
-            else if (mActiveSlider.id == "fx_freq")     cmdNo = FX_FREQ;
-            else if (mActiveSlider.id == "fx_res")      cmdNo = FX_RESONANCE;
-            else if (mActiveSlider.id == "fx_dist")     cmdNo = FX_DIST;
-            else if (mActiveSlider.id == "fx_drive")    cmdNo = FX_DRIVE;
-            else if (mActiveSlider.id == "fx_pan_amt")  cmdNo = FX_PAN_AMT;
-            else if (mActiveSlider.id == "fx_pan_freq") cmdNo = FX_PAN_FREQ;
-            else if (mActiveSlider.id == "fx_dly_amt")  cmdNo = FX_DELAY_AMT;
-            else if (mActiveSlider.id == "fx_dly_time") cmdNo = FX_DELAY_TIME;
+            if (mActiveSlider.id == "osc1_vol") {
+                cmdNo = OSC1_VOL;
+            } else if (mActiveSlider.id == "osc1_semi") {
+                cmdNo = OSC1_SEMI;
+            } else if (mActiveSlider.id == "osc2_vol") {
+                cmdNo = OSC2_VOL;
+            } else if (mActiveSlider.id == "osc2_semi") {
+                cmdNo = OSC2_SEMI;
+            } else if (mActiveSlider.id == "osc2_det") {
+                cmdNo = OSC2_DETUNE;
+            } else if (mActiveSlider.id == "noise_vol") {
+                cmdNo = NOISE_VOL;
+            } else if (mActiveSlider.id == "env_att") {
+                cmdNo = ENV_ATTACK;
+            } else if (mActiveSlider.id == "env_sust") {
+                cmdNo = ENV_SUSTAIN;
+            } else if (mActiveSlider.id == "env_rel") {
+                cmdNo = ENV_RELEASE;
+            } else if (mActiveSlider.id == "lfo_amt") {
+                cmdNo = LFO_AMT;
+            } else if (mActiveSlider.id == "lfo_freq") {
+                cmdNo = LFO_FREQ;
+            } else if (mActiveSlider.id == "fx_freq") {
+                cmdNo = FX_FREQ;
+            } else if (mActiveSlider.id == "fx_res") {
+                cmdNo = FX_RESONANCE;
+            } else if (mActiveSlider.id == "fx_dist") {
+                cmdNo = FX_DIST;
+            } else if (mActiveSlider.id == "fx_drive") {
+                cmdNo = FX_DRIVE;
+            } else if (mActiveSlider.id == "fx_pan_amt") {
+                cmdNo = FX_PAN_AMT;
+            } else if (mActiveSlider.id == "fx_pan_freq") {
+                cmdNo = FX_PAN_FREQ;
+            } else if (mActiveSlider.id == "fx_dly_amt") {
+                cmdNo = FX_DELAY_AMT;
+            } else if (mActiveSlider.id == "fx_dly_time") {
+                cmdNo = FX_DELAY_TIME;
+            }
 
             var instr = mSong.songData[mSeqCol];
             if (mEditMode == EDIT_FXTRACK && mFxTrackRow == mFxTrackRow2) {
                 // Update the effect command in the FX track
                 if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
                     var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
                     if (pat >= 0) {
                         mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = cmdNo + 1;
                         mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = x;
@@ -3133,8 +3488,9 @@ var CGUI = function () {
             }
 
             // Update the instrument property
-            if (cmdNo >= 0)
+            if (cmdNo >= 0) {
                 instr.i[cmdNo] = x;
+            }
 
             // Update the jammer instrument
             mJammer.updateInstr(instr.i);
@@ -3151,6 +3507,7 @@ var CGUI = function () {
             mActiveSlider = null;
             return false;
         }
+
         return true;
     };
 
@@ -3191,6 +3548,7 @@ var CGUI = function () {
         // Emulate a piano through keyboard input.
         if (mEditMode != EDIT_SEQUENCE && !editingBpmRpp) {
             n = -1;
+
             switch (e.keyCode) {
                 // First octave on the ZXCVB... row
                 case 90:
@@ -3299,12 +3657,15 @@ var CGUI = function () {
                     n = 28;
                     break;
             }
+
             if (n >= 0) {
                 if (playNote(n + mKeyboardOctave * 12)) {
                     return false;
                 }
             }
         }
+
+        var pat;
 
         // The rest of the key presses...
         switch (e.keyCode) {
@@ -3315,11 +3676,11 @@ var CGUI = function () {
                     updateFxTrack();
                     updateInstrument(true);
                     return false;
-                }
-                else if (mEditMode == EDIT_PATTERN) {
+                } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell((mPatternCol + 1) % 4, mPatternRow);
                     return false;
                 }
+
                 break;
 
             case 37:  // LEFT
@@ -3329,11 +3690,11 @@ var CGUI = function () {
                     updateFxTrack();
                     updateInstrument(true);
                     return false;
-                }
-                else if (mEditMode == EDIT_PATTERN) {
+                } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell((mPatternCol - 1 + 4) % 4, mPatternRow);
                     return false;
                 }
+
                 break;
 
             case 40:  // DOWN
@@ -3342,15 +3703,14 @@ var CGUI = function () {
                     updatePattern();
                     updateFxTrack();
                     return false;
-                }
-                else if (mEditMode == EDIT_PATTERN) {
+                } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell(mPatternCol, (mPatternRow + 1) % mSong.patternLen);
                     return false;
-                }
-                else if (mEditMode == EDIT_FXTRACK) {
+                } else if (mEditMode == EDIT_FXTRACK) {
                     setSelectedFxTrackRow((mFxTrackRow + 1) % mSong.patternLen);
                     return false;
                 }
+
                 break;
 
             case 38:  // UP
@@ -3359,15 +3719,14 @@ var CGUI = function () {
                     updatePattern();
                     updateFxTrack();
                     return false;
-                }
-                else if (mEditMode == EDIT_PATTERN) {
+                } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell(mPatternCol, (mPatternRow - 1 + mSong.patternLen) % mSong.patternLen);
                     return false;
-                }
-                else if (mEditMode == EDIT_FXTRACK) {
+                } else if (mEditMode == EDIT_FXTRACK) {
                     setSelectedFxTrackRow((mFxTrackRow - 1 + mSong.patternLen) % mSong.patternLen);
                     return false;
                 }
+
                 break;
 
             case 36:  // HOME
@@ -3375,16 +3734,16 @@ var CGUI = function () {
                     setSelectedSequencerCell(mSeqCol, 0);
                     updatePattern();
                     updateFxTrack();
+
                     return false;
-                }
-                else if (mEditMode == EDIT_PATTERN) {
+                } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell(mPatternCol, 0);
                     return false;
-                }
-                else if (mEditMode == EDIT_FXTRACK) {
+                } else if (mEditMode == EDIT_FXTRACK) {
                     setSelectedFxTrackRow(0);
                     return false;
                 }
+
                 break;
 
             case 35:  // END
@@ -3392,16 +3751,16 @@ var CGUI = function () {
                     setSelectedSequencerCell(mSeqCol, MAX_SONG_ROWS - 1);
                     updatePattern();
                     updateFxTrack();
+
                     return false;
-                }
-                else if (mEditMode == EDIT_PATTERN) {
+                } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell(mPatternCol, mSong.patternLen - 1);
                     return false;
-                }
-                else if (mEditMode == EDIT_FXTRACK) {
+                } else if (mEditMode == EDIT_FXTRACK) {
                     setSelectedFxTrackRow(mSong.patternLen - 1);
                     return false;
                 }
+
                 break;
 
             case 32: // SPACE
@@ -3409,6 +3768,7 @@ var CGUI = function () {
                     playRange(e);
                     return false;
                 }
+
                 break;
 
             case 8:   // BACKSPACE (Mac delete)
@@ -3419,43 +3779,54 @@ var CGUI = function () {
                             mSong.songData[col].p[row] = 0;
                         }
                     }
+
                     updateSequencer();
                     updatePattern();
                     updateFxTrack();
+
                     return false;
                 }
                 else if (mEditMode == EDIT_PATTERN) {
                     if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
-                        var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+                        pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
                         if (pat >= 0) {
                             for (row = mPatternRow; row <= mPatternRow2; ++row) {
-                                for (col = mPatternCol; col <= mPatternCol2; ++col)
+                                for (col = mPatternCol; col <= mPatternCol2; ++col) {
                                     mSong.songData[mSeqCol].c[pat].n[row + col * mSong.patternLen] = 0;
+                                }
                             }
+
                             if (mPatternRow == mPatternRow2) {
                                 setSelectedPatternCell(mPatternCol, (mPatternRow + 1) % mSong.patternLen);
                             }
+
                             updatePattern();
                         }
+
                         return false;
                     }
-                }
-                else if (mEditMode == EDIT_FXTRACK) {
+                } else if (mEditMode == EDIT_FXTRACK) {
                     if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
-                        var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+                        pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
                         if (pat >= 0) {
                             for (row = mFxTrackRow; row <= mFxTrackRow2; ++row) {
                                 mSong.songData[mSeqCol].c[pat].f[row] = 0;
                                 mSong.songData[mSeqCol].c[pat].f[row + mSong.patternLen] = 0;
                             }
+
                             if (mFxTrackRow == mFxTrackRow2) {
                                 setSelectedFxTrackRow((mFxTrackRow + 1) % mSong.patternLen);
                             }
+
                             updateFxTrack();
                         }
+
                         return false;
                     }
                 }
+
                 break;
 
             case 13:  // ENTER / RETURN
@@ -3465,6 +3836,7 @@ var CGUI = function () {
                     document.getElementById("bpm").blur();
                     document.getElementById("rpp").blur();
                 }
+
                 break;
 
             default:
@@ -3492,9 +3864,11 @@ var CGUI = function () {
 
         // Load the file into the editor
         var reader = new FileReader();
+
         reader.onload = function (e) {
             loadSongFromData(getURLSongData(e.target.result));
         };
+
         reader.readAsDataURL(file);
     };
 
@@ -3511,14 +3885,17 @@ var CGUI = function () {
 
         // Set up the drag'n'drop handler
         var dropElement = document.body.parentNode;
+
         dropElement.addEventListener("dragenter", function dragenter(e) {
             e.stopPropagation();
             e.preventDefault();
         }, false);
+
         dropElement.addEventListener("dragover", function dragenter(e) {
             e.stopPropagation();
             e.preventDefault();
         }, false);
+
         dropElement.addEventListener("drop", onFileDrop, false);
     };
 
@@ -3527,6 +3904,7 @@ var CGUI = function () {
         document.onmousedown = function () {
             return true;
         };
+
         document.onmousemove = null;
         document.onmouseup = null;
 
@@ -3535,13 +3913,15 @@ var CGUI = function () {
     };
 
     var buildSequencerTable = function () {
-        var table = document.getElementById("sequencer-table");
-        var tr, th, td;
+        var table = document.getElementById("sequencer-table"),
+            tr, th, td;
+
         for (var row = 0; row < MAX_SONG_ROWS; row++) {
             tr = document.createElement("tr");
 
-            if (row % 4 === 0)
+            if (row % 4 === 0) {
                 tr.className = "beat";
+            }
 
             th = document.createElement("th");
             th.id = "spr" + row;
@@ -3566,8 +3946,10 @@ var CGUI = function () {
         var beatDistance = 1;
 
         while (beatDistance < table.children.length) {
-            if (table.children[beatDistance].className === "beat")
+            if (table.children[beatDistance].className === "beat") {
                 break;
+            }
+
             beatDistance++;
         }
 
@@ -3575,41 +3957,46 @@ var CGUI = function () {
     };
 
     var getBeatDistance = function () {
-        var bpm = getBPM();
-        var beatDistance = 4;
-
-        if (mSong.patternLen % 3 === 0)
-            beatDistance = 3;
-        else if (mSong.patternLen % 4 === 0)
+        var bpm = getBPM(),
             beatDistance = 4;
-        else if (mSong.patternLen % 2 === 0)
-            beatDistance = 2;
-        else if (mSong.patternLen % 5 === 0)
-            beatDistance = 5;
 
-        if ((bpm / beatDistance) >= 40 && mSong.patternLen > 24 && (mSong.patternLen % (beatDistance * 2) === 0))
+        if (mSong.patternLen % 3 === 0) {
+            beatDistance = 3;
+        } else if (mSong.patternLen % 4 === 0) {
+            beatDistance = 4;
+        } else if (mSong.patternLen % 2 === 0) {
+            beatDistance = 2;
+        } else if (mSong.patternLen % 5 === 0) {
+            beatDistance = 5;
+        }
+
+        if ((bpm / beatDistance) >= 40 && mSong.patternLen > 24 && (mSong.patternLen % (beatDistance * 2) === 0)) {
             beatDistance *= 2;
+        }
 
         return beatDistance;
     };
 
     var buildPatternTable = function () {
-        var beatDistance = getBeatDistance();
-        var table = document.getElementById("pattern-table");
+        var beatDistance = getBeatDistance(),
+            table = document.getElementById("pattern-table");
 
-        if (table.children.length === mSong.patternLen && getCurrentBeatDistance(table) === beatDistance)
+        if (table.children.length === mSong.patternLen && getCurrentBeatDistance(table) === beatDistance) {
             return;
+        }
 
-        while (table.firstChild)
+        while (table.firstChild) {
             table.removeChild(table.firstChild);
+        }
 
         var tr, th, td;
 
         for (var row = 0; row < mSong.patternLen; row++) {
             tr = document.createElement("tr");
 
-            if (row % beatDistance === 0)
+            if (row % beatDistance === 0) {
                 tr.className = "beat";
+            }
 
             th = document.createElement("th");
             th.id = "ppr" + row;
@@ -3631,17 +4018,26 @@ var CGUI = function () {
     };
 
     var buildFxTable = function () {
-        var beatDistance = getBeatDistance();
-        var table = document.getElementById("fxtrack-table");
-        if (table.children.length === mSong.patternLen && getCurrentBeatDistance(table) === beatDistance)
+        var beatDistance = getBeatDistance(),
+            table = document.getElementById("fxtrack-table");
+
+        if (table.children.length === mSong.patternLen && getCurrentBeatDistance(table) === beatDistance) {
             return;
-        while (table.firstChild)
+        }
+
+        while (table.firstChild) {
             table.removeChild(table.firstChild);
+        }
+
         var tr, td;
+
         for (var row = 0; row < mSong.patternLen; row++) {
             tr = document.createElement("tr");
-            if (row % beatDistance === 0)
+
+            if (row % beatDistance === 0) {
                 tr.className = "beat";
+            }
+
             td = document.createElement("td");
             td.id = "fxr" + row;
             td.textContent = String.fromCharCode(160);  // &nbsp;
@@ -3658,8 +4054,6 @@ var CGUI = function () {
     //--------------------------------------------------------------------------
 
     this.init = function () {
-        var i, j, o;
-
         // Parse URL
         mBaseURL = getURLBase(window.location.href);
         mGETParams = parseURLGetData(window.location.href);
@@ -3692,9 +4086,11 @@ var CGUI = function () {
         mPlayGfxVUImg.onload = function () {
             redrawPlayerGfx(-1);
         };
+
         mPlayGfxLedOffImg.onload = function () {
             redrawPlayerGfx(-1);
         };
+
         mPlayGfxVUImg.src = imgPath + "playGfxBg.png";
         mPlayGfxLedOffImg.src = imgPath + "led-off.png";
         mPlayGfxLedOnImg.src = imgPath + "led-on.png";
@@ -3737,8 +4133,9 @@ var CGUI = function () {
         }
 
         // Load the song
-        var songData = getURLSongData(mGETParams && mGETParams.data && mGETParams.data[0]);
-        var song = songData ? binToSong(songData) : null;
+        var songData = getURLSongData(mGETParams && mGETParams.data && mGETParams.data[0]),
+            song = songData ? binToSong(songData) : null;
+
         mSong = song ? song : makeNewSong();
 
         // Update UI according to the loaded song
@@ -3875,8 +4272,9 @@ var CGUI = function () {
         activateMasterEvents();
 
         // Show the about dialog (if no song was loaded)
-        if (!songData)
+        if (!songData) {
             showAboutDialog();
+        }
 
         // Start the jammer
         mJammer.start();
@@ -3900,4 +4298,3 @@ function gui_init() {
         alert("Unexpected error: " + err.message);
     }
 }
-
