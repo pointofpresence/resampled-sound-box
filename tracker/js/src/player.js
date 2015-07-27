@@ -43,11 +43,12 @@ var CPlayer = function () {
             waveWords = mixBuf.length;
 
         // Create WAVE header
-        var l1 = waveWords * 2 - 8;
-        var l2 = l1 - 36;
-        var headerLen = 44;
-        var wave = new Uint8Array(headerLen + waveWords * 2);
+        var l1 = waveWords * 2 - 8,
+            l2 = l1 - 36,
+            headerLen = 44,
+            wave = new Uint8Array(headerLen + waveWords * 2);
 
+        //noinspection JSCheckFunctionSignatures
         wave.set(
             [
                 82, 73, 70, 70,
@@ -73,9 +74,9 @@ var CPlayer = function () {
 
     // Get n samples of wave data at time t [s]. Wave data in range [-2,2].
     this.getData = function (t, n) {
-        var i = 2 * Math.floor(t * 44100);
-        var d = new Array(n);
-        var b = mGeneratedBuffer;
+        var i = 2 * Math.floor(t * 44100),
+            d = new Array(n),
+            b = mGeneratedBuffer;
 
         for (var j = 0; j < 2 * n; j += 1) {
             var k = i + j;
