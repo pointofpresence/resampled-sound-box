@@ -6,8 +6,8 @@ var CJammer = function () {
     //--------------------------------------------------------------------------
 
     // Currently playing notes.
-    var MAX_POLYPHONY = 8;
-    var mPlayingNotes = [];
+    var MAX_POLYPHONY = 8,
+        mPlayingNotes = [];
 
     // Current instrument.
     var mInstr;
@@ -24,9 +24,10 @@ var CJammer = function () {
 
     // Web Audio context.
     var mAudioContext;
-    var mScriptNode;
-    var mSampleRate;
-    var mRateScale;
+
+    var mScriptNode,
+        mSampleRate,
+        mRateScale;
 
     //--------------------------------------------------------------------------
     // Sound synthesis engine.
@@ -68,8 +69,7 @@ var CJammer = function () {
         var numSamples = rightBuf.length;
 
         // Local variables
-        var i, j, k, b, p, row, col, n, cp,
-            t, lfor, e, x, rsample, rowStartSample, f, da;
+        var i, j, k, t, e, rsample, f;
 
         // Clear buffers
         for (k = 0; k < numSamples; ++k) {
@@ -80,6 +80,7 @@ var CJammer = function () {
         // Generate active notes.
         for (i = 0; i < MAX_POLYPHONY; ++i) {
             var note = mPlayingNotes[i];
+
             if (note != undefined) {
                 var osc1 = mOscillators[note.instr[0]],
                     o1vol = note.instr[1],
@@ -101,6 +102,7 @@ var CJammer = function () {
 
                 // Generate note.
                 var samplesLeft = attack + sustain + release - note.env;
+
                 if (samplesLeft <= numSamples) {
                     // End of note.
                     mPlayingNotes[i] = undefined;
@@ -193,9 +195,11 @@ var CJammer = function () {
             if (rsample || filterActive) {
                 // State variable filter.
                 f = fxFreq;
+
                 if (fxLFO) {
                     f *= oscLFO(lfoFreq * k) * lfoAmt + 0.5;
                 }
+
                 f = 1.5 * Math.sin(f);
                 low += f * band;
                 high = q * (rsample - band) - low;
@@ -258,10 +262,14 @@ var CJammer = function () {
 
     this.start = function () {
         // Create an audio context.
+        //noinspection JSUnresolvedVariable
         if (window.AudioContext) {
+            //noinspection JSUnresolvedFunction
             mAudioContext = new AudioContext();
         } else if (window.webkitAudioContext) {
+            //noinspection JSUnresolvedFunction,JSPotentiallyInvalidConstructorUsage
             mAudioContext = new webkitAudioContext();
+            //noinspection JSUnresolvedVariable
             mAudioContext.createScriptProcessor = mAudioContext.createJavaScriptNode;
         } else {
             mAudioContext = undefined;
@@ -269,6 +277,7 @@ var CJammer = function () {
         }
 
         // Get actual sample rate (SoundBox is hard-coded to 44100 samples/s).
+        //noinspection JSUnresolvedVariable
         mSampleRate = mAudioContext.sampleRate;
         mRateScale = mSampleRate / 44100;
 
@@ -289,12 +298,17 @@ var CJammer = function () {
         mScriptNode = mAudioContext.createScriptProcessor(2048, 0, 2);
 
         mScriptNode.onaudioprocess = function (event) {
+            //noinspection JSUnresolvedVariable,JSUnresolvedFunction
             var leftBuf = event.outputBuffer.getChannelData(0);
+
+            //noinspection JSUnresolvedVariable,JSUnresolvedFunction
             var rightBuf = event.outputBuffer.getChannelData(1);
+
             generateTimeSlice(leftBuf, rightBuf);
         };
 
         // Connect the script node to the output.
+        //noinspection JSUnresolvedVariable
         mScriptNode.connect(mAudioContext.destination);
     };
 

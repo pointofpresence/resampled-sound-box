@@ -130,22 +130,24 @@ var CBinWriter = function () {
 //------------------------------------------------------------------------------
 
 var CAudioTimer = function () {
-    var mAudioElement = null;
-    var mStartT = 0;
-    var mErrHist = [0, 0, 0, 0, 0, 0];
-    var mErrHistPos = 0;
+    var mAudioElement = null,
+        mStartT = 0,
+        mErrHist = [0, 0, 0, 0, 0, 0],
+        mErrHistPos = 0;
 
     this.setAudioElement = function (audioElement) {
         mAudioElement = audioElement;
     };
 
     this.currentTime = function () {
-        if (!mAudioElement)
+        if (!mAudioElement) {
             return 0;
+        }
 
         // Calculate current time according to Date()
-        var t = (new Date()).getTime() * 0.001;
-        var currentTime = t - mStartT;
+        var t = (new Date()).getTime() * 0.001,
+            currentTime = t - mStartT,
+            i;
 
         // Get current time according to the audio element
         var audioCurrentTime = mAudioElement.currentTime;
@@ -153,18 +155,24 @@ var CAudioTimer = function () {
         // Check if we are off by too much - in which case we will use the time
         // from the audio element
         var err = audioCurrentTime - currentTime;
+
         if (audioCurrentTime < 0.01 || err > 0.2 || err < -0.2) {
             currentTime = audioCurrentTime;
             mStartT = t - currentTime;
-            for (var i = 0; i < mErrHist.length; i++)
+
+            for (i = 0; i < mErrHist.length; i++) {
                 mErrHist[i] = 0;
+            }
         }
 
         // Error compensation (this should fix the problem when we're constantly
         // slightly off)
         var comp = 0;
-        for (var i = 0; i < mErrHist.length; i++)
+
+        for (i = 0; i < mErrHist.length; i++) {
             comp += mErrHist[i];
+        }
+
         comp /= mErrHist.length;
         mErrHist[mErrHistPos] = err;
         mErrHistPos = (mErrHistPos + 1) % mErrHist.length;
@@ -174,8 +182,10 @@ var CAudioTimer = function () {
 
     this.reset = function () {
         mStartT = (new Date()).getTime() * 0.001;
-        for (var i = 0; i < mErrHist.length; i++)
+
+        for (var i = 0; i < mErrHist.length; i++) {
             mErrHist[i] = 0;
+        }
     };
 };
 
@@ -218,18 +228,18 @@ var CGUI = function () {
         mInstrCopyBuffer = [];
 
     // Parsed URL data
-    var mBaseURL;
-    var mGETParams;
+    var mBaseURL,
+        mGETParams;
 
     // Resources
-    var mSong = {};
-    var mAudio = null;
-    var mAudioTimer = new CAudioTimer();
-    var mPlayer = new CPlayer();
-    var mPlayGfxVUImg = new Image();
-    var mPlayGfxLedOffImg = new Image();
-    var mPlayGfxLedOnImg = new Image();
-    var mJammer = new CJammer();
+    var mSong = {},
+        mAudio = null,
+        mAudioTimer = new CAudioTimer(),
+        mPlayer = new CPlayer(),
+        mPlayGfxVUImg = new Image(),
+        mPlayGfxLedOffImg = new Image(),
+        mPlayGfxLedOnImg = new Image(),
+        mJammer = new CJammer();
 
     // Constant look-up-tables
     var mNoteNames = [
@@ -253,66 +263,95 @@ var CGUI = function () {
     };
 
     var parseURLGetData = function (url) {
-        var queryStart = url.indexOf("?") + 1;
-        var queryEnd = url.indexOf("#") + 1 || url.length + 1;
-        var query = url.slice(queryStart, queryEnd - 1);
+        var queryStart = url.indexOf("?") + 1,
+            queryEnd = url.indexOf("#") + 1 || url.length + 1,
+            query = url.slice(queryStart, queryEnd - 1);
 
         var params = {};
-        if (query === url || query === "")
+
+        if (query === url || query === "") {
             return params;
+        }
 
         var nvPairs = query.replace(/\+/g, " ").split("&");
 
         for (var i = 0; i < nvPairs.length; i++) {
-            var nv = nvPairs[i].split("=");
-            var n = decodeURIComponent(nv[0]);
-            var v = decodeURIComponent(nv[1]);
+            var nv = nvPairs[i].split("="),
+                n = decodeURIComponent(nv[0]),
+                v = decodeURIComponent(nv[1]);
+
             if (!(n in params)) {
                 params[n] = [];
             }
+
             params[n].push(nv.length === 2 ? v : null);
         }
+
         return params;
     };
 
     var getURLSongData = function (dataParam) {
         var songData = undefined;
+
         if (dataParam) {
             var str = dataParam, str2 = "";
+
             if (str.indexOf("data:") == 0) {
                 // This is a data: URI (e.g. data:application/x-extension-sbx;base64,....)
                 var idx = str.indexOf("base64,");
-                if (idx > 0)
+
+                if (idx > 0) {
                     str2 = str.substr(idx + 7);
+                }
             } else {
                 // This is GET data from an http URL
                 for (var i = 0; i < str.length; ++i) {
                     var chr = str[i];
-                    if (chr === "-") chr = "+";
-                    if (chr === "_") chr = "/";
+
+                    if (chr === "-") {
+                        chr = "+";
+                    }
+
+                    if (chr === "_") {
+                        chr = "/";
+                    }
+
                     str2 += chr;
                 }
             }
+
             try {
                 //noinspection JSValidateTypes
                 songData = atob(str2);
-            }
-            catch (err) {
+            } catch (err) {
                 songData = undefined;
             }
         }
+
         return songData;
     };
 
     var makeURLSongData = function (data) {
         var str = btoa(data), str2 = "";
+
         for (var i = 0; i < str.length; ++i) {
             var chr = str[i];
-            if (chr === "+") chr = "-";
-            if (chr === "/") chr = "_";
-            if (chr === "=") chr = "";
+
+            if (chr === "+") {
+                chr = "-";
+            }
+
+            if (chr === "/") {
+                chr = "_";
+            }
+
+            if (chr === "=") {
+                chr = "";
+            }
+
             str2 += chr;
         }
+
         return mBaseURL + "?data=" + str2;
     };
 
@@ -375,6 +414,7 @@ var CGUI = function () {
 
         // Select the default instrument from the presets
         var defaultInstr;
+
         for (i = 0; i < gInstrumentPresets.length; ++i) {
             if (gInstrumentPresets[i].i) {
                 defaultInstr = gInstrumentPresets[i];
@@ -384,6 +424,7 @@ var CGUI = function () {
 
         // All 8 instruments
         song.songData = [];
+
         for (i = 0; i < 8; i++) {
             instr = {};
             instr.i = [];
@@ -395,19 +436,27 @@ var CGUI = function () {
 
             // Sequence
             instr.p = [];
-            for (j = 0; j < MAX_SONG_ROWS; j++)
+            for (j = 0; j < MAX_SONG_ROWS; j++) {
                 instr.p[j] = 0;
+            }
 
             // Patterns
             instr.c = [];
+
             for (j = 0; j < MAX_PATTERNS; j++) {
                 col = {};
                 col.n = [];
-                for (k = 0; k < song.patternLen * 4; k++)
+
+                for (k = 0; k < song.patternLen * 4; k++) {
                     col.n[k] = 0;
+                }
+
                 col.f = [];
-                for (k = 0; k < song.patternLen * 2; k++)
+
+                for (k = 0; k < song.patternLen * 2; k++) {
                     col.f[k] = 0;
+                }
+
                 instr.c[j] = col;
             }
 
@@ -434,6 +483,7 @@ var CGUI = function () {
 
         // All 8 instruments
         var i, j, k, instr, col;
+
         for (i = 0; i < 8; i++) {
             instr = song.songData[i];
 
@@ -476,16 +526,21 @@ var CGUI = function () {
             bin.putUBYTE(instr.i[FX_DELAY_TIME]);
 
             // Patterns
-            for (j = 0; j < MAX_SONG_ROWS; j++)
+            for (j = 0; j < MAX_SONG_ROWS; j++) {
                 bin.putUBYTE(instr.p[j]);
+            }
 
             // Columns
             for (j = 0; j < MAX_PATTERNS; j++) {
                 col = instr.c[j];
-                for (k = 0; k < song.patternLen * 4; k++)
+
+                for (k = 0; k < song.patternLen * 4; k++) {
                     bin.putUBYTE(col.n[k]);
-                for (k = 0; k < song.patternLen * 2; k++)
+                }
+
+                for (k = 0; k < song.patternLen * 2; k++) {
                     bin.putUBYTE(col.f[k]);
+                }
             }
         }
 
@@ -493,21 +548,26 @@ var CGUI = function () {
         // FIXME: To avoid bugs, we try different compression methods here until we
         // find something that works (this should not be necessary).
         var unpackedData = bin.getData(), packedData, testData, compressionMethod = 0;
+
         for (i = 9; i > 0; i--) {
             packedData = RawDeflate.deflate(unpackedData, i);
             testData = RawDeflate.inflate(packedData);
+
             if (unpackedData === testData) {
                 compressionMethod = 2;
                 break;
             }
         }
+
         if (compressionMethod == 0) {
             packedData = rle_encode(bin.getData());
             testData = rle_decode(packedData);
-            if (unpackedData === testData)
+
+            if (unpackedData === testData) {
                 compressionMethod = 1;
-            else
+            } else {
                 packedData = unpackedData;
+            }
         }
 
         // Create a new binary stream - this is the actual file
@@ -532,8 +592,8 @@ var CGUI = function () {
     };
 
     var soundboxBinToSong = function (d) {
-        var bin = new CBinParser(d);
-        var song = {};
+        var bin = new CBinParser(d),
+            song = {};
 
         // Signature
         var signature = bin.getULONG();
@@ -542,8 +602,9 @@ var CGUI = function () {
         var version = bin.getUBYTE();
 
         // Check if this is a SoundBox song
-        if (signature != 2020557395 || (version < 1 || version > 10))
+        if (signature != 2020557395 || (version < 1 || version > 10)) {
             return undefined;
+        }
 
         if (version >= 8) {
             // Get compression method
@@ -554,6 +615,7 @@ var CGUI = function () {
 
             // Unpack song data
             var packedData = bin.getTail(), unpackedData;
+
             switch (compressionMethod) {
                 default:
                 case 0:
@@ -566,6 +628,7 @@ var CGUI = function () {
                     unpackedData = RawDeflate.inflate(packedData);
                     break;
             }
+
             bin = new CBinParser(unpackedData);
         }
 
@@ -576,14 +639,17 @@ var CGUI = function () {
         song.endPattern = bin.getUBYTE() + 2;
 
         // Number of rows per pattern
-        if (version >= 10)
+        if (version >= 10) {
             song.patternLen = bin.getUBYTE();
-        else
+        } else {
             song.patternLen = 32;
+        }
 
         // All 8 instruments
         song.songData = [];
+
         var i, j, k, instr, col;
+
         for (i = 0; i < 8; i++) {
             instr = {};
             instr.i = [];
@@ -594,8 +660,7 @@ var CGUI = function () {
                 instr.i[OSC1_XENV] = bin.getUBYTE();
                 instr.i[OSC1_VOL] = bin.getUBYTE();
                 instr.i[OSC1_WAVEFORM] = bin.getUBYTE();
-            }
-            else {
+            } else {
                 instr.i[OSC1_WAVEFORM] = bin.getUBYTE();
                 instr.i[OSC1_VOL] = bin.getUBYTE();
                 instr.i[OSC1_SEMI] = bin.getUBYTE();
@@ -609,8 +674,7 @@ var CGUI = function () {
                 instr.i[OSC2_XENV] = bin.getUBYTE();
                 instr.i[OSC2_VOL] = bin.getUBYTE();
                 instr.i[OSC2_WAVEFORM] = bin.getUBYTE();
-            }
-            else {
+            } else {
                 instr.i[OSC2_WAVEFORM] = bin.getUBYTE();
                 instr.i[OSC2_VOL] = bin.getUBYTE();
                 instr.i[OSC2_SEMI] = bin.getUBYTE();
@@ -626,8 +690,7 @@ var CGUI = function () {
                 instr.i[ENV_ATTACK] = Math.round(Math.sqrt(bin.getULONG()) / 2);
                 instr.i[ENV_SUSTAIN] = Math.round(Math.sqrt(bin.getULONG()) / 2);
                 instr.i[ENV_RELEASE] = Math.round(Math.sqrt(bin.getULONG()) / 2);
-            }
-            else {
+            } else {
                 instr.i[ENV_ATTACK] = bin.getUBYTE();
                 instr.i[ENV_SUSTAIN] = bin.getUBYTE();
                 instr.i[ENV_RELEASE] = bin.getUBYTE();
@@ -636,10 +699,13 @@ var CGUI = function () {
             if (version < 6) {
                 // Effects
                 instr.i[FX_FILTER] = bin.getUBYTE();
-                if (version < 5)
+
+                if (version < 5) {
                     instr.i[FX_FREQ] = Math.round(bin.getUSHORT() / 43.23529);
-                else
+                } else {
                     instr.i[FX_FREQ] = bin.getUBYTE();
+                }
+
                 instr.i[FX_RESONANCE] = bin.getUBYTE();
 
                 instr.i[FX_DELAY_TIME] = bin.getUBYTE();
