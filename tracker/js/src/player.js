@@ -1,7 +1,6 @@
 "use strict";
 
 var CPlayer = function () {
-
     //--------------------------------------------------------------------------
     // Private members
     //--------------------------------------------------------------------------
@@ -15,12 +14,12 @@ var CPlayer = function () {
     mWorker.onmessage = function (event) {
         if (event.data.cmd === "progress") {
             mGeneratedBuffer = event.data.buffer;
+
             if (mProgressCallback) {
                 mProgressCallback(event.data.progress);
             }
         }
     };
-
 
     //--------------------------------------------------------------------------
     // Public methods
@@ -29,15 +28,16 @@ var CPlayer = function () {
     // Generate the audio data (done in worker).
     this.generate = function (song, opts, progressCallback) {
         mProgressCallback = progressCallback;
+
         mWorker.postMessage({
-            cmd: "generate",
+            cmd:  "generate",
             song: song,
             opts: opts
         });
     };
 
     // Create a WAVE formatted Uint8Array from the generated audio data.
-    this.createWave = function() {
+    this.createWave = function () {
         // Turn critical object properties into local variables (performance)
         var mixBuf = mGeneratedBuffer,
             waveWords = mixBuf.length;
@@ -47,12 +47,15 @@ var CPlayer = function () {
         var l2 = l1 - 36;
         var headerLen = 44;
         var wave = new Uint8Array(headerLen + waveWords * 2);
+
         wave.set(
-            [82,73,70,70,
-             l1 & 255,(l1 >> 8) & 255,(l1 >> 16) & 255,(l1 >> 24) & 255,
-             87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,
-             68,172,0,0,16,177,2,0,4,0,16,0,100,97,116,97,
-             l2 & 255,(l2 >> 8) & 255,(l2 >> 16) & 255,(l2 >> 24) & 255]
+            [
+                82, 73, 70, 70,
+                l1 & 255, (l1 >> 8) & 255, (l1 >> 16) & 255, (l1 >> 24) & 255,
+                87, 65, 86, 69, 102, 109, 116, 32, 16, 0, 0, 0, 1, 0, 2, 0,
+                68, 172, 0, 0, 16, 177, 2, 0, 4, 0, 16, 0, 100, 97, 116, 97,
+                l2 & 255, (l2 >> 8) & 255, (l2 >> 16) & 255, (l2 >> 24) & 255
+            ]
         );
 
         // Append actual wave data
@@ -69,14 +72,16 @@ var CPlayer = function () {
     };
 
     // Get n samples of wave data at time t [s]. Wave data in range [-2,2].
-    this.getData = function(t, n) {
+    this.getData = function (t, n) {
         var i = 2 * Math.floor(t * 44100);
         var d = new Array(n);
         var b = mGeneratedBuffer;
-        for (var j = 0; j < 2*n; j += 1) {
+
+        for (var j = 0; j < 2 * n; j += 1) {
             var k = i + j;
             d[j] = t > 0 && k < b.length ? b[k] / 32768 : 0;
         }
+
         return d;
     };
 };
