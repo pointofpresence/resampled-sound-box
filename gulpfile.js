@@ -59,6 +59,7 @@ var ROOT              = ".",
     DEMO              = ROOT + "/demo",
     TRACKER           = ROOT + "/tracker",
     TRACKER_JS        = TRACKER + "/js",
+    TRACKER_JS_SRC    = TRACKER_JS + "/src",
     TRACKER_JS_VENDOR = TRACKER_JS + "/third_party";
 
 function buildDemo() {
@@ -98,10 +99,10 @@ function buildDemoJsMin() {
 }
 
 function buildJs() {
-    gutil.log("Creating JS in " + chalk.magenta(ROOT) + " ...");
+    gutil.log("Creating JS in " + chalk.magenta(TRACKER_JS) + " ...");
 
     return gulp
-        .src(TRACKER_JS + "/src/*.js")
+        .src(TRACKER_JS_SRC + "/*.js")
         .pipe(uglify())
         .pipe(header(banner, {pkg: pkg}))
         .pipe(gulp.dest(TRACKER_JS));
@@ -164,5 +165,15 @@ gulp.task("buildJs", buildJs);
 
 // watcher
 gulp.task("watch", function () {
-    gulp.watch(DEMO + "/src/demo.html", buildDemoHtml);
+    gulp.watch(DEMO + "/src/demo.html", function () {
+        buildDemoHtml();
+        buildDemoHtmlMin();
+    });
+
+    gulp.watch(DEMO + "/src/player-small.js", function () {
+        buildDemoJs();
+        buildDemoJsMin();
+    });
+
+    gulp.watch(TRACKER_JS_SRC + "/*.js", buildJs);
 });
