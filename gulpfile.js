@@ -6,7 +6,6 @@ var gulp         = require("gulp"),              // Gulp JS
     less         = require("gulp-less"),         // LESS
     concat       = require("gulp-concat"),       // concat
     uglify       = require("gulp-uglify"),       // JS min
-    ejsmin       = require("gulp-ejsmin"),       // EJS min
     header       = require("gulp-header"),       // banner maker
     mkdirp       = require("mkdirp"),            // mkdir
     fs           = require("fs"),                // fs
@@ -56,8 +55,9 @@ var banner = [
 
 var pkg = require('./package.json');
 
-var DEMO              = "./demo",
-    TRACKER           = "./tracker",
+var ROOT              = ".",
+    DEMO              = ROOT + "/demo",
+    TRACKER           = ROOT + "/tracker",
     TRACKER_JS        = TRACKER + "/js",
     TRACKER_JS_VENDOR = TRACKER_JS + "/third_party";
 
@@ -88,7 +88,7 @@ function compressDemo() {
 }
 
 function buildDemoJsMin() {
-    gutil.log("Creating JS in " + chalk.magenta(DEMO) + "...");
+    gutil.log("Creating JS in " + chalk.magenta(DEMO) + " ...");
 
     return gulp
         .src(DEMO + "/src/player-small.js")
@@ -97,8 +97,18 @@ function buildDemoJsMin() {
         .pipe(out(DEMO + "/player-small.min.js"));
 }
 
+function buildJs() {
+    gutil.log("Creating JS in " + chalk.magenta(ROOT) + " ...");
+
+    return gulp
+        .src(TRACKER_JS + "/src/*.js")
+        .pipe(uglify())
+        .pipe(header(banner, {pkg: pkg}))
+        .pipe(gulp.dest(TRACKER_JS));
+}
+
 function buildDemoJs() {
-    gutil.log("Creating JS in " + chalk.magenta(DEMO) + "...");
+    gutil.log("Creating JS in " + chalk.magenta(DEMO) + " ...");
 
     return gulp
         .src(DEMO + "/src/player-small.js")
@@ -107,7 +117,7 @@ function buildDemoJs() {
 }
 
 function buildDemoHtmlMin() {
-    gutil.log("Creating HTML in " + chalk.magenta(DEMO) + "...");
+    gutil.log("Creating HTML in " + chalk.magenta(DEMO) + " ...");
 
     var opts = {
         conditionals: true,
@@ -125,7 +135,7 @@ function buildDemoHtmlMin() {
 }
 
 function buildDemoHtml() {
-    gutil.log("Creating HTML in " + chalk.magenta(DEMO) + "...");
+    gutil.log("Creating HTML in " + chalk.magenta(DEMO) + " ...");
 
     return gulp
         .src(DEMO + "/src/demo.html")
@@ -134,7 +144,7 @@ function buildDemoHtml() {
 }
 
 function buildDemoDependencies() {
-    gutil.log("Creating JS in " + chalk.magenta(DEMO) + "...");
+    gutil.log("Creating JS in " + chalk.magenta(DEMO) + " ...");
 
     return gulp
         .src(TRACKER_JS_VENDOR + "/Blob.js")
@@ -149,6 +159,8 @@ gulp.task("buildDemoJs", buildDemoJs);
 gulp.task("buildDemoJsMin", buildDemoJsMin);
 gulp.task("buildDemoDependencies", buildDemoDependencies);
 gulp.task("compressDemo", compressDemo);
+
+gulp.task("buildJs", buildJs);
 
 // watcher
 gulp.task("watch", function () {

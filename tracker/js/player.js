@@ -1,104 +1,31 @@
-/* -*- mode: javascript; tab-width: 2; indent-tabs-mode: nil; -*-
-*
-* Copyright (c) 2011-2013 Marcus Geelnard
-*
-* This file is part of SoundBox.
-*
-* SoundBox is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* SoundBox is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with SoundBox.  If not, see <http://www.gnu.org/licenses/>.
-*
-*/
-
-"use strict";
-
-var CPlayer = function () {
-
-    //--------------------------------------------------------------------------
-    // Private members
-    //--------------------------------------------------------------------------
-
-    var mProgressCallback;
-
-    var mGeneratedBuffer;
-
-    var mWorker = new Worker("tracker/js/player-worker.js");
-
-    mWorker.onmessage = function (event) {
-        if (event.data.cmd === "progress") {
-            mGeneratedBuffer = event.data.buffer;
-            if (mProgressCallback) {
-                mProgressCallback(event.data.progress);
-            }
-        }
-    };
-
-
-    //--------------------------------------------------------------------------
-    // Public methods
-    //--------------------------------------------------------------------------
-
-    // Generate the audio data (done in worker).
-    this.generate = function (song, opts, progressCallback) {
-        mProgressCallback = progressCallback;
-        mWorker.postMessage({
-            cmd: "generate",
-            song: song,
-            opts: opts
-        });
-    };
-
-    // Create a WAVE formatted Uint8Array from the generated audio data.
-    this.createWave = function() {
-        // Turn critical object properties into local variables (performance)
-        var mixBuf = mGeneratedBuffer,
-            waveWords = mixBuf.length;
-
-        // Create WAVE header
-        var l1 = waveWords * 2 - 8;
-        var l2 = l1 - 36;
-        var headerLen = 44;
-        var wave = new Uint8Array(headerLen + waveWords * 2);
-        wave.set(
-            [82,73,70,70,
-             l1 & 255,(l1 >> 8) & 255,(l1 >> 16) & 255,(l1 >> 24) & 255,
-             87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,
-             68,172,0,0,16,177,2,0,4,0,16,0,100,97,116,97,
-             l2 & 255,(l2 >> 8) & 255,(l2 >> 16) & 255,(l2 >> 24) & 255]
-        );
-
-        // Append actual wave data
-        for (var i = 0, idx = headerLen; i < waveWords; ++i) {
-            // Note: We clamp here
-            var y = mixBuf[i];
-            y = y < -32767 ? -32767 : (y > 32767 ? 32767 : y);
-            wave[idx++] = y & 255;
-            wave[idx++] = (y >> 8) & 255;
-        }
-
-        // Return the WAVE formatted typed array
-        return wave;
-    };
-
-    // Get n samples of wave data at time t [s]. Wave data in range [-2,2].
-    this.getData = function(t, n) {
-        var i = 2 * Math.floor(t * 44100);
-        var d = new Array(n);
-        var b = mGeneratedBuffer;
-        for (var j = 0; j < 2*n; j += 1) {
-            var k = i + j;
-            d[j] = t > 0 && k < b.length ? b[k] / 32768 : 0;
-        }
-        return d;
-    };
-};
-
+/**
+ * This file is part of ReSampled SoundBox.
+ *
+ * Based on SoundBox by Marcus Geelnard (c) 2011-2013
+ * 2015 pointofpresence
+ * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
+ * @version v0.0.1
+ * @build Sun Jul 12 2015 21:32:34
+ * @link https://github.com/pointofpresence/resampled-sound-box
+ * @license GPL-3.0
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ *
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+"use strict";var CPlayer=function(){var r,e,t=new Worker("tracker/js/player-worker.js");t.onmessage=function(t){"progress"===t.data.cmd&&(e=t.data.buffer,r&&r(t.data.progress))},this.generate=function(e,a,n){r=n,t.postMessage({cmd:"generate",song:e,opts:a})},this.createWave=function(){var r=e,t=r.length,a=2*t-8,n=a-36,s=44,o=new Uint8Array(s+2*t);o.set([82,73,70,70,255&a,a>>8&255,a>>16&255,a>>24&255,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,68,172,0,0,16,177,2,0,4,0,16,0,100,97,116,97,255&n,n>>8&255,n>>16&255,n>>24&255]);for(var c=0,f=s;t>c;++c){var g=r[c];g=-32767>g?-32767:g>32767?32767:g,o[f++]=255&g,o[f++]=g>>8&255}return o},this.getData=function(r,t){for(var a=2*Math.floor(44100*r),n=new Array(t),s=e,o=0;2*t>o;o+=1){var c=a+o;n[o]=r>0&&c<s.length?s[c]/32768:0}return n}};
