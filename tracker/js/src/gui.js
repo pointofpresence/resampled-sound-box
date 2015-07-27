@@ -31,6 +31,7 @@ var CBinParser = function (d) {
     this.getUSHORT = function () {
         var l = (mData.charCodeAt(mPos) & 255) |
             ((mData.charCodeAt(mPos + 1) & 255) << 8);
+
         mPos += 2;
         return l;
     };
@@ -40,17 +41,21 @@ var CBinParser = function (d) {
             ((mData.charCodeAt(mPos + 1) & 255) << 8) |
             ((mData.charCodeAt(mPos + 2) & 255) << 16) |
             ((mData.charCodeAt(mPos + 3) & 255) << 24);
+
         mPos += 4;
         return l;
     };
 
     this.getFLOAT = function () {
         var l = this.getULONG();
+
         if (l == 0) return 0;
+
         var s = l & 0x80000000;                       // Sign
         var e = (l >> 23) & 255;                      // Exponent
         var m = 1 + ((l & 0x007fffff) / 0x00800000);  // Mantissa
         var x = m * Math.pow(2, e - 127);
+
         return s ? -x : x;
     };
 
@@ -88,18 +93,24 @@ var CBinWriter = function () {
         var l = 0;
         if (x != 0) {
             var s = 0;
+
             if (x < 0) s = 0x80000000, x = -x;
+
             var e = 127 + 23;
+
             while (x < 0x00800000) {
                 x *= 2;
                 e--;
             }
+
             while (x >= 0x01000000) {
                 x /= 2;
                 e++;
             }
+
             l = s | ((e & 255) << 23) | (x & 0x007fffff);
         }
+
         this.putULONG(l);
     };
 
@@ -126,7 +137,7 @@ var CAudioTimer = function () {
 
     this.setAudioElement = function (audioElement) {
         mAudioElement = audioElement;
-    }
+    };
 
     this.currentTime = function () {
         if (!mAudioElement)
