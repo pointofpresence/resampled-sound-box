@@ -1,19 +1,3 @@
-//------------------------------------------------------------------------------
-// External dependencies
-//------------------------------------------------------------------------------
-
-include("tracker/js/demo-songs.js");
-include("tracker/js/presets.js");
-include("tracker/js/player.js");
-include("tracker/js/jammer.js");
-include("tracker/js/rle.js");
-
-include("tracker/js/third_party/deflate.js");
-include("tracker/js/third_party/inflate.js");
-include("tracker/js/third_party/Blob.js");
-include("tracker/js/third_party/FileSaver.js");
-include("tracker/js/third_party/WebMIDIAPI.js");
-
 "use strict";
 
 //------------------------------------------------------------------------------
@@ -1214,7 +1198,7 @@ var CGUI = function () {
     var onMIDIStarted = function (midi) {
         mMIDIAccess = midi;
 
-        var list = typeof mMIDIAccess.inputs == "Function" ? mMIDIAccess.inputs() : [],
+        var list = typeof mMIDIAccess.inputs == "function" ? mMIDIAccess.inputs() : [],
             i;
 
         // Detect preferred device.

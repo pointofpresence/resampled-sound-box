@@ -24,10 +24,10 @@ var banner = [
     ' * This file is part of ReSampled SoundBox.',
     ' *',
     ' * Based on SoundBox by Marcus Geelnard (c) 2011-2013',
-    ' * <%= new Date().getFullYear() %> <%= pkg.author %>',
+    ' * <%= dateFormat(now, "yyyy") %> <%= pkg.author %>',
     ' * <%= pkg.title %> (<%= pkg.name %>) - <%= pkg.description %>',
     ' * @version v<%= pkg.version %>',
-    ' * @build <%= pkg.lastBuildDateHuman %>',
+    ' * @build <%= dateFormat(now) %>',
     ' * @link <%= pkg.repository %>',
     ' * @license <%= pkg.license %>',
     ' *',
@@ -94,18 +94,8 @@ function buildDemoJsMin() {
     return gulp
         .src(DEMO + "/src/player-small.js")
         .pipe(uglify())
-        .pipe(header(banner, {pkg: pkg}))
+        .pipe(header(banner, {pkg: pkg, dateFormat: dateFormat, now: new Date}))
         .pipe(out(DEMO + "/player-small.min.js"));
-}
-
-function buildJs() {
-    gutil.log("Creating JS in " + chalk.magenta(TRACKER_JS) + " ...");
-
-    return gulp
-        .src(TRACKER_JS_SRC + "/*.js")
-        .pipe(uglify())
-        .pipe(header(banner, {pkg: pkg}))
-        .pipe(gulp.dest(TRACKER_JS));
 }
 
 function buildDemoJs() {
@@ -113,7 +103,7 @@ function buildDemoJs() {
 
     return gulp
         .src(DEMO + "/src/player-small.js")
-        .pipe(header(banner, {pkg: pkg}))
+        .pipe(header(banner, {pkg: pkg, dateFormat: dateFormat, now: new Date}))
         .pipe(out(DEMO + "/player-small.js"));
 }
 
@@ -150,6 +140,35 @@ function buildDemoDependencies() {
     return gulp
         .src(TRACKER_JS_VENDOR + "/Blob.js")
         .pipe(gulp.dest(DEMO));
+}
+
+function buildJs() {
+    gutil.log("Creating JS in " + chalk.magenta(TRACKER_JS) + " ...");
+
+    gulp
+        .src(TRACKER_JS_SRC + "/player-worker.js")
+        .pipe(uglify())
+        .pipe(header(banner, {pkg: pkg, dateFormat: dateFormat, now: new Date}))
+        .pipe(gulp.dest(TRACKER_JS));
+
+    gulp
+        .src([
+            TRACKER_JS_SRC + "/demo-songs.js",
+            TRACKER_JS_SRC + "/presets.js",
+            TRACKER_JS_SRC + "/player.js",
+            TRACKER_JS_SRC + "/jammer.js",
+            TRACKER_JS_SRC + "/rle.js",
+            TRACKER_JS_VENDOR + "/deflate.js",
+            TRACKER_JS_VENDOR + "/inflate.js",
+            TRACKER_JS_VENDOR + "/Blob.js",
+            TRACKER_JS_VENDOR + "/FileSaver.js",
+            TRACKER_JS_VENDOR + "/WebMIDIAPI.js",
+            TRACKER_JS_SRC + "/gui.js"
+        ])
+        .pipe(concat("modules.js"))
+        .pipe(uglify())
+        .pipe(header(banner, {pkg: pkg, dateFormat: dateFormat, now: new Date}))
+        .pipe(gulp.dest(TRACKER_JS));
 }
 
 // demo
