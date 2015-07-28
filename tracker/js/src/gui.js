@@ -4039,9 +4039,14 @@ var CGUI = function () {
 
     this.init = function () {
         $(".knob").knob({
-            bgColor: "#2b3e50",
-            fgColor: "#df691a",
-            inputColor: "#ebebeb"
+            inline:      false,
+            width:       50,
+            height:      50,
+            bgColor:     "#2b3e50",
+            fgColor:     "#df691a",
+            inputColor:  "#ebebeb",
+            angleOffset: -125,
+            angleArc:    250
         });
 
         // Parse URL

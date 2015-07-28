@@ -110,30 +110,26 @@
 
                         <div class="row">
                             <div class="col-lg-6">
-                                <input id="bpm" type="text" value="120"
-                                       class="knob"
-                                       data-width="50"
-                                       data-min="1" data-max="255"
-                                       title="Beats per minute (song speed)" />
+                                <div class="knob-wrap">
+                                    <input id="bpm" type="text" value="120"
+                                           class="knob"
+                                           data-min="1" data-max="255"
+                                           title="Beats per minute (song speed)" />
+
+                                    <label>BPM</label>
+                                </div>
                             </div>
 
-                            <label class="col-lg-6 form-label">
-                                BPM
-                            </label>
-                        </div>
-
-                        <br />
-
-                        <div class="row">
                             <div class="col-lg-6">
-                                <input id="rpp" type="text" size="3" value=""
-                                       class="form-control input-sm"
-                                       title="Rows per pattern" />
-                            </div>
+                                <div class="knob-wrap">
+                                    <input id="rpp" type="text" size="3" value="32"
+                                           class="knob"
+                                           data-min="1" data-max="255"
+                                           title="Rows per pattern" />
 
-                            <label class="col-lg-6 form-label">
-                                RPP
-                            </label>
+                                    <label>RPP</label>
+                                </div>
+                            </div>
                         </div>
                     </td>
 
