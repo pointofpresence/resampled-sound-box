@@ -58,6 +58,8 @@ var pkg = require('./package.json');
 var ROOT              = ".",
     DEMO              = ROOT + "/demo",
     TRACKER           = ROOT + "/tracker",
+    TRACKER_LESS      = TRACKER + "/less",
+    TRACKER_CSS       = TRACKER + "/css",
     TRACKER_JS        = TRACKER + "/js",
     TRACKER_JS_SRC    = TRACKER_JS + "/src",
     TRACKER_JS_VENDOR = TRACKER_JS + "/third_party";
@@ -142,6 +144,31 @@ function buildDemoDependencies() {
         .pipe(gulp.dest(DEMO));
 }
 
+function buildCss() {
+    gutil.log("Creating CSS in " + chalk.magenta(TRACKER_CSS) + " ...");
+
+    mkdirp(TRACKER_CSS);
+
+    gulp
+        .src(TRACKER_LESS + "/main.less")
+        .pipe(less())
+        .pipe(autoprefixer({
+            browsers: [
+                "Android 2.3",
+                "Android >= 4",
+                "Chrome >= 20",
+                "Firefox >= 24",
+                "Explorer >= 8",
+                "iOS >= 6",
+                "Opera >= 12",
+                "Safari >= 6"
+            ]
+        }))
+        .pipe(csso())
+        .pipe(header(banner, {pkg: pkg, dateFormat: dateFormat, now: new Date}))
+        .pipe(out(TRACKER_CSS + "/app.css"));
+}
+
 function buildJs() {
     gutil.log("Creating JS in " + chalk.magenta(TRACKER_JS) + " ...");
 
@@ -181,6 +208,7 @@ gulp.task("buildDemoDependencies", buildDemoDependencies);
 gulp.task("compressDemo", compressDemo);
 
 gulp.task("buildJs", buildJs);
+gulp.task("buildCss", buildCss);
 
 // watcher
 gulp.task("watch", function () {
@@ -194,5 +222,6 @@ gulp.task("watch", function () {
         buildDemoJsMin();
     });
 
-    gulp.watch(TRACKER_JS_SRC + "/*.js", buildJs);
+    gulp.watch(TRACKER_JS_SRC + "/**/*.js", buildJs);
+    gulp.watch(TRACKER_LESS + "/**/*.less", buildCss);
 });
