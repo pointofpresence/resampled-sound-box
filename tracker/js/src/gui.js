@@ -4038,6 +4038,12 @@ var CGUI = function () {
     //--------------------------------------------------------------------------
 
     this.init = function () {
+        $(".knob").knob({
+            bgColor: "#2b3e50",
+            fgColor: "#df691a",
+            inputColor: "#ebebeb"
+        });
+
         // Parse URL
         mBaseURL = getURLBase(window.location.href);
         mGETParams = parseURLGetData(window.location.href);

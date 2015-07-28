@@ -56,6 +56,7 @@ var banner = [
 var pkg = require('./package.json');
 
 var ROOT              = ".",
+    NODE              = ROOT + "/node_modules",
     DEMO              = ROOT + "/demo",
     TRACKER           = ROOT + "/tracker",
     TRACKER_LESS      = TRACKER + "/less",
@@ -180,6 +181,7 @@ function buildJs() {
 
     gulp
         .src([
+            NODE + "/jquery-knob/dist/jquery.knob.min.js",
             TRACKER_JS_SRC + "/demo-songs.js",
             TRACKER_JS_SRC + "/presets.js",
             TRACKER_JS_SRC + "/player.js",

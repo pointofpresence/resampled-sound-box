@@ -26,6 +26,7 @@
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.5",
     "gulp-zip": "^3.0.2",
+    "jquery-knob": "^1.2.11",
     "mkdirp": "^0.5.1",
     "resampled-json-io": "0.0.1",
     "run-sequence": "^1.1.2"

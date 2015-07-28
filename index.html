@@ -27,6 +27,8 @@
         <meta name="robots" content="noindex" />
         <meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
 
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="tracker/js/modules.js"></script>
 
         <link rel="stylesheet"
@@ -56,60 +58,83 @@
 
                         <div id="newSong" class="btn btn-default btn-block"
                              title="New song">
-                            <i class="fa fa-file"></i>New
+                            <i class="fa fa-file fa-fw"></i>New
                         </div>
 
                         <div id="openSong" class="btn btn-default btn-block"
                              title="Open demo song">
-                            <i class="fa fa-folder-open"></i>Open
+                            <i class="fa fa-folder-open fa-fw"></i>Open
                         </div>
 
                         <div id="saveSong" class="btn btn-default btn-block"
                              title="Save song">
-                            <i class="fa fa-floppy-o"></i>Save
+                            <i class="fa fa-floppy-o fa-fw"></i>Save
                         </div>
 
                         <div id="exportJS" class="btn btn-default btn-block"
                              title="Export song as JavaScript">
-                            <i class="fa fa-floppy-o"></i>Export JS
+                            <i class="fa fa-floppy-o fa-fw"></i>Export JS
                         </div>
 
                         <div id="exportWAV" class="btn btn-default btn-block"
                              title="Export song as WAV">
-                            <i class="fa fa-floppy-o"></i>Export
+                            <i class="fa fa-floppy-o fa-fw"></i>Export
                             WAV
                         </div>
 
-                        <br />
+                        <hr />
 
-                        <div id="playSong" class="btn btn-default btn-block" title="Play song">
-                            <i class="fa fa-play"></i>&nbsp;Song
+                        <div id="playSong" class="btn btn-default btn-block"
+                             title="Play song">
+                            <i class="fa fa-play fa-fw"></i>Song
                         </div>
 
                         <div id="playRange" class="btn btn-default btn-block"
                              title="Play selected range (SPACE)">
-                            <i class="fa fa-play-circle-o"></i>&nbsp;Range
+                            <i class="fa fa-play-circle-o fa-fw"></i>Range
                         </div>
 
-                        <div id="stopPlaying" class="btn btn-default btn-block" title="Stop playing">
-                            <i class="fa fa-stop"></i>&nbsp;Stop
+                        <div id="stopPlaying" class="btn btn-default btn-block"
+                             title="Stop playing">
+                            <i class="fa fa-stop fa-fw"></i>Stop
+                        </div>
+
+                        <hr />
+
+                        <div id="about" class="btn btn-default btn-block"
+                             title="About">
+                            <i class="fa fa-question-circle fa-fw"></i>About
+                        </div>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input id="bpm" type="text" value="120"
+                                       class="knob"
+                                       data-width="50"
+                                       data-min="1" data-max="255"
+                                       title="Beats per minute (song speed)" />
+                            </div>
+
+                            <label class="col-lg-6 form-label">
+                                BPM
+                            </label>
                         </div>
 
                         <br />
 
-                        <div id="about" class="btn btn-default btn-block" title="About">
-                            <i class="fa fa-question-circle"></i>&nbsp;About
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input id="rpp" type="text" size="3" value=""
+                                       class="form-control input-sm"
+                                       title="Rows per pattern" />
+                            </div>
+
+                            <label class="col-lg-6 form-label">
+                                RPP
+                            </label>
                         </div>
-
-                        <br />
-
-                        <div style="text-align: center">
-                            <input id="bpm" type="text" size="3" value=""
-                                   title="Beats per minute (song speed)" />&nbsp;BPM<br />
-                            <input id="rpp" type="text" size="3" value=""
-                                   title="Rows per pattern" />&nbsp;RPP
-                        </div>
-
                     </td>
 
                     <!-- Sequencer -->
