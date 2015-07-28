@@ -1214,7 +1214,7 @@ var CGUI = function () {
     var onMIDIStarted = function (midi) {
         mMIDIAccess = midi;
 
-        var list = mMIDIAccess.inputs(),
+        var list = typeof mMIDIAccess.inputs == "Function" ? mMIDIAccess.inputs() : [],
             i;
 
         // Detect preferred device.
