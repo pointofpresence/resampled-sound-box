@@ -3839,7 +3839,7 @@ var CGUI = function () {
         //noinspection JSUnresolvedVariable
         var files = e.dataTransfer.files;
 
-        if (files.length != 1) {
+        if (files.length && files.length != 1) {
             alert("Only open one file at a time.");
             return;
         }
