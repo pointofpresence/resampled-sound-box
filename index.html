@@ -52,14 +52,51 @@
 
             <table id="guiMaster" class="ui">
                 <tr>
-                    <!-- Menu -->
-                    <td id="UItable" rowspan="2" class="border-right">
-                        <!-- Logo -->
-                        <div class="sboxLogo">
-                            <img id="logo" src="tracker/image/gui/logo.png" width="130"
-                                 height="32"
-                                 alt="SoundBox" title="About SoundBox" />
+                    <!-- Logo -->
+                    <td id="logo" class="border-bottom">
+                        <h3>ReSampled</h3>
+                        <h2>SoundBox</h2>
+                    </td>
+
+                    <td id="cell-meter" class="border-bottom">
+                        <canvas id="playGfxCanvas" width="220" height="65"></canvas>
+                    </td>
+
+                    <td id="cell-settings" colspan="2" class="border-bottom">
+                        <div class="col-lg-6">
+                            <div class="knob-wrap">
+                                <input id="bpm" type="text" value="120"
+                                       class="knob"
+                                       data-min="1" data-max="255"
+                                       title="Beats per minute (song speed)" />
+
+                                <label>BPM</label>
+                            </div>
                         </div>
+
+                        <div class="col-lg-6">
+                            <div class="knob-wrap">
+                                <input id="rpp" type="text" size="3" value="32"
+                                       class="knob"
+                                       data-min="1" data-max="256"
+                                       title="Rows per pattern" />
+
+                                <label>RPP</label>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td id="cell-midi" class="border-bottom">
+                        <select id="midiInput" title="Select a MIDI source"
+                                class="form-control">
+                            <option value="">(select MIDI)</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <!-- Menu -->
+                    <td id="UItable" class="border-right">
 
                         <div id="newSong" class="btn btn-default btn-block btn-icon"
                              title="New song">
@@ -112,43 +149,6 @@
                         </div>
                     </td>
 
-                    <td id="cell-meter" class="border-bottom">
-                        <canvas id="playGfxCanvas" width="220" height="65"></canvas>
-                    </td>
-
-                    <td id="cell-settings" colspan="2" class="border-bottom">
-                        <div class="col-lg-6">
-                            <div class="knob-wrap">
-                                <input id="bpm" type="text" value="120"
-                                       class="knob"
-                                       data-min="1" data-max="255"
-                                       title="Beats per minute (song speed)" />
-
-                                <label>BPM</label>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="knob-wrap">
-                                <input id="rpp" type="text" size="3" value="32"
-                                       class="knob"
-                                       data-min="1" data-max="256"
-                                       title="Rows per pattern" />
-
-                                <label>RPP</label>
-                            </div>
-                        </div>
-                    </td>
-
-                    <td id="cell-midi" class="border-bottom">
-                        <select id="midiInput" title="Select a MIDI source"
-                                class="form-control">
-                            <option value="">(select MIDI)</option>
-                        </select>
-                    </td>
-                </tr>
-
-                <tr>
                     <!-- Sequencer -->
                     <td id="cell-sequencer">
                         <label>Playlist</label>
@@ -275,407 +275,439 @@
                         </div>
 
                         <table class="ui">
-                            <!-- Oscillator 1 -->
                             <tr>
+                                <!-- Oscillator 1 -->
                                 <td>
-                                    <h3>Oscillator 1</h3>
+                                    <fieldset>
+                                        <legend>Oscillator 1</legend>
+                                        <table class="subui">
+                                            <tr>
+                                                <td>Wave</td>
 
-                                    <table class="subui">
-                                        <tr>
-                                            <td>Wave</td>
+                                                <td>
+                                                    <img id="osc1_wave_sin" title="Sine"
+                                                         src="tracker/image/gui/wave-sin.png"
+                                                         alt="Sin"
+                                                         style="margin-right: 10px" />
 
-                                            <td>
-                                                <img id="osc1_wave_sin" title="Sine"
-                                                     src="tracker/image/gui/wave-sin.png"
-                                                     alt="Sin"
-                                                     style="margin-right: 10px" />
+                                                    <img id="osc1_wave_tri"
+                                                         title="Triangle"
+                                                         src="tracker/image/gui/wave-tri.png"
+                                                         alt="Tri"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="osc1_wave_tri" title="Triangle"
-                                                     src="tracker/image/gui/wave-tri.png"
-                                                     alt="Tri"
-                                                     style="margin-right: 10px" />
+                                                    <img id="osc1_wave_saw" title="Saw"
+                                                         src="tracker/image/gui/wave-saw.png"
+                                                         alt="Saw"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="osc1_wave_saw" title="Saw"
-                                                     src="tracker/image/gui/wave-saw.png"
-                                                     alt="Saw"
-                                                     style="margin-right: 10px" />
+                                                    <img id="osc1_wave_sqr" title="Square"
+                                                         src="tracker/image/gui/wave-sqr.png"
+                                                         alt="Sqr" />
+                                                </td>
+                                            </tr>
 
-                                                <img id="osc1_wave_sqr" title="Square"
-                                                     src="tracker/image/gui/wave-sqr.png"
-                                                     alt="Sqr" />
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>Vol</td>
 
-                                        <tr>
-                                            <td>Vol</td>
+                                                <td title="Volume">
+                                                    <div class="slider">
+                                                        <img id="osc1_vol"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                            <td title="Volume">
-                                                <div class="slider">
-                                                    <img id="osc1_vol"
-                                                         src="tracker/image/gui/slider.png"
+                                            <tr>
+                                                <td>Semi</td>
+
+                                                <td title="Semitune">
+                                                    <div class="slider">
+                                                        <img id="osc1_semi"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>X-Env</td>
+
+                                                <td title="Envelope modulates frequency">
+                                                    <img id="osc1_xenv" class="box"
+                                                         src="tracker/image/gui/box-uncheck.png"
                                                          width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Semi</td>
-
-                                            <td title="Semitune">
-                                                <div class="slider">
-                                                    <img id="osc1_semi"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>X-Env</td>
-
-                                            <td title="Envelope modulates frequency">
-                                                <img id="osc1_xenv" class="box"
-                                                     src="tracker/image/gui/box-uncheck.png"
-                                                     width="10" height="12" alt="" />
-                                            </td>
-                                        </tr>
-                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
                                 </td>
 
                                 <!-- Oscillator 2 -->
                                 <td>
-                                    <h3>Oscillator 2</h3>
+                                    <fieldset>
+                                        <legend>Oscillator 2</legend>
 
-                                    <table class="subui">
-                                        <tr>
-                                            <td>Wave</td>
+                                        <table class="subui">
+                                            <tr>
+                                                <td>Wave</td>
 
-                                            <td>
-                                                <img id="osc2_wave_sin" title="Sine"
-                                                     src="tracker/image/gui/wave-sin.png"
-                                                     alt="Sin"
-                                                     style="margin-right: 10px" />
+                                                <td>
+                                                    <img id="osc2_wave_sin" title="Sine"
+                                                         src="tracker/image/gui/wave-sin.png"
+                                                         alt="Sin"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="osc2_wave_tri" title="Triangle"
-                                                     src="tracker/image/gui/wave-tri.png"
-                                                     alt="Tri"
-                                                     style="margin-right: 10px" />
+                                                    <img id="osc2_wave_tri"
+                                                         title="Triangle"
+                                                         src="tracker/image/gui/wave-tri.png"
+                                                         alt="Tri"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="osc2_wave_saw" title="Saw"
-                                                     src="tracker/image/gui/wave-saw.png"
-                                                     alt="Saw"
-                                                     style="margin-right: 10px" />
+                                                    <img id="osc2_wave_saw" title="Saw"
+                                                         src="tracker/image/gui/wave-saw.png"
+                                                         alt="Saw"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="osc2_wave_sqr" title="Square"
-                                                     src="tracker/image/gui/wave-sqr.png"
-                                                     alt="Sqr" />
-                                            </td>
-                                        </tr>
+                                                    <img id="osc2_wave_sqr" title="Square"
+                                                         src="tracker/image/gui/wave-sqr.png"
+                                                         alt="Sqr" />
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Vol</td>
+                                            <tr>
+                                                <td>Vol</td>
 
-                                            <td title="Volume">
-                                                <div class="slider">
-                                                    <img id="osc2_vol"
-                                                         src="tracker/image/gui/slider.png"
+                                                <td title="Volume">
+                                                    <div class="slider">
+                                                        <img id="osc2_vol"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Semi</td>
+
+                                                <td title="Semitune">
+                                                    <div class="slider">
+                                                        <img id="osc2_semi"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Det</td>
+
+                                                <td title="Detune">
+                                                    <div class="slider">
+                                                        <img id="osc2_det"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>X-Env</td>
+
+                                                <td title="Envelope modulates frequency">
+                                                    <img id="osc2_xenv" class="box"
+                                                         src="tracker/image/gui/box-uncheck.png"
                                                          width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Semi</td>
-
-                                            <td title="Semitune">
-                                                <div class="slider">
-                                                    <img id="osc2_semi"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Det</td>
-
-                                            <td title="Detune">
-                                                <div class="slider">
-                                                    <img id="osc2_det"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>X-Env</td>
-
-                                            <td title="Envelope modulates frequency">
-                                                <img id="osc2_xenv" class="box"
-                                                     src="tracker/image/gui/box-uncheck.png"
-                                                     width="10" height="12" alt="" />
-                                            </td>
-                                        </tr>
-                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
                                 </td>
                             </tr>
 
                             <!-- Noise -->
                             <tr>
                                 <td>
-                                    <h3>Noise</h3>
+                                    <fieldset>
+                                        <legend>Noise</legend>
 
-                                    <table class="subui">
-                                        <tr>
-                                            <td>Vol</td>
+                                        <table class="subui">
+                                            <tr>
+                                                <td>Vol</td>
 
-                                            <td title="Volume">
-                                                <div class="slider">
-                                                    <img id="noise_vol"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                                <td title="Volume">
+                                                    <div class="slider">
+                                                        <img id="noise_vol"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
                                 </td>
 
                                 <!-- Envelope -->
                                 <td>
-                                    <h3>Envelope</h3>
+                                    <fieldset>
+                                        <legend>Envelope</legend>
 
-                                    <table class="subui">
-                                        <tr>
-                                            <td>Att</td>
+                                        <table class="subui">
+                                            <tr>
+                                                <td>Att</td>
 
-                                            <td title="Attack">
-                                                <div class="slider">
-                                                    <img id="env_att"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Attack">
+                                                    <div class="slider">
+                                                        <img id="env_att"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Sust</td>
+                                            <tr>
+                                                <td>Sust</td>
 
-                                            <td title="Sustain">
-                                                <div class="slider">
-                                                    <img id="env_sust"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Sustain">
+                                                    <div class="slider">
+                                                        <img id="env_sust"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Rel</td>
+                                            <tr>
+                                                <td>Rel</td>
 
-                                            <td title="Release">
-                                                <div class="slider">
-                                                    <img id="env_rel"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                                <td title="Release">
+                                                    <div class="slider">
+                                                        <img id="env_rel"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
                                 </td>
                             </tr>
 
                             <!-- LFO -->
                             <tr>
                                 <td>
-                                    <h3>LFO</h3>
+                                    <fieldset>
+                                        <legend>LFO</legend>
 
-                                    <table class="subui">
-                                        <tr>
-                                            <td>Wave</td>
+                                        <table class="subui">
+                                            <tr>
+                                                <td>Wave</td>
 
-                                            <td>
-                                                <img id="lfo_wave_sin" title="Sine"
-                                                     src="tracker/image/gui/wave-sin.png"
-                                                     alt="Sin"
-                                                     style="margin-right: 10px" />
+                                                <td>
+                                                    <img id="lfo_wave_sin" title="Sine"
+                                                         src="tracker/image/gui/wave-sin.png"
+                                                         alt="Sin"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="lfo_wave_tri" title="Triangle"
-                                                     src="tracker/image/gui/wave-tri.png"
-                                                     alt="Tri"
-                                                     style="margin-right: 10px" />
+                                                    <img id="lfo_wave_tri"
+                                                         title="Triangle"
+                                                         src="tracker/image/gui/wave-tri.png"
+                                                         alt="Tri"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="lfo_wave_saw" title="Saw"
-                                                     src="tracker/image/gui/wave-saw.png"
-                                                     alt="Saw"
-                                                     style="margin-right: 10px" />
+                                                    <img id="lfo_wave_saw" title="Saw"
+                                                         src="tracker/image/gui/wave-saw.png"
+                                                         alt="Saw"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="lfo_wave_sqr" title="Square"
-                                                     src="tracker/image/gui/wave-sqr.png"
-                                                     alt="Sqr" />
-                                            </td>
-                                        </tr>
+                                                    <img id="lfo_wave_sqr" title="Square"
+                                                         src="tracker/image/gui/wave-sqr.png"
+                                                         alt="Sqr" />
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Amt</td>
+                                            <tr>
+                                                <td>Amt</td>
 
-                                            <td title="Amount">
-                                                <div class="slider">
-                                                    <img id="lfo_amt"
-                                                         src="tracker/image/gui/slider.png"
+                                                <td title="Amount">
+                                                    <div class="slider">
+                                                        <img id="lfo_amt"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Freq</td>
+
+                                                <td title="Frequency">
+                                                    <div class="slider">
+                                                        <img id="lfo_freq"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>FXFreq</td>
+
+                                                <td title="FX frequency modulation">
+                                                    <img id="lfo_fxfreq" class="box"
+                                                         src="tracker/image/gui/box-uncheck.png"
                                                          width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Freq</td>
-
-                                            <td title="Frequency">
-                                                <div class="slider">
-                                                    <img id="lfo_freq"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>FXFreq</td>
-
-                                            <td title="FX frequency modulation">
-                                                <img id="lfo_fxfreq" class="box"
-                                                     src="tracker/image/gui/box-uncheck.png"
-                                                     width="10" height="12" alt="" />
-                                            </td>
-                                        </tr>
-                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
                                 </td>
 
                                 <!-- FX -->
                                 <td>
-                                    <h3>FX</h3>
+                                    <fieldset>
+                                        <legend>FX</legend>
 
-                                    <table class="subui">
-                                        <tr>
-                                            <td>Filt</td>
+                                        <table class="subui">
+                                            <tr>
+                                                <td>Filt</td>
 
-                                            <td>
-                                                <img id="fx_filt_lp" title="Low pass"
-                                                     src="tracker/image/gui/filt-lp.png"
-                                                     alt="LP"
-                                                     style="margin-right: 10px" />
+                                                <td>
+                                                    <img id="fx_filt_lp" title="Low pass"
+                                                         src="tracker/image/gui/filt-lp.png"
+                                                         alt="LP"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="fx_filt_hp" title="High pass"
-                                                     src="tracker/image/gui/filt-hp.png"
-                                                     alt="HP"
-                                                     style="margin-right: 10px" />
+                                                    <img id="fx_filt_hp" title="High pass"
+                                                         src="tracker/image/gui/filt-hp.png"
+                                                         alt="HP"
+                                                         style="margin-right: 10px" />
 
-                                                <img id="fx_filt_bp" title="Band pass"
-                                                     src="tracker/image/gui/filt-bp.png"
-                                                     alt="BP"
-                                                     style="margin-right: 10px" />
-                                            </td>
-                                        </tr>
+                                                    <img id="fx_filt_bp" title="Band pass"
+                                                         src="tracker/image/gui/filt-bp.png"
+                                                         alt="BP"
+                                                         style="margin-right: 10px" />
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Freq</td>
+                                            <tr>
+                                                <td>Freq</td>
 
-                                            <td title="Filter frequency">
-                                                <div class="slider">
-                                                    <img id="fx_freq"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Filter frequency">
+                                                    <div class="slider">
+                                                        <img id="fx_freq"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>&nbsp;Res</td>
+                                            <tr>
+                                                <td>&nbsp;Res</td>
 
-                                            <td title="Filter resonance">
-                                                <div class="slider">
-                                                    <img id="fx_res"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10"
-                                                         height="12"
-                                                         alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Filter resonance">
+                                                    <div class="slider">
+                                                        <img id="fx_res"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10"
+                                                             height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Dist</td>
+                                            <tr>
+                                                <td>Dist</td>
 
-                                            <td title="Distortion">
-                                                <div class="slider">
-                                                    <img id="fx_dist"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Distortion">
+                                                    <div class="slider">
+                                                        <img id="fx_dist"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Drive</td>
+                                            <tr>
+                                                <td>Drive</td>
 
-                                            <td title="Volume drive">
-                                                <div class="slider">
-                                                    <img id="fx_drive"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Volume drive">
+                                                    <div class="slider">
+                                                        <img id="fx_drive"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Pan</td>
+                                            <tr>
+                                                <td>Pan</td>
 
-                                            <td title="Pan amount">
-                                                <div class="slider">
-                                                    <img id="fx_pan_amt"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Pan amount">
+                                                    <div class="slider">
+                                                        <img id="fx_pan_amt"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>&nbsp;Freq</td>
+                                            <tr>
+                                                <td>&nbsp;Freq</td>
 
-                                            <td title="Pan frequency">
-                                                <div class="slider">
-                                                    <img id="fx_pan_freq"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Pan frequency">
+                                                    <div class="slider">
+                                                        <img id="fx_pan_freq"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>Delay</td>
+                                            <tr>
+                                                <td>Delay</td>
 
-                                            <td title="Delay amount">
-                                                <div class="slider">
-                                                    <img id="fx_dly_amt"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td title="Delay amount">
+                                                    <div class="slider">
+                                                        <img id="fx_dly_amt"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>&nbsp;Time</td>
+                                            <tr>
+                                                <td>&nbsp;Time</td>
 
-                                            <td title="Delay time">
-                                                <div class="slider">
-                                                    <img id="fx_dly_time"
-                                                         src="tracker/image/gui/slider.png"
-                                                         width="10" height="12" alt="" />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                                <td title="Delay time">
+                                                    <div class="slider">
+                                                        <img id="fx_dly_time"
+                                                             src="tracker/image/gui/slider.png"
+                                                             width="10" height="12"
+                                                             alt="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
                                 </td>
                             </tr>
                         </table>

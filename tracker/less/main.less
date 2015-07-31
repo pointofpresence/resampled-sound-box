@@ -241,12 +241,6 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
     cursor: pointer;
 }
 
-.sboxLogo {
-    margin-top: 8px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
 #logo {
     cursor: pointer;
 }
@@ -322,8 +316,27 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
         }
     }
 
+    #logo {
+        text-align: center;
+
+        h3 {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 0;
+            color: @color-primary;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-weight: bold;
+        }
+    }
+
     // song
     #UItable {
+        padding-top: 4px;
+
         .btn {
             text-align: left;
         }
