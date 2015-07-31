@@ -4046,7 +4046,8 @@ var CGUI = function () {
             fgColor:     "#df691a",
             inputColor:  "#ebebeb",
             angleOffset: -125,
-            angleArc:    250
+            angleArc:    250,
+            cursor: 10
         });
 
         // Parse URL

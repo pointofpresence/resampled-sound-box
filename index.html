@@ -31,10 +31,15 @@
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="tracker/js/modules.js"></script>
 
+        <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'
+              type='text/css'>
+
         <link rel="stylesheet"
               href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/superhero/bootstrap.min.css" />
+
         <link rel="stylesheet"
               href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
         <link rel="stylesheet" type="text/css" href="tracker/css/app.css" />
         <link rel="shortcut icon" href="favicon.ico" />
     </head>
@@ -47,8 +52,8 @@
 
             <table id="guiMaster" class="ui">
                 <tr>
-                    <!-- Song -->
-                    <td id="UItable">
+                    <!-- Menu -->
+                    <td id="UItable" rowspan="2" class="border-right">
                         <!-- Logo -->
                         <div class="sboxLogo">
                             <img id="logo" src="tracker/image/gui/logo.png" width="130"
@@ -56,27 +61,27 @@
                                  alt="SoundBox" title="About SoundBox" />
                         </div>
 
-                        <div id="newSong" class="btn btn-default btn-block"
+                        <div id="newSong" class="btn btn-default btn-block btn-icon"
                              title="New song">
                             <i class="fa fa-file fa-fw"></i>New
                         </div>
 
-                        <div id="openSong" class="btn btn-default btn-block"
+                        <div id="openSong" class="btn btn-default btn-block btn-icon"
                              title="Open demo song">
                             <i class="fa fa-folder-open fa-fw"></i>Open
                         </div>
 
-                        <div id="saveSong" class="btn btn-default btn-block"
+                        <div id="saveSong" class="btn btn-default btn-block btn-icon"
                              title="Save song">
                             <i class="fa fa-floppy-o fa-fw"></i>Save
                         </div>
 
-                        <div id="exportJS" class="btn btn-default btn-block"
+                        <div id="exportJS" class="btn btn-default btn-block btn-icon"
                              title="Export song as JavaScript">
                             <i class="fa fa-floppy-o fa-fw"></i>Export JS
                         </div>
 
-                        <div id="exportWAV" class="btn btn-default btn-block"
+                        <div id="exportWAV" class="btn btn-default btn-block btn-icon"
                              title="Export song as WAV">
                             <i class="fa fa-floppy-o fa-fw"></i>Export
                             WAV
@@ -84,129 +89,152 @@
 
                         <hr />
 
-                        <div id="playSong" class="btn btn-default btn-block"
+                        <div id="playSong" class="btn btn-default btn-block btn-icon"
                              title="Play song">
                             <i class="fa fa-play fa-fw"></i>Song
                         </div>
 
-                        <div id="playRange" class="btn btn-default btn-block"
+                        <div id="playRange" class="btn btn-default btn-block btn-icon"
                              title="Play selected range (SPACE)">
                             <i class="fa fa-play-circle-o fa-fw"></i>Range
                         </div>
 
-                        <div id="stopPlaying" class="btn btn-default btn-block"
+                        <div id="stopPlaying" class="btn btn-default btn-block btn-icon"
                              title="Stop playing">
                             <i class="fa fa-stop fa-fw"></i>Stop
                         </div>
 
                         <hr />
 
-                        <div id="about" class="btn btn-default btn-block"
+                        <div id="about" class="btn btn-default btn-block btn-icon"
                              title="About">
                             <i class="fa fa-question-circle fa-fw"></i>About
                         </div>
+                    </td>
 
-                        <hr />
+                    <td id="cell-meter" class="border-bottom">
+                        <canvas id="playGfxCanvas" width="220" height="65"></canvas>
+                    </td>
 
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="knob-wrap">
-                                    <input id="bpm" type="text" value="120"
-                                           class="knob"
-                                           data-min="1" data-max="255"
-                                           title="Beats per minute (song speed)" />
+                    <td id="cell-settings" colspan="2" class="border-bottom">
+                        <div class="col-lg-6">
+                            <div class="knob-wrap">
+                                <input id="bpm" type="text" value="120"
+                                       class="knob"
+                                       data-min="1" data-max="255"
+                                       title="Beats per minute (song speed)" />
 
-                                    <label>BPM</label>
-                                </div>
+                                <label>BPM</label>
                             </div>
+                        </div>
 
-                            <div class="col-lg-6">
-                                <div class="knob-wrap">
-                                    <input id="rpp" type="text" size="3" value="32"
-                                           class="knob"
-                                           data-min="1" data-max="255"
-                                           title="Rows per pattern" />
+                        <div class="col-lg-6">
+                            <div class="knob-wrap">
+                                <input id="rpp" type="text" size="3" value="32"
+                                       class="knob"
+                                       data-min="1" data-max="256"
+                                       title="Rows per pattern" />
 
-                                    <label>RPP</label>
-                                </div>
+                                <label>RPP</label>
                             </div>
                         </div>
                     </td>
 
+                    <td id="cell-midi" class="border-bottom">
+                        <select id="midiInput" title="Select a MIDI source"
+                                class="form-control">
+                            <option value="">(select MIDI)</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
                     <!-- Sequencer -->
-                    <td>
-                        <div>
-                            <canvas id="playGfxCanvas" width="220" height="65"></canvas>
-                        </div>
+                    <td id="cell-sequencer">
+                        <label>Playlist</label>
 
                         <div id="sequencer" title="Enter pattern numbers, 0-9">
                             <table class="tracks" id="sequencer-table"></table>
                         </div>
 
-                        <div style="height: 32px">
-                            <img id="sequencerCopy" class="smallButton" title="Copy"
-                                 src="tracker/image/gui/edit-copy.png" width="24"
-                                 height="24" alt="Copy" />
+                        <div>
+                            <button id="sequencerCopy" class="btn btn-default btn-sm"
+                                    title="Copy">
+                                <i class="fa fa-files-o fw"></i>
+                            </button>
 
-                            <img id="sequencerPaste" class="smallButton" title="Paste"
-                                 src="tracker/image/gui/edit-paste.png" width="24"
-                                 height="24" alt="Paste" />
+                            <button id="sequencerPaste" class="btn btn-default btn-sm"
+                                    title="Paste">
+                                <i class="fa fa-clipboard"></i>
+                            </button>
+                        </div>
 
-                            <img id="sequencerPatDown" class="smallButton"
-                                 title="Pattern down"
-                                 src="tracker/image/gui/minus-one.png" width="24"
-                                 height="24" alt="-1" />
+                        <div>
+                            <button id="sequencerPatDown" class="btn btn-default btn-sm"
+                                    title="Pattern down">
+                                <i class="fa fa-chevron-down fw"></i>
+                            </button>
 
-                            <img id="sequencerPatUp" class="smallButton"
-                                 title="Pattern up" src="tracker/image/gui/plus-one.png"
-                                 width="24" height="24" alt="+1" />
+                            <button id="sequencerPatUp" class="btn btn-default btn-sm"
+                                    title="Pattern up">
+                                <i class="fa fa-chevron-up fw"></i>
+                            </button>
                         </div>
                     </td>
 
                     <!-- Pattern -->
-                    <td>
+                    <td id="cell-pattern">
+                        <label>Pattern</label>
+
                         <div id="pattern">
                             <table class="tracks" id="pattern-table"
                                    title="Use the piano or keyboard to enter notes"></table>
                         </div>
 
-                        <div style="height: 32px">
-                            <img id="patternCopy"
-                                 class="smallButton" title="Copy"
-                                 src="tracker/image/gui/edit-copy.png" width="24"
-                                 height="24" alt="Copy" />
+                        <div>
+                            <button id="patternCopy"
+                                    class="btn btn-default btn-sm" title="Copy">
+                                <i class="fa fa-files-o fw"></i>
+                            </button>
 
-                            <img id="patternPaste" class="smallButton" title="Paste"
-                                 src="tracker/image/gui/edit-paste.png" width="24"
-                                 height="24" alt="Paste" />
+                            <button class="btn btn-default btn-sm"
+                                    id="patternPaste" title="Paste">
+                                <i class="fa fa-clipboard"></i>
+                            </button>
                         </div>
 
-                        <div style="height: 32px">
-                            <img id="patternNoteDown" class="smallButton"
-                                 title="Note down" src="tracker/image/gui/minus-one.png"
-                                 width="24" height="24" alt="-1" />
+                        <div>
+                            <button id="patternNoteDown" class="btn btn-default btn-sm"
+                                    title="Note down">
+                                <i class="fa fa-chevron-down fw"></i>
+                            </button>
 
-                            <img id="patternNoteUp" class="smallButton" title="Note up"
-                                 src="tracker/image/gui/plus-one.png" width="24"
-                                 height="24" alt="+1" />
+                            <button id="patternNoteUp" class="btn btn-default btn-sm"
+                                    title="Note up">
+                                <i class="fa fa-chevron-up fw"></i>
+                            </button>
+                        </div>
 
-                            <img id="patternOctaveDown" class="smallButton"
-                                 title="Octave down"
-                                 src="tracker/image/gui/minus-twelve.png" width="24"
-                                 height="24" alt="-12" />
+                        <div>
+                            <button id="patternOctaveDown" class="btn btn-default btn-sm"
+                                    title="Octave down">
+                                <i class="fa fa-arrow-down fw"></i>
+                            </button>
 
-                            <img id="patternOctaveUp" class="smallButton"
-                                 title="Octave up" src="tracker/image/gui/plus-twelve.png"
-                                 width="24" height="24" alt="+12" />
+                            <button id="patternOctaveUp" class="btn btn-default btn-sm"
+                                    title="Octave up">
+                                <i class="fa fa-arrow-up fw"></i>
+                            </button>
                         </div>
 
                         <!-- Status (debug etc) -->
                         <div id="statusText"></div>
-
                     </td>
 
                     <!-- Effects track -->
-                    <td>
+                    <td id="cell-effects" class="border-right">
+                        <label>Effects</label>
+
                         <div id="fxtrack">
                             <table class="tracks" id="fxtrack-table"
                                    title="Use instrument and effect controls to edit">
@@ -214,29 +242,37 @@
                         </div>
 
                         <div style="height: 32px">
-                            <img id="fxCopy" class="smallButton" title="Copy"
-                                 src="tracker/image/gui/edit-copy.png" width="24"
-                                 height="24" alt="Copy" />
+                            <button id="fxCopy" class="btn btn-default btn-sm"
+                                    title="Copy">
+                                <i class="fa fa-files-o fw"></i>
+                            </button>
+                            <button id="fxPaste" class="btn btn-default btn-sm"
+                                    title="Paste">
+                                <i class="fa fa-clipboard"></i>
+                            </button>
                         </div>
-
-                        <div style="height: 32px">
-                            <img id="fxPaste" class="smallButton" title="Paste"
-                                 src="tracker/image/gui/edit-paste.png" width="24"
-                                 height="24" alt="Paste" />
-                        </div>
-
                     </td>
 
                     <!-- Instrument control -->
-                    <td>
-                        <select id="instrPreset" title="Select an instrument preset">
+                    <td id="cell-instrument">
+                        <label>Instrument</label>
+
+                        <select id="instrPreset" title="Select an instrument preset"
+                                class="form-control">
                             <option value="">(select a preset)</option>
                         </select>
 
-                        <select id="midiInput" title="Select a MIDI source"
-                                style="margin-left: 10px; display: none">
-                            <option value="">(select MIDI)</option>
-                        </select>
+                        <div style="margin-top: 4px">
+                            <button id="instrCopy" class="btn btn-default btn-sm"
+                                    title="Copy instrument">
+                                <i class="fa fa-files-o fw"></i>
+                            </button>
+
+                            <button id="instrPaste" class="btn btn-default btn-sm"
+                                    title="Paste instrument">
+                                <i class="fa fa-clipboard"></i>
+                            </button>
+                        </div>
 
                         <table class="ui">
                             <!-- Oscillator 1 -->
@@ -644,34 +680,24 @@
                             </tr>
                         </table>
 
-                        <div style="height: 32px; margin-top: 4px">
-                            <img id="instrCopy" class="smallButton"
-                                 title="Copy instrument"
-                                 src="tracker/image/gui/edit-copy.png" width="24"
-                                 height="24" alt="Copy" />
-
-                            <img id="instrPaste" class="smallButton"
-                                 title="Paste instrument"
-                                 src="tracker/image/gui/edit-paste.png"
-                                 width="24" height="24" alt="Paste" />
-                        </div>
-
                         <!-- Keyboard -->
                         <div class="keyboard">
                             <div class="octaveSelector">
                                 Octave: <span id="keyboardOctave" title="Octave">5</span>
                             </div>
 
-                            <img id="octaveDown" title="Octave down" alt="&lt;"
-                                 src="tracker/image/gui/button-prev.png" width="23"
-                                 height="20" />&nbsp;
+                            <button id="octaveDown" title="Octave down"
+                                    class="btn btn-default btn-sm">
+                                <i class="fa fa-chevron-left fw"></i>
+                            </button>
 
-                            <img id="keyboard" src="tracker/image/gui/keyboard.jpg"
+                            <img id="keyboard" src="tracker/image/gui/keyboard.png"
                                  width="421" height="112" alt="Keyboard" />&nbsp;
 
-                            <img id="octaveUp" title="Octave up" alt="&gt;"
-                                 src="tracker/image/gui/button-next.png" width="23"
-                                 height="20" />
+                            <button id="octaveUp" title="Octave up"
+                                    class="btn btn-default btn-sm">
+                                <i class="fa fa-chevron-right fw"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>

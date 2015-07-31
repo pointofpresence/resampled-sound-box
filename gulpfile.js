@@ -26,6 +26,7 @@ var banner = [
     ' * Based on SoundBox by Marcus Geelnard (c) 2011-2013',
     ' * <%= dateFormat(now, "yyyy") %> <%= pkg.author %>',
     ' * <%= pkg.title %> (<%= pkg.name %>) - <%= pkg.description %>',
+    ' *',
     ' * @version v<%= pkg.version %>',
     ' * @build <%= dateFormat(now) %>',
     ' * @link <%= pkg.repository %>',
@@ -209,6 +210,7 @@ gulp.task("buildDemoJsMin", buildDemoJsMin);
 gulp.task("buildDemoDependencies", buildDemoDependencies);
 gulp.task("compressDemo", compressDemo);
 
+// tracker
 gulp.task("buildJs", buildJs);
 gulp.task("buildCss", buildCss);
 

@@ -1,9 +1,16 @@
 @color-body: #2b3e50;
 @color-default: #4e5d6c;
+@color-default-hover: #485563;
 @color-primary: #df691a;
+@color-line: #596a7b;
+
+.main-font() {
+    font-family: 'Inconsolata', monospace;
+    font-size: 17px;
+}
 
 body {
-    font-family: sans-serif, arial;
+    .main-font();
     padding: 0;
     margin: 0;
 }
@@ -64,15 +71,6 @@ h1 {
     background: #eee;
 }
 
-table.ui, table.ui td {
-    vertical-align: top;
-    border: 1px solid #333;
-    border-collapse: collapse;
-    padding: 4px 4px 8px 8px;
-    font-family: "DejaVu Sans Mono", monospace;
-    font-size: 10px;
-}
-
 table.ui h3 {
     padding: 0;
     margin: 0 0 4px 0;
@@ -86,36 +84,13 @@ table.subui, table.subui td {
     border: 0;
 }
 
-#playGfxCanvas {
-    border: 2px solid #555;
-    margin-bottom: 3px;
-}
-
-#sequencer, #pattern, #fxtrack {
-    border: 2px solid #aaa;
-    margin-bottom: 4px;
-}
-
 #sequencer.edit, #pattern.edit, #fxtrack.edit {
     border-color: #f44;
 }
 
-#sequencer {
-    width: 221px;
-    height: 433px;
-    overflow: auto;
-}
-
-#pattern {
-    width: 153px;
-    max-height: 475px;
-    overflow: auto;
-    overflow-y: scroll;
-}
-
 #fxtrack {
     width: 53px;
-    max-height: 475px;
+    max-height: 485px;
     overflow: auto;
     overflow-y: scroll;
 }
@@ -131,7 +106,7 @@ table.tracks, table.tracks td, table.tracks th {
     border: 1px solid #333;
     border-collapse: collapse;
     padding: 0 2px;
-    font-family: "DejaVu Sans Mono", monospace;
+    //font-family: "DejaVu Sans Mono", monospace;
     font-size: 10px;
     text-align: center;
     cursor: default;
@@ -219,7 +194,7 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
 }
 
 .button, .smallButton {
-    font-family: arial, sans, serif;
+    // font-family: arial, sans, serif;
     font-size: 11px;
     color: #000;
     cursor: pointer;
@@ -312,18 +287,121 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
     font-size: 24px;
 }
 
-/*** Theme: Metal blue ********************************************************/
+@sequencer-width: 220px;
+@pattern-width: 136px;
+@fx-width: 74px;
+@tracks-height: 483px;
+
+.track-wrapper() {
+    border: 1px solid @color-body;
+    height: @tracks-height;
+    overflow: auto;
+    margin-bottom: 4px;
+}
+
+.btn-sm {
+    border: 1px solid @color-default-hover;
+    width: 32px;
+    margin-bottom: 6px;
+}
 
 #guiMaster {
     background: @color-default;
-}
 
-table.ui td > table.ui td {
-    background: #79b;
-}
+    td {
+        vertical-align: top;
+        border-collapse: collapse;
+        padding: 16px 4px 4px;
 
-body {
-    background: rgb(29, 37, 45);
+        &.border-bottom {
+            border-bottom: 1px solid @color-line;
+        }
+
+        &.border-right {
+            border-right: 1px solid @color-line;
+        }
+    }
+
+    // song
+    #UItable {
+        .btn {
+            text-align: left;
+        }
+    }
+
+    // playlist
+    #cell-sequencer {
+        padding-top: 4px;
+
+        #sequencer {
+            .track-wrapper();
+            width: @sequencer-width;
+
+            td {
+                padding: 0 2px;
+            }
+        }
+    }
+
+    // pattern
+    #cell-pattern {
+        padding-top: 4px;
+        width: @pattern-width + 8px;
+
+        #pattern {
+            .track-wrapper();
+            width: @pattern-width;
+
+            td {
+                padding: 0 2px;
+                width: 24px;
+            }
+        }
+    }
+
+    // effects
+    #cell-effects {
+        padding-top: 4px;
+        width: @fx-width + 8px;
+
+        #fxtrack {
+            .track-wrapper();
+            width: @fx-width;
+        }
+
+        td {
+            padding: 0 2px;
+        }
+    }
+
+    // BPM etc.
+    #cell-settings {
+    }
+
+    // VU-meter
+    #cell-meter {
+        width: @sequencer-width + 8px;
+
+        #playGfxCanvas {
+            width: @sequencer-width;
+            height: 65px;
+            border: 1px solid @color-body;
+        }
+    }
+
+    // MIDI input
+    #cell-midi {
+    }
+
+    // instrument
+    #cell-instrument {
+        padding-top: 4px;
+        padding-right: 16px;
+
+        td {
+            padding: 1px;
+        }
+    }
 }
 
 #cover {
@@ -332,15 +410,9 @@ body {
 
 //
 
-.btn {
+.btn-icon {
     & > .fa {
         margin-right: 10px;
-    }
-}
-
-#UItable {
-    .btn {
-        text-align: left;
     }
 }
 
@@ -349,5 +421,9 @@ body {
 
     & > div {
         margin: 0 auto;
+    }
+
+    label {
+        margin-bottom: 0;
     }
 }
