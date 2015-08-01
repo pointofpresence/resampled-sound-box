@@ -222,17 +222,6 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
     cursor: pointer;
 }
 
-.keyboard {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.keyboard img {
-    vertical-align: middle;
-    cursor: pointer;
-}
-
 .octaveSelector {
     padding-bottom: 6px;
 }
@@ -282,8 +271,8 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
 }
 
 @sequencer-width: 220px;
-@pattern-width: 136px;
-@fx-width: 74px;
+@pattern-width: 146px;
+@fx-width: 70px;
 @tracks-height: 483px;
 
 .track-wrapper() {
@@ -410,6 +399,7 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
     #cell-instrument {
         padding-top: 4px;
         padding-right: 16px;
+        padding-bottom: 16px;
 
         legend {
             font-size: 14px;
@@ -417,6 +407,20 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
 
         td {
             padding: 1px;
+        }
+
+        hr {
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .keyboard {
+            text-align: center;
+
+            img {
+                vertical-align: middle;
+                cursor: pointer;
+            }
         }
     }
 }

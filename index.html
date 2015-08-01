@@ -55,6 +55,7 @@
                     <!-- Logo -->
                     <td id="logo" class="border-bottom">
                         <h3>ReSampled</h3>
+
                         <h2>SoundBox</h2>
                     </td>
 
@@ -213,9 +214,7 @@
                                     title="Note up">
                                 <i class="fa fa-chevron-up fw"></i>
                             </button>
-                        </div>
 
-                        <div>
                             <button id="patternOctaveDown" class="btn btn-default btn-sm"
                                     title="Octave down">
                                 <i class="fa fa-arrow-down fw"></i>
@@ -257,22 +256,29 @@
                     <td id="cell-instrument">
                         <label>Instrument</label>
 
-                        <select id="instrPreset" title="Select an instrument preset"
-                                class="form-control input-sm">
-                            <option value="">(select a preset)</option>
-                        </select>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <select id="instrPreset"
+                                        title="Select an instrument preset"
+                                        class="form-control input-sm">
+                                    <option value="">(select a preset)</option>
+                                </select>
+                            </div>
 
-                        <div style="margin-top: 4px">
-                            <button id="instrCopy" class="btn btn-default btn-sm"
-                                    title="Copy instrument">
-                                <i class="fa fa-files-o fw"></i>
-                            </button>
+                            <div class="col-lg-6">
+                                <button id="instrCopy" class="btn btn-default btn-sm"
+                                        title="Copy instrument">
+                                    <i class="fa fa-files-o fw"></i>
+                                </button>
 
-                            <button id="instrPaste" class="btn btn-default btn-sm"
-                                    title="Paste instrument">
-                                <i class="fa fa-clipboard"></i>
-                            </button>
+                                <button id="instrPaste" class="btn btn-default btn-sm"
+                                        title="Paste instrument">
+                                    <i class="fa fa-clipboard"></i>
+                                </button>
+                            </div>
                         </div>
+
+                        <hr />
 
                         <table class="ui">
                             <tr>
@@ -711,6 +717,8 @@
                                 </td>
                             </tr>
                         </table>
+
+                        <hr />
 
                         <!-- Keyboard -->
                         <div class="keyboard">
