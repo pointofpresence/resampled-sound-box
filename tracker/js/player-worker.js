@@ -4,8 +4,9 @@
  * Based on SoundBox by Marcus Geelnard (c) 2011-2013
  * 2015 pointofpresence
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
+ *
  * @version v0.0.1
- * @build Sat Aug 01 2015 00:31:00
+ * @build Mon Aug 03 2015 00:14:06
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *

@@ -317,12 +317,9 @@
                                                 <td>Vol</td>
 
                                                 <td title="Volume">
-                                                    <div class="slider">
-                                                        <img id="osc1_vol"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input type="range" min="0" max="255"
+                                                           id="osc1_vol"
+                                                           title="Volume" />
                                                 </td>
                                             </tr>
 
@@ -330,12 +327,9 @@
                                                 <td>Semi</td>
 
                                                 <td title="Semitune">
-                                                    <div class="slider">
-                                                        <img id="osc1_semi"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input type="range" min="92" max="164"
+                                                           id="osc1_semi"
+                                                           title="Semitune" />
                                                 </td>
                                             </tr>
 
@@ -388,12 +382,9 @@
                                                 <td>Vol</td>
 
                                                 <td title="Volume">
-                                                    <div class="slider">
-                                                        <img id="osc2_vol"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input title="Volume" type="range"
+                                                           min="0" max="255"
+                                                           id="osc2_vol" />
                                                 </td>
                                             </tr>
 
@@ -401,12 +392,9 @@
                                                 <td>Semi</td>
 
                                                 <td title="Semitune">
-                                                    <div class="slider">
-                                                        <img id="osc2_semi"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input title="Semitune" id="osc2_semi"
+                                                           type="range"
+                                                           min="92" max="164" />
                                                 </td>
                                             </tr>
 
@@ -414,12 +402,9 @@
                                                 <td>Det</td>
 
                                                 <td title="Detune">
-                                                    <div class="slider">
-                                                        <img id="osc2_det"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="osc2_det" type="range"
+                                                           min="0" max="255"
+                                                           title="Detune" />
                                                 </td>
                                             </tr>
 
@@ -448,12 +433,9 @@
                                                 <td>Vol</td>
 
                                                 <td title="Volume">
-                                                    <div class="slider">
-                                                        <img id="noise_vol"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="noise_vol" type="range"
+                                                           min="0" max="255"
+                                                           title="Volume" />
                                                 </td>
                                             </tr>
                                         </table>
@@ -470,12 +452,9 @@
                                                 <td>Att</td>
 
                                                 <td title="Attack">
-                                                    <div class="slider">
-                                                        <img id="env_att"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input title="Attack" id="env_att"
+                                                           type="range" min="0"
+                                                           max="255" />
                                                 </td>
                                             </tr>
 
@@ -483,12 +462,9 @@
                                                 <td>Sust</td>
 
                                                 <td title="Sustain">
-                                                    <div class="slider">
-                                                        <img id="env_sust"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input title="Sustain" id="env_sust"
+                                                           type="range" min="0"
+                                                           max="255" />
                                                 </td>
                                             </tr>
 
@@ -496,12 +472,9 @@
                                                 <td>Rel</td>
 
                                                 <td title="Release">
-                                                    <div class="slider">
-                                                        <img id="env_rel"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input title="Release" id="env_rel"
+                                                           type="range" min="0"
+                                                           max="255" />
                                                 </td>
                                             </tr>
                                         </table>
@@ -546,12 +519,10 @@
                                                 <td>Amt</td>
 
                                                 <td title="Amount">
-                                                    <div class="slider">
-                                                        <img id="lfo_amt"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input title="Amount" id="lfo_amt"
+                                                           type="range" min="0"
+                                                           max="255" />
+
                                                 </td>
                                             </tr>
 
@@ -559,12 +530,9 @@
                                                 <td>Freq</td>
 
                                                 <td title="Frequency">
-                                                    <div class="slider">
-                                                        <img id="lfo_freq"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input title="Frequency" id="lfo_freq"
+                                                           type="range" min="0"
+                                                           max="16" />
                                                 </td>
                                             </tr>
 
@@ -612,26 +580,19 @@
                                                 <td>Freq</td>
 
                                                 <td title="Filter frequency">
-                                                    <div class="slider">
-                                                        <img id="fx_freq"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="fx_freq" type="range"
+                                                           min="0" max="255"
+                                                           title="Filter frequency" />
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>&nbsp;Res</td>
+                                                <td>Res</td>
 
                                                 <td title="Filter resonance">
-                                                    <div class="slider">
-                                                        <img id="fx_res"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10"
-                                                             height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="fx_res" type="range"
+                                                           min="0" max="254"
+                                                           title="Filter resonance" />
                                                 </td>
                                             </tr>
 
@@ -639,12 +600,9 @@
                                                 <td>Dist</td>
 
                                                 <td title="Distortion">
-                                                    <div class="slider">
-                                                        <img id="fx_dist"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="fx_dist" type="range"
+                                                           min="0" max="255"
+                                                           title="Distortion" />
                                                 </td>
                                             </tr>
 
@@ -652,12 +610,9 @@
                                                 <td>Drive</td>
 
                                                 <td title="Volume drive">
-                                                    <div class="slider">
-                                                        <img id="fx_drive"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="fx_drive" type="range"
+                                                           min="0" max="255"
+                                                           title="Volume drive" />
                                                 </td>
                                             </tr>
 
@@ -665,25 +620,20 @@
                                                 <td>Pan</td>
 
                                                 <td title="Pan amount">
-                                                    <div class="slider">
-                                                        <img id="fx_pan_amt"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="fx_pan_amt" type="range"
+                                                           min="0" max="255"
+                                                           title="Pan amount" />
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>&nbsp;Freq</td>
+                                                <td>Freq</td>
 
                                                 <td title="Pan frequency">
-                                                    <div class="slider">
-                                                        <img id="fx_pan_freq"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="fx_pan_freq"
+                                                           type="range"
+                                                           min="0" max="16"
+                                                           title="Pan frequency" />
                                                 </td>
                                             </tr>
 
@@ -691,25 +641,22 @@
                                                 <td>Delay</td>
 
                                                 <td title="Delay amount">
-                                                    <div class="slider">
-                                                        <img id="fx_dly_amt"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="fx_dly_amt"
+                                                           type="range"
+                                                           min="0" max="255"
+                                                           title="Delay amount" />
+
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>&nbsp;Time</td>
+                                                <td>Time</td>
 
                                                 <td title="Delay time">
-                                                    <div class="slider">
-                                                        <img id="fx_dly_time"
-                                                             src="tracker/image/gui/slider.png"
-                                                             width="10" height="12"
-                                                             alt="" />
-                                                    </div>
+                                                    <input id="fx_dly_time"
+                                                           type="range"
+                                                           min="0" max="16"
+                                                           title="Delay time" />
                                                 </td>
                                             </tr>
                                         </table>

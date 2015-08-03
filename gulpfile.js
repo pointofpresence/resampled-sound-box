@@ -183,6 +183,7 @@ function buildJs() {
     gulp
         .src([
             NODE + "/jquery-knob/dist/jquery.knob.min.js",
+            TRACKER_JS_SRC + "/jquery.rs.slider.js",
             TRACKER_JS_SRC + "/demo-songs.js",
             TRACKER_JS_SRC + "/presets.js",
             TRACKER_JS_SRC + "/player.js",

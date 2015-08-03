@@ -1627,7 +1627,7 @@ var CGUI = function () {
         return false;
     };
 
-    var updateSlider = function (o, x) {
+    var updateSlider = function (o, x, ignore) {
         var props = o.sliderProps,
             pos = (x - props.min) / (props.max - props.min);
 
@@ -1635,6 +1635,15 @@ var CGUI = function () {
 
         if (props.nonLinear) {
             pos = Math.sqrt(pos);
+        }
+
+        console.log(ignore)
+
+        if (o.tagName == "INPUT") {
+            if (!ignore)
+                o.value = pos;
+
+            return;
         }
 
         o.style.marginLeft = Math.round(191 * pos) + "px";
@@ -1686,6 +1695,7 @@ var CGUI = function () {
         document.getElementById("lfo_wave_sqr").src = instr.i[LFO_WAVEFORM] == 1 ? imgPath + "wave-sqr-sel.png" : imgPath + "wave-sqr.png";
         document.getElementById("lfo_wave_saw").src = instr.i[LFO_WAVEFORM] == 2 ? imgPath + "wave-saw-sel.png" : imgPath + "wave-saw.png";
         document.getElementById("lfo_wave_tri").src = instr.i[LFO_WAVEFORM] == 3 ? imgPath + "wave-tri-sel.png" : imgPath + "wave-tri.png";
+
         updateSlider(document.getElementById("lfo_amt"), instr.i[LFO_AMT]);
         updateSlider(document.getElementById("lfo_freq"), instr.i[LFO_FREQ]);
         updateCheckBox(document.getElementById("lfo_fxfreq"), instr.i[LFO_FX_FREQ]);
@@ -1694,6 +1704,7 @@ var CGUI = function () {
         document.getElementById("fx_filt_lp").src = instr.i[FX_FILTER] == 2 ? imgPath + "filt-lp-sel.png" : imgPath + "filt-lp.png";
         document.getElementById("fx_filt_hp").src = instr.i[FX_FILTER] == 1 ? imgPath + "filt-hp-sel.png" : imgPath + "filt-hp.png";
         document.getElementById("fx_filt_bp").src = instr.i[FX_FILTER] == 3 ? imgPath + "filt-bp-sel.png" : imgPath + "filt-bp.png";
+
         updateSlider(document.getElementById("fx_freq"), instr.i[FX_FREQ]);
         updateSlider(document.getElementById("fx_res"), instr.i[FX_RESONANCE]);
         updateSlider(document.getElementById("fx_dly_amt"), instr.i[FX_DELAY_AMT]);
@@ -3387,7 +3398,7 @@ var CGUI = function () {
 
             mActiveSlider = getEventElement(e);
             unfocusHTMLInputElements();
-            e.preventDefault();
+            // e.preventDefault();
         }
     };
 
@@ -3414,6 +3425,11 @@ var CGUI = function () {
                 max = mActiveSlider.sliderProps.max;
 
             x = Math.round(min + ((max - min) * x));
+
+            if (mActiveSlider.tagName == "INPUT")
+                x = mActiveSlider.value;
+
+            console.log(x);
 
             // Check which instrument property to update
             var cmdNo = -1;
@@ -3480,7 +3496,7 @@ var CGUI = function () {
             mJammer.updateInstr(instr.i);
 
             // Update the slider position
-            updateSlider(mActiveSlider, x);
+            updateSlider(mActiveSlider, x, true);
             clearPresetSelection();
             e.preventDefault();
         }
@@ -3769,8 +3785,7 @@ var CGUI = function () {
                     updateFxTrack();
 
                     return false;
-                }
-                else if (mEditMode == EDIT_PATTERN) {
+                } else if (mEditMode == EDIT_PATTERN) {
                     if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
                         pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
@@ -4047,8 +4062,10 @@ var CGUI = function () {
             inputColor:  "#ebebeb",
             angleOffset: -125,
             angleArc:    250,
-            cursor: 10
+            cursor:      10
         });
+
+        $("input[type=range]").rsSlider({});
 
         // Parse URL
         mBaseURL = getURLBase(window.location.href);
@@ -4097,23 +4114,31 @@ var CGUI = function () {
         // Set up GUI elements
         document.getElementById("osc1_vol").sliderProps = {min: 0, max: 255};
         document.getElementById("osc1_semi").sliderProps = {min: 92, max: 164};
+
         document.getElementById("osc2_vol").sliderProps = {min: 0, max: 255};
         document.getElementById("osc2_semi").sliderProps = {min: 92, max: 164};
         document.getElementById("osc2_det").sliderProps = {min: 0, max: 255, nonLinear: true};
+
         document.getElementById("noise_vol").sliderProps = {min: 0, max: 255};
+
         document.getElementById("env_att").sliderProps = {min: 0, max: 255};
         document.getElementById("env_sust").sliderProps = {min: 0, max: 255};
         document.getElementById("env_rel").sliderProps = {min: 0, max: 255};
+
         document.getElementById("lfo_amt").sliderProps = {min: 0, max: 255};
         document.getElementById("lfo_freq").sliderProps = {min: 0, max: 16};
+
         document.getElementById("fx_freq").sliderProps = {min: 0, max: 255, nonLinear: true};
         document.getElementById("fx_res").sliderProps = {min: 0, max: 254};
-        document.getElementById("fx_dly_amt").sliderProps = {min: 0, max: 255};
-        document.getElementById("fx_dly_time").sliderProps = {min: 0, max: 16};
-        document.getElementById("fx_pan_amt").sliderProps = {min: 0, max: 255};
-        document.getElementById("fx_pan_freq").sliderProps = {min: 0, max: 16};
+
         document.getElementById("fx_dist").sliderProps = {min: 0, max: 255, nonLinear: true};
         document.getElementById("fx_drive").sliderProps = {min: 0, max: 255};
+
+        document.getElementById("fx_pan_amt").sliderProps = {min: 0, max: 255};
+        document.getElementById("fx_pan_freq").sliderProps = {min: 0, max: 16};
+
+        document.getElementById("fx_dly_amt").sliderProps = {min: 0, max: 255};
+        document.getElementById("fx_dly_time").sliderProps = {min: 0, max: 16};
 
         // Create audio element, and always play the audio as soon as it's ready
         try {
@@ -4177,6 +4202,7 @@ var CGUI = function () {
 
         document.getElementById("instrPreset").onfocus = instrPresetFocus;
         document.getElementById("instrPreset").onchange = selectPreset;
+
         document.getElementById("osc1_wave_sin").addEventListener("mousedown", osc1WaveMouseDown, false);
         document.getElementById("osc1_wave_sin").addEventListener("touchstart", osc1WaveMouseDown, false);
         document.getElementById("osc1_wave_sqr").addEventListener("mousedown", osc1WaveMouseDown, false);
@@ -4185,10 +4211,10 @@ var CGUI = function () {
         document.getElementById("osc1_wave_saw").addEventListener("touchstart", osc1WaveMouseDown, false);
         document.getElementById("osc1_wave_tri").addEventListener("mousedown", osc1WaveMouseDown, false);
         document.getElementById("osc1_wave_tri").addEventListener("touchstart", osc1WaveMouseDown, false);
-        document.getElementById("osc1_vol").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("osc1_vol").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("osc1_semi").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("osc1_semi").addEventListener("touchstart", sliderMouseDown, false);
+
+        $("#osc1_vol").rsSlider("change", sliderMouseDown);
+        $("#osc1_semi").rsSlider("change", sliderMouseDown);
+
         document.getElementById("osc1_xenv").addEventListener("mousedown", boxMouseDown, false);
         document.getElementById("osc1_xenv").addEventListener("touchstart", boxMouseDown, false);
         document.getElementById("osc2_wave_sin").addEventListener("mousedown", osc2WaveMouseDown, false);
@@ -4199,22 +4225,20 @@ var CGUI = function () {
         document.getElementById("osc2_wave_saw").addEventListener("touchstart", osc2WaveMouseDown, false);
         document.getElementById("osc2_wave_tri").addEventListener("mousedown", osc2WaveMouseDown, false);
         document.getElementById("osc2_wave_tri").addEventListener("touchstart", osc2WaveMouseDown, false);
-        document.getElementById("osc2_vol").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("osc2_vol").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("osc2_semi").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("osc2_semi").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("osc2_det").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("osc2_det").addEventListener("touchstart", sliderMouseDown, false);
+
+        $("#osc2_vol").rsSlider("change", sliderMouseDown);
+        $("#osc2_semi").rsSlider("change", sliderMouseDown);
+        $("#osc2_det").rsSlider("change", sliderMouseDown);
+
         document.getElementById("osc2_xenv").addEventListener("mousedown", boxMouseDown, false);
         document.getElementById("osc2_xenv").addEventListener("touchstart", boxMouseDown, false);
-        document.getElementById("noise_vol").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("noise_vol").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("env_att").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("env_att").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("env_sust").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("env_sust").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("env_rel").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("env_rel").addEventListener("touchstart", sliderMouseDown, false);
+
+        $("#noise_vol").rsSlider("change", sliderMouseDown);
+
+        $("#env_att").rsSlider("change", sliderMouseDown);
+        $("#env_sust").rsSlider("change", sliderMouseDown);
+        $("#env_rel").rsSlider("change", sliderMouseDown);
+
         document.getElementById("lfo_wave_sin").addEventListener("mousedown", lfoWaveMouseDown, false);
         document.getElementById("lfo_wave_sin").addEventListener("touchstart", lfoWaveMouseDown, false);
         document.getElementById("lfo_wave_sqr").addEventListener("mousedown", lfoWaveMouseDown, false);
@@ -4223,34 +4247,29 @@ var CGUI = function () {
         document.getElementById("lfo_wave_saw").addEventListener("touchstart", lfoWaveMouseDown, false);
         document.getElementById("lfo_wave_tri").addEventListener("mousedown", lfoWaveMouseDown, false);
         document.getElementById("lfo_wave_tri").addEventListener("touchstart", lfoWaveMouseDown, false);
-        document.getElementById("lfo_amt").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("lfo_amt").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("lfo_freq").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("lfo_freq").addEventListener("touchstart", sliderMouseDown, false);
+
+        $("#lfo_amt").rsSlider("change", sliderMouseDown);
+        $("#lfo_freq").rsSlider("change", sliderMouseDown);
+
         document.getElementById("lfo_fxfreq").addEventListener("mousedown", boxMouseDown, false);
         document.getElementById("lfo_fxfreq").addEventListener("touchstart", boxMouseDown, false);
+
         document.getElementById("fx_filt_lp").addEventListener("mousedown", fxFiltMouseDown, false);
         document.getElementById("fx_filt_lp").addEventListener("touchstart", fxFiltMouseDown, false);
         document.getElementById("fx_filt_hp").addEventListener("mousedown", fxFiltMouseDown, false);
         document.getElementById("fx_filt_hp").addEventListener("touchstart", fxFiltMouseDown, false);
         document.getElementById("fx_filt_bp").addEventListener("mousedown", fxFiltMouseDown, false);
         document.getElementById("fx_filt_bp").addEventListener("touchstart", fxFiltMouseDown, false);
-        document.getElementById("fx_freq").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("fx_freq").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("fx_res").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("fx_res").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("fx_dly_amt").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("fx_dly_amt").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("fx_dly_time").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("fx_dly_time").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("fx_pan_amt").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("fx_pan_amt").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("fx_pan_freq").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("fx_pan_freq").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("fx_dist").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("fx_dist").addEventListener("touchstart", sliderMouseDown, false);
-        document.getElementById("fx_drive").addEventListener("mousedown", sliderMouseDown, false);
-        document.getElementById("fx_drive").addEventListener("touchstart", sliderMouseDown, false);
+
+        $("#fx_freq").rsSlider("change", sliderMouseDown);
+        $("#fx_res").rsSlider("change", sliderMouseDown);
+        $("#fx_dly_amt").rsSlider("change", sliderMouseDown);
+        $("#fx_dly_time").rsSlider("change", sliderMouseDown);
+        $("#fx_pan_amt").rsSlider("change", sliderMouseDown);
+        $("#fx_pan_freq").rsSlider("change", sliderMouseDown);
+        $("#fx_dist").rsSlider("change", sliderMouseDown);
+        $("#fx_drive").rsSlider("change", sliderMouseDown);
+
         document.getElementById("octaveDown").addEventListener("mousedown", octaveDown, false);
         document.getElementById("octaveDown").addEventListener("touchstart", octaveDown, false);
         document.getElementById("octaveUp").addEventListener("mousedown", octaveUp, false);

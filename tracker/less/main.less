@@ -3,9 +3,12 @@
 @color-default-hover: #485563;
 @color-primary: #df691a;
 @color-line: #596a7b;
+@color-text: #ebebeb;
+
+@import "rs.slider.less";
 
 .main-font() {
-    font-family: 'Inconsolata', monospace;
+    font-family: "Inconsolata", monospace;
     font-size: 17px;
 }
 
@@ -230,10 +233,6 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
     cursor: pointer;
 }
 
-#logo {
-    cursor: pointer;
-}
-
 #cover {
     visibility: hidden;
     position: absolute;
@@ -307,6 +306,7 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
 
     #logo {
         text-align: center;
+        cursor: pointer;
 
         h3 {
             font-weight: bold;
