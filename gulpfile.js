@@ -194,6 +194,9 @@ function buildJs() {
             TRACKER_JS_VENDOR + "/Blob.js",
             TRACKER_JS_VENDOR + "/FileSaver.js",
             TRACKER_JS_VENDOR + "/WebMIDIAPI.js",
+            TRACKER_JS_SRC + "/CBinParser.js",
+            TRACKER_JS_SRC + "/CBinWriter.js",
+            TRACKER_JS_SRC + "/CAudioTimer.js",
             TRACKER_JS_SRC + "/gui.js"
         ])
         .pipe(concat("modules.js"))
