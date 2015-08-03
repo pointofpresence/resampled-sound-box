@@ -23,14 +23,6 @@
                 $this.wrap($("<div/>", {"class": "rs-slider"}));
                 $this.after($("<output/>", {"class": "rangevalue"}));
                 $this.next("output").val(parseInt($this.val()));
-
-                $this.on("change", function () {
-                    $this.next("output").val($this.val());
-                    config.change();
-                });
-
-                // events
-                // $(document).on("click", ".class", callback);
             });
         }
     };
@@ -41,7 +33,7 @@
         } else if (typeof methodOrOptions === "object" || !methodOrOptions) {
             return methods.init.apply(this, arguments); // Default to "init"
         } else {
-            $.error("Method " + method + " does not exist in jQuery.rsSlider");
+            $.error("Method " + methodOrOptions + " does not exist in jQuery.rsSlider");
         }
     };
 })(jQuery);
