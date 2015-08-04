@@ -1464,13 +1464,9 @@ var CGUI = function () {
             pos = Math.sqrt(pos);
         }
 
-        console.log(o, x, ignore);
-
         if (!ignore) {
-            console.log("setted", x);
             o.value = x;
         }
-
     };
 
     var updateCheckBox = function (o, check) {
@@ -2737,7 +2733,7 @@ var CGUI = function () {
             var fxValue;
 
             if (fxCmd >= 0) {
-                fxValue = mSong.songData[mSeqCol].i[fxCmd] ? 0 : 1;
+                fxValue = +($(o).is(":checked")); //mSong.songData[mSeqCol].i[fxCmd] ? 0 : 1;
                 mSong.songData[mSeqCol].i[fxCmd] = fxValue;
             }
 
@@ -2755,7 +2751,6 @@ var CGUI = function () {
 
             updateInstrument(true);
             unfocusHTMLInputElements();
-
         }
     };
 
@@ -3814,8 +3809,6 @@ var CGUI = function () {
 
         // Preload images
         preloadImage(imgPath + "progress.gif");
-        preloadImage(imgPath + "box-uncheck.png");
-        preloadImage(imgPath + "box-uncheck.png");
         preloadImage(imgPath + "wave-sin.png");
         preloadImage(imgPath + "wave-sin-sel.png");
         preloadImage(imgPath + "wave-saw.png");
@@ -3962,8 +3955,8 @@ var CGUI = function () {
         $("#osc1_vol").rsSlider("change", sliderMouseDown);
         $("#osc1_semi").rsSlider("change", sliderMouseDown);
 
-        document.getElementById("osc1_xenv").addEventListener("mousedown", boxMouseDown, false);
-        document.getElementById("osc1_xenv").addEventListener("touchstart", boxMouseDown, false);
+        $("#osc1_xenv").on("change", boxMouseDown);
+
         document.getElementById("osc2_wave_sin").addEventListener("mousedown", osc2WaveMouseDown, false);
         document.getElementById("osc2_wave_sin").addEventListener("touchstart", osc2WaveMouseDown, false);
         document.getElementById("osc2_wave_sqr").addEventListener("mousedown", osc2WaveMouseDown, false);
@@ -3977,8 +3970,7 @@ var CGUI = function () {
         $("#osc2_semi").rsSlider("change", sliderMouseDown);
         $("#osc2_det").rsSlider("change", sliderMouseDown);
 
-        document.getElementById("osc2_xenv").addEventListener("mousedown", boxMouseDown, false);
-        document.getElementById("osc2_xenv").addEventListener("touchstart", boxMouseDown, false);
+        $("#osc2_xenv").on("change", boxMouseDown);
 
         $("#noise_vol").rsSlider("change", sliderMouseDown);
 
@@ -3998,8 +3990,7 @@ var CGUI = function () {
         $("#lfo_amt").rsSlider("change", sliderMouseDown);
         $("#lfo_freq").rsSlider("change", sliderMouseDown);
 
-        document.getElementById("lfo_fxfreq").addEventListener("mousedown", boxMouseDown, false);
-        document.getElementById("lfo_fxfreq").addEventListener("touchstart", boxMouseDown, false);
+        $("#lfo_fxfreq").on("change", boxMouseDown);
 
         document.getElementById("fx_filt_lp").addEventListener("mousedown", fxFiltMouseDown, false);
         document.getElementById("fx_filt_lp").addEventListener("touchstart", fxFiltMouseDown, false);
