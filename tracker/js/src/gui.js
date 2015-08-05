@@ -1455,22 +1455,13 @@ var CGUI = function () {
     };
 
     var updateSlider = function (o, x, ignore) {
-        var props = o.sliderProps,
-            pos   = (x - props.min) / (props.max - props.min);
-
-        pos = pos < 0 ? 0 : (pos > 1 ? 1 : pos);
-
-        if (props.nonLinear) {
-            pos = Math.sqrt(pos);
-        }
-
         if (!ignore) {
             o.value = x;
         }
     };
 
     var updateCheckBox = function (o, check) {
-        o.src = check ? imgPath + "box-check.png" : imgPath + "box-uncheck.png";
+        $(o).prop("checked", !!check);
     };
 
     var clearPresetSelection = function () {
@@ -1478,25 +1469,24 @@ var CGUI = function () {
         o.selectedIndex = 0;
     };
 
+    var updateRadio = function (name, value) {
+        $("[name='" + name + "'][value='" + value + "']")
+            .attr("checked", "checked")
+            .parent().addClass("active")
+            .siblings().removeClass("active");
+    };
+
     var updateInstrument = function (resetPreset) {
         var instr = mSong.songData[mSeqCol];
 
-        // Oscillator 1
-        document.getElementById("osc1_wave_sin").src = instr.i[OSC1_WAVEFORM] == 0 ? imgPath + "wave-sin-sel.png" : imgPath + "wave-sin.png";
-        document.getElementById("osc1_wave_sqr").src = instr.i[OSC1_WAVEFORM] == 1 ? imgPath + "wave-sqr-sel.png" : imgPath + "wave-sqr.png";
-        document.getElementById("osc1_wave_saw").src = instr.i[OSC1_WAVEFORM] == 2 ? imgPath + "wave-saw-sel.png" : imgPath + "wave-saw.png";
-        document.getElementById("osc1_wave_tri").src = instr.i[OSC1_WAVEFORM] == 3 ? imgPath + "wave-tri-sel.png" : imgPath + "/wave-tri.png";
-
+        // Osc #1
+        updateRadio("osc1_wave", instr.i[OSC1_WAVEFORM]);
         updateSlider(document.getElementById("osc1_vol"), instr.i[OSC1_VOL]);
         updateSlider(document.getElementById("osc1_semi"), instr.i[OSC1_SEMI]);
         updateCheckBox(document.getElementById("osc1_xenv"), instr.i[OSC1_XENV]);
 
-        // Oscillator 2
-        document.getElementById("osc2_wave_sin").src = instr.i[OSC2_WAVEFORM] == 0 ? imgPath + "wave-sin-sel.png" : imgPath + "wave-sin.png";
-        document.getElementById("osc2_wave_sqr").src = instr.i[OSC2_WAVEFORM] == 1 ? imgPath + "wave-sqr-sel.png" : imgPath + "wave-sqr.png";
-        document.getElementById("osc2_wave_saw").src = instr.i[OSC2_WAVEFORM] == 2 ? imgPath + "wave-saw-sel.png" : imgPath + "wave-saw.png";
-        document.getElementById("osc2_wave_tri").src = instr.i[OSC2_WAVEFORM] == 3 ? imgPath + "wave-tri-sel.png" : imgPath + "wave-tri.png";
-
+        // Osc #2
+        updateRadio("osc2_wave", instr.i[OSC2_WAVEFORM]);
         updateSlider(document.getElementById("osc2_vol"), instr.i[OSC2_VOL]);
         updateSlider(document.getElementById("osc2_semi"), instr.i[OSC2_SEMI]);
         updateSlider(document.getElementById("osc2_det"), instr.i[OSC2_DETUNE]);
@@ -1511,20 +1501,13 @@ var CGUI = function () {
         updateSlider(document.getElementById("env_rel"), instr.i[ENV_RELEASE]);
 
         // LFO
-        document.getElementById("lfo_wave_sin").src = instr.i[LFO_WAVEFORM] == 0 ? imgPath + "wave-sin-sel.png" : imgPath + "wave-sin.png";
-        document.getElementById("lfo_wave_sqr").src = instr.i[LFO_WAVEFORM] == 1 ? imgPath + "wave-sqr-sel.png" : imgPath + "wave-sqr.png";
-        document.getElementById("lfo_wave_saw").src = instr.i[LFO_WAVEFORM] == 2 ? imgPath + "wave-saw-sel.png" : imgPath + "wave-saw.png";
-        document.getElementById("lfo_wave_tri").src = instr.i[LFO_WAVEFORM] == 3 ? imgPath + "wave-tri-sel.png" : imgPath + "wave-tri.png";
-
+        updateRadio("lfo_wave", instr.i[LFO_WAVEFORM]);
         updateSlider(document.getElementById("lfo_amt"), instr.i[LFO_AMT]);
         updateSlider(document.getElementById("lfo_freq"), instr.i[LFO_FREQ]);
         updateCheckBox(document.getElementById("lfo_fxfreq"), instr.i[LFO_FX_FREQ]);
 
-        // Effects
-        document.getElementById("fx_filt_lp").src = instr.i[FX_FILTER] == 2 ? imgPath + "filt-lp-sel.png" : imgPath + "filt-lp.png";
-        document.getElementById("fx_filt_hp").src = instr.i[FX_FILTER] == 1 ? imgPath + "filt-hp-sel.png" : imgPath + "filt-hp.png";
-        document.getElementById("fx_filt_bp").src = instr.i[FX_FILTER] == 3 ? imgPath + "filt-bp-sel.png" : imgPath + "filt-bp.png";
-
+        // FX
+        updateRadio("fx_filt", instr.i[FX_FILTER]);
         updateSlider(document.getElementById("fx_freq"), instr.i[FX_FREQ]);
         updateSlider(document.getElementById("fx_res"), instr.i[FX_RESONANCE]);
         updateSlider(document.getElementById("fx_dly_amt"), instr.i[FX_DELAY_AMT]);
