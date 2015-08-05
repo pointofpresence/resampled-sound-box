@@ -3908,17 +3908,21 @@ var CGUI = function () {
         $("#osc2_det").rsSlider("change", onSliderChange);
         $("#osc2_xenv").on("change", onCheckboxChange);
 
+        // Noise
         $("#noise_vol").rsSlider("change", onSliderChange);
 
+        // Envelope
         $("#env_att").rsSlider("change", onSliderChange);
         $("#env_sust").rsSlider("change", onSliderChange);
         $("#env_rel").rsSlider("change", onSliderChange);
 
+        // LFO
         $("[name=lfo_wave]").on("change", onLfoWaveChange);
         $("#lfo_amt").rsSlider("change", onSliderChange);
         $("#lfo_freq").rsSlider("change", onSliderChange);
         $("#lfo_fxfreq").on("change", onCheckboxChange);
 
+        // FX
         $("[name=fx_filt]").on("change", onFxFiltChange);
         $("#fx_freq").rsSlider("change", onSliderChange);
         $("#fx_res").rsSlider("change", onSliderChange);
