@@ -2711,7 +2711,7 @@ var CGUI = function () {
         }
     };
 
-    var boxMouseDown = function (e) {
+    var onCheckboxChange = function (e) {
         e = e || window.event;
         e.preventDefault();
 
@@ -2733,7 +2733,8 @@ var CGUI = function () {
             var fxValue;
 
             if (fxCmd >= 0) {
-                fxValue = +($(o).is(":checked")); //mSong.songData[mSeqCol].i[fxCmd] ? 0 : 1;
+                fxValue = +($(o).is(":checked")); //mSong.songData[mSeqCol].i[fxCmd] ? 0
+                                                  // : 1;
                 mSong.songData[mSeqCol].i[fxCmd] = fxValue;
             }
 
@@ -2754,23 +2755,12 @@ var CGUI = function () {
         }
     };
 
-    var osc1WaveMouseDown = function (e) {
+    var onOsc1WaveChange = function (e) {
         e = e || window.event;
         e.preventDefault();
 
         if (mSeqCol == mSeqCol2) {
-            var o    = getEventElement(e),
-                wave = 0;
-
-            if (o.id === "osc1_wave_sin") {
-                wave = 0;
-            } else if (o.id === "osc1_wave_sqr") {
-                wave = 1;
-            } else if (o.id === "osc1_wave_saw") {
-                wave = 2;
-            } else if (o.id === "osc1_wave_tri") {
-                wave = 3;
-            }
+            var wave = e.currentTarget.value;
 
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2) {
@@ -2789,23 +2779,12 @@ var CGUI = function () {
         }
     };
 
-    var osc2WaveMouseDown = function (e) {
+    var onOsc2WaveChange = function (e) {
         e = e || window.event;
         e.preventDefault();
 
         if (mSeqCol == mSeqCol2) {
-            var o    = getEventElement(e),
-                wave = 0;
-
-            if (o.id === "osc2_wave_sin") {
-                wave = 0;
-            } else if (o.id === "osc2_wave_sqr") {
-                wave = 1;
-            } else if (o.id === "osc2_wave_saw") {
-                wave = 2;
-            } else if (o.id === "osc2_wave_tri") {
-                wave = 3;
-            }
+            var wave = e.currentTarget.value;
 
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2) {
@@ -2824,23 +2803,12 @@ var CGUI = function () {
         }
     };
 
-    var lfoWaveMouseDown = function (e) {
+    var onLfoWaveChange = function (e) {
         e = e || window.event;
         e.preventDefault();
 
         if (mSeqCol == mSeqCol2) {
-            var o    = getEventElement(e),
-                wave = 0;
-
-            if (o.id === "lfo_wave_sin") {
-                wave = 0;
-            } else if (o.id === "lfo_wave_sqr") {
-                wave = 1;
-            } else if (o.id === "lfo_wave_saw") {
-                wave = 2;
-            } else if (o.id === "lfo_wave_tri") {
-                wave = 3;
-            }
+            var wave = e.currentTarget.value;
 
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2) {
@@ -2859,28 +2827,19 @@ var CGUI = function () {
         }
     };
 
-    var fxFiltMouseDown = function (e) {
+    var onFxFiltChange = function (e) {
         e = e || window.event;
         e.preventDefault();
 
         if (mSeqCol == mSeqCol2) {
-            var o    = getEventElement(e),
-                filt = 2;
-
-            if (o.id === "fx_filt_hp") {
-                filt = 1;
-            } else if (o.id === "fx_filt_lp") {
-                filt = 2;
-            } else if (o.id === "fx_filt_bp") {
-                filt = 3;
-            }
+            var filt = e.currentTarget.value;
 
             if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
                 mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
-                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = FX_FILTER + 1
+                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = FX_FILTER + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = filt;
                     updateFxTrack();
                 }
@@ -3132,7 +3091,7 @@ var CGUI = function () {
 
     var mActiveSlider = null;
 
-    var sliderMouseDown = function (e) {
+    var onSliderChange = function (e) {
         if (mSeqCol == mSeqCol2) {
             e = e || window.event;
 
@@ -3788,6 +3747,10 @@ var CGUI = function () {
     // Initialization
     //--------------------------------------------------------------------------
 
+    function openMidi() {
+
+    }
+
     this.init = function () {
         $(".knob").knob({
             inline:      false,
@@ -3809,22 +3772,6 @@ var CGUI = function () {
 
         // Preload images
         preloadImage(imgPath + "progress.gif");
-        preloadImage(imgPath + "wave-sin.png");
-        preloadImage(imgPath + "wave-sin-sel.png");
-        preloadImage(imgPath + "wave-saw.png");
-        preloadImage(imgPath + "wave-saw-sel.png");
-        preloadImage(imgPath + "wave-sqr.png");
-        preloadImage(imgPath + "wave-sqr-sel.png");
-        preloadImage(imgPath + "wave-tri.png");
-        preloadImage(imgPath + "wave-tri-sel.png");
-        preloadImage(imgPath + "filt-lp.png");
-        preloadImage(imgPath + "filt-lp-sel.png");
-        preloadImage(imgPath + "filt-hp.png");
-        preloadImage(imgPath + "filt-hp-sel.png");
-        preloadImage(imgPath + "filt-bp.png");
-        preloadImage(imgPath + "filt-bp-sel.png");
-        preloadImage(imgPath + "filt-n.png");
-        preloadImage(imgPath + "filt-n-sel.png");
 
         // Set up presets
         initPresets();
@@ -3851,6 +3798,7 @@ var CGUI = function () {
 
         document.getElementById("osc2_vol").sliderProps = {min: 0, max: 255};
         document.getElementById("osc2_semi").sliderProps = {min: 92, max: 164};
+
         document.getElementById("osc2_det").sliderProps = {
             min: 0, max: 255, nonLinear: true
         };
@@ -3867,11 +3815,13 @@ var CGUI = function () {
         document.getElementById("fx_freq").sliderProps = {
             min: 0, max: 255, nonLinear: true
         };
+
         document.getElementById("fx_res").sliderProps = {min: 0, max: 254};
 
         document.getElementById("fx_dist").sliderProps = {
             min: 0, max: 255, nonLinear: true
         };
+
         document.getElementById("fx_drive").sliderProps = {min: 0, max: 255};
 
         document.getElementById("fx_pan_amt").sliderProps = {min: 0, max: 255};
@@ -3911,17 +3861,19 @@ var CGUI = function () {
         setSelectedSequencerCell(0, 0);
         setSelectedPatternCell(0, 0);
 
-        // Misc event handlers
-        document.getElementById("logo").onmousedown = about;
-        document.getElementById("newSong").onmousedown = newSong;
-        document.getElementById("openSong").onmousedown = openSong;
-        document.getElementById("saveSong").onmousedown = saveSong;
-        document.getElementById("exportJS").onmousedown = exportJS;
-        document.getElementById("exportWAV").onmousedown = exportWAV;
-        document.getElementById("playSong").onmousedown = playSong;
-        document.getElementById("playRange").onmousedown = playRange;
-        document.getElementById("stopPlaying").onmousedown = stopPlaying;
-        document.getElementById("about").onmousedown = about;
+        // Menu
+        $("#logo").on("click", about);
+        $("#newSong").on("click", newSong);
+        $("#openSong").on("click", openSong);
+        $("#openMidi").on("click", openMidi);
+        $("#saveSong").on("click", saveSong);
+        $("#exportJS").on("click", exportJS);
+        $("#exportWAV").on("click", exportWAV);
+        $("#playSong").on("click", playSong);
+        $("#playRange").on("click", playRange);
+        $("#stopPlaying").on("click", stopPlaying);
+        $("#about").on("click", about);
+
         document.getElementById("bpm").onfocus = bpmFocus;
         document.getElementById("rpp").onfocus = rppFocus;
 
@@ -3943,78 +3895,50 @@ var CGUI = function () {
         document.getElementById("instrPreset").onfocus = instrPresetFocus;
         document.getElementById("instrPreset").onchange = selectPreset;
 
-        document.getElementById("osc1_wave_sin").addEventListener("mousedown", osc1WaveMouseDown, false);
-        document.getElementById("osc1_wave_sin").addEventListener("touchstart", osc1WaveMouseDown, false);
-        document.getElementById("osc1_wave_sqr").addEventListener("mousedown", osc1WaveMouseDown, false);
-        document.getElementById("osc1_wave_sqr").addEventListener("touchstart", osc1WaveMouseDown, false);
-        document.getElementById("osc1_wave_saw").addEventListener("mousedown", osc1WaveMouseDown, false);
-        document.getElementById("osc1_wave_saw").addEventListener("touchstart", osc1WaveMouseDown, false);
-        document.getElementById("osc1_wave_tri").addEventListener("mousedown", osc1WaveMouseDown, false);
-        document.getElementById("osc1_wave_tri").addEventListener("touchstart", osc1WaveMouseDown, false);
+        // Osc #1
+        $("[name=osc1_wave]").on("change", onOsc1WaveChange);
+        $("#osc1_vol").rsSlider("change", onSliderChange);
+        $("#osc1_semi").rsSlider("change", onSliderChange);
+        $("#osc1_xenv").on("change", onCheckboxChange);
 
-        $("#osc1_vol").rsSlider("change", sliderMouseDown);
-        $("#osc1_semi").rsSlider("change", sliderMouseDown);
+        // Osc #2
+        $("[name=osc2_wave]").on("change", onOsc2WaveChange);
+        $("#osc2_vol").rsSlider("change", onSliderChange);
+        $("#osc2_semi").rsSlider("change", onSliderChange);
+        $("#osc2_det").rsSlider("change", onSliderChange);
+        $("#osc2_xenv").on("change", onCheckboxChange);
 
-        $("#osc1_xenv").on("change", boxMouseDown);
+        $("#noise_vol").rsSlider("change", onSliderChange);
 
-        document.getElementById("osc2_wave_sin").addEventListener("mousedown", osc2WaveMouseDown, false);
-        document.getElementById("osc2_wave_sin").addEventListener("touchstart", osc2WaveMouseDown, false);
-        document.getElementById("osc2_wave_sqr").addEventListener("mousedown", osc2WaveMouseDown, false);
-        document.getElementById("osc2_wave_sqr").addEventListener("touchstart", osc2WaveMouseDown, false);
-        document.getElementById("osc2_wave_saw").addEventListener("mousedown", osc2WaveMouseDown, false);
-        document.getElementById("osc2_wave_saw").addEventListener("touchstart", osc2WaveMouseDown, false);
-        document.getElementById("osc2_wave_tri").addEventListener("mousedown", osc2WaveMouseDown, false);
-        document.getElementById("osc2_wave_tri").addEventListener("touchstart", osc2WaveMouseDown, false);
+        $("#env_att").rsSlider("change", onSliderChange);
+        $("#env_sust").rsSlider("change", onSliderChange);
+        $("#env_rel").rsSlider("change", onSliderChange);
 
-        $("#osc2_vol").rsSlider("change", sliderMouseDown);
-        $("#osc2_semi").rsSlider("change", sliderMouseDown);
-        $("#osc2_det").rsSlider("change", sliderMouseDown);
+        $("[name=lfo_wave]").on("change", onLfoWaveChange);
+        $("#lfo_amt").rsSlider("change", onSliderChange);
+        $("#lfo_freq").rsSlider("change", onSliderChange);
+        $("#lfo_fxfreq").on("change", onCheckboxChange);
 
-        $("#osc2_xenv").on("change", boxMouseDown);
-
-        $("#noise_vol").rsSlider("change", sliderMouseDown);
-
-        $("#env_att").rsSlider("change", sliderMouseDown);
-        $("#env_sust").rsSlider("change", sliderMouseDown);
-        $("#env_rel").rsSlider("change", sliderMouseDown);
-
-        document.getElementById("lfo_wave_sin").addEventListener("mousedown", lfoWaveMouseDown, false);
-        document.getElementById("lfo_wave_sin").addEventListener("touchstart", lfoWaveMouseDown, false);
-        document.getElementById("lfo_wave_sqr").addEventListener("mousedown", lfoWaveMouseDown, false);
-        document.getElementById("lfo_wave_sqr").addEventListener("touchstart", lfoWaveMouseDown, false);
-        document.getElementById("lfo_wave_saw").addEventListener("mousedown", lfoWaveMouseDown, false);
-        document.getElementById("lfo_wave_saw").addEventListener("touchstart", lfoWaveMouseDown, false);
-        document.getElementById("lfo_wave_tri").addEventListener("mousedown", lfoWaveMouseDown, false);
-        document.getElementById("lfo_wave_tri").addEventListener("touchstart", lfoWaveMouseDown, false);
-
-        $("#lfo_amt").rsSlider("change", sliderMouseDown);
-        $("#lfo_freq").rsSlider("change", sliderMouseDown);
-
-        $("#lfo_fxfreq").on("change", boxMouseDown);
-
-        document.getElementById("fx_filt_lp").addEventListener("mousedown", fxFiltMouseDown, false);
-        document.getElementById("fx_filt_lp").addEventListener("touchstart", fxFiltMouseDown, false);
-        document.getElementById("fx_filt_hp").addEventListener("mousedown", fxFiltMouseDown, false);
-        document.getElementById("fx_filt_hp").addEventListener("touchstart", fxFiltMouseDown, false);
-        document.getElementById("fx_filt_bp").addEventListener("mousedown", fxFiltMouseDown, false);
-        document.getElementById("fx_filt_bp").addEventListener("touchstart", fxFiltMouseDown, false);
-
-        $("#fx_freq").rsSlider("change", sliderMouseDown);
-        $("#fx_res").rsSlider("change", sliderMouseDown);
-        $("#fx_dly_amt").rsSlider("change", sliderMouseDown);
-        $("#fx_dly_time").rsSlider("change", sliderMouseDown);
-        $("#fx_pan_amt").rsSlider("change", sliderMouseDown);
-        $("#fx_pan_freq").rsSlider("change", sliderMouseDown);
-        $("#fx_dist").rsSlider("change", sliderMouseDown);
-        $("#fx_drive").rsSlider("change", sliderMouseDown);
+        $("[name=fx_filt]").on("change", onFxFiltChange);
+        $("#fx_freq").rsSlider("change", onSliderChange);
+        $("#fx_res").rsSlider("change", onSliderChange);
+        $("#fx_dly_amt").rsSlider("change", onSliderChange);
+        $("#fx_dly_time").rsSlider("change", onSliderChange);
+        $("#fx_pan_amt").rsSlider("change", onSliderChange);
+        $("#fx_pan_freq").rsSlider("change", onSliderChange);
+        $("#fx_dist").rsSlider("change", onSliderChange);
+        $("#fx_drive").rsSlider("change", onSliderChange);
 
         document.getElementById("octaveDown").addEventListener("mousedown", octaveDown, false);
         document.getElementById("octaveDown").addEventListener("touchstart", octaveDown, false);
         document.getElementById("octaveUp").addEventListener("mousedown", octaveUp, false);
         document.getElementById("octaveUp").addEventListener("touchstart", octaveUp, false);
+
+        // Keyboard
         document.getElementById("keyboard").addEventListener("mousedown", keyboardMouseDown, false);
         document.getElementById("keyboard").addEventListener("touchstart", keyboardMouseDown, false);
 
+        // Instrument menu
         document.getElementById("instrCopy").onmousedown = instrCopyMouseDown;
         document.getElementById("instrPaste").onmousedown = instrPasteMouseDown;
 

@@ -98,7 +98,6 @@
                 <tr>
                     <!-- Menu -->
                     <td id="UItable" class="border-right">
-
                         <div id="newSong" class="btn btn-default btn-block btn-icon"
                              title="New song">
                             <i class="fa fa-file fa-fw"></i>New
@@ -107,6 +106,11 @@
                         <div id="openSong" class="btn btn-default btn-block btn-icon"
                              title="Open demo song">
                             <i class="fa fa-folder-open fa-fw"></i>Open
+                        </div>
+
+                        <div id="openMidi" class="btn btn-default btn-block btn-icon"
+                             title="Import MIDI file">
+                            <i class="fa fa-folder-open fa-fw"></i>Import MIDI
                         </div>
 
                         <div id="saveSong" class="btn btn-default btn-block btn-icon"
@@ -159,24 +163,28 @@
                         </div>
 
                         <div>
-                            <button id="sequencerCopy" class="btn btn-default btn-sm"
+                            <button id="sequencerCopy"
+                                    class="btn btn-default btn-sm btn-sqr"
                                     title="Copy">
                                 <i class="fa fa-files-o fw"></i>
                             </button>
 
-                            <button id="sequencerPaste" class="btn btn-default btn-sm"
+                            <button id="sequencerPaste"
+                                    class="btn btn-default btn-sm btn-sqr"
                                     title="Paste">
                                 <i class="fa fa-clipboard"></i>
                             </button>
                         </div>
 
                         <div>
-                            <button id="sequencerPatDown" class="btn btn-default btn-sm"
+                            <button id="sequencerPatDown"
+                                    class="btn btn-default btn-sm btn-sqr"
                                     title="Pattern down">
                                 <i class="fa fa-chevron-down fw"></i>
                             </button>
 
-                            <button id="sequencerPatUp" class="btn btn-default btn-sm"
+                            <button id="sequencerPatUp"
+                                    class="btn btn-default btn-sm btn-sqr"
                                     title="Pattern up">
                                 <i class="fa fa-chevron-up fw"></i>
                             </button>
@@ -194,33 +202,37 @@
 
                         <div>
                             <button id="patternCopy"
-                                    class="btn btn-default btn-sm" title="Copy">
+                                    class="btn btn-default btn-sm btn-sqr" title="Copy">
                                 <i class="fa fa-files-o fw"></i>
                             </button>
 
-                            <button class="btn btn-default btn-sm"
+                            <button class="btn btn-default btn-sm btn-sqr"
                                     id="patternPaste" title="Paste">
                                 <i class="fa fa-clipboard"></i>
                             </button>
                         </div>
 
                         <div>
-                            <button id="patternNoteDown" class="btn btn-default btn-sm"
+                            <button id="patternNoteDown"
+                                    class="btn btn-default btn-sm btn-sqr"
                                     title="Note down">
                                 <i class="fa fa-chevron-down fw"></i>
                             </button>
 
-                            <button id="patternNoteUp" class="btn btn-default btn-sm"
+                            <button id="patternNoteUp"
+                                    class="btn btn-default btn-sm btn-sqr"
                                     title="Note up">
                                 <i class="fa fa-chevron-up fw"></i>
                             </button>
 
-                            <button id="patternOctaveDown" class="btn btn-default btn-sm"
+                            <button id="patternOctaveDown"
+                                    class="btn btn-default btn-sm btn-sqr"
                                     title="Octave down">
                                 <i class="fa fa-arrow-down fw"></i>
                             </button>
 
-                            <button id="patternOctaveUp" class="btn btn-default btn-sm"
+                            <button id="patternOctaveUp"
+                                    class="btn btn-default btn-sm btn-sqr"
                                     title="Octave up">
                                 <i class="fa fa-arrow-up fw"></i>
                             </button>
@@ -241,12 +253,12 @@
                         </div>
 
                         <div style="height: 32px">
-                            <button id="fxCopy" class="btn btn-default btn-sm"
+                            <button id="fxCopy" class="btn btn-default btn-sm btn-sqr"
                                     title="Copy">
                                 <i class="fa fa-files-o fw"></i>
                             </button>
 
-                            <button id="fxPaste" class="btn btn-default btn-sm"
+                            <button id="fxPaste" class="btn btn-default btn-sm btn-sqr"
                                     title="Paste">
                                 <i class="fa fa-clipboard"></i>
                             </button>
@@ -267,12 +279,14 @@
                             </div>
 
                             <div class="col-lg-6">
-                                <button id="instrCopy" class="btn btn-default btn-sm"
+                                <button id="instrCopy"
+                                        class="btn btn-default btn-sm btn-sqr"
                                         title="Copy instrument">
                                     <i class="fa fa-files-o fw"></i>
                                 </button>
 
-                                <button id="instrPaste" class="btn btn-default btn-sm"
+                                <button id="instrPaste"
+                                        class="btn btn-default btn-sm btn-sqr"
                                         title="Paste instrument">
                                     <i class="fa fa-clipboard"></i>
                                 </button>
@@ -293,25 +307,48 @@
                                                 <td>Wave</td>
 
                                                 <td>
-                                                    <img id="osc1_wave_sin" title="Sine"
-                                                         src="tracker/image/gui/wave-sin.png"
-                                                         alt="Sin"
-                                                         style="margin-right: 10px" />
+                                                    <div class="btn-group"
+                                                         data-toggle="buttons">
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Sine">
+                                                            <input type="radio"
+                                                                   name="osc1_wave"
+                                                                   id="osc1_wave_sin"
+                                                                   autocomplete="off"
+                                                                   value="0" />
+                                                            Sin
+                                                        </label>
 
-                                                    <img id="osc1_wave_tri"
-                                                         title="Triangle"
-                                                         src="tracker/image/gui/wave-tri.png"
-                                                         alt="Tri"
-                                                         style="margin-right: 10px" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Square">
+                                                            <input type="radio"
+                                                                   name="osc1_wave"
+                                                                   id="osc1_wave_sqr"
+                                                                   autocomplete="off"
+                                                                   value="1" />
+                                                            Sqr
+                                                        </label>
 
-                                                    <img id="osc1_wave_saw" title="Saw"
-                                                         src="tracker/image/gui/wave-saw.png"
-                                                         alt="Saw"
-                                                         style="margin-right: 10px" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Saw">
+                                                            <input type="radio"
+                                                                   name="osc1_wave"
+                                                                   id="osc1_wave_saw"
+                                                                   autocomplete="off"
+                                                                   value="2" />
+                                                            Saw
+                                                        </label>
 
-                                                    <img id="osc1_wave_sqr" title="Square"
-                                                         src="tracker/image/gui/wave-sqr.png"
-                                                         alt="Sqr" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Triangle">
+                                                            <input type="radio"
+                                                                   name="osc1_wave"
+                                                                   id="osc1_wave_tri"
+                                                                   autocomplete="off"
+                                                                   value="3" />
+                                                            Tri
+                                                        </label>
+                                                    </div>
                                                 </td>
                                             </tr>
 
@@ -357,25 +394,48 @@
                                                 <td>Wave</td>
 
                                                 <td>
-                                                    <img id="osc2_wave_sin" title="Sine"
-                                                         src="tracker/image/gui/wave-sin.png"
-                                                         alt="Sin"
-                                                         style="margin-right: 10px" />
+                                                    <div class="btn-group"
+                                                         data-toggle="buttons">
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Sine">
+                                                            <input type="radio"
+                                                                   name="osc2_wave"
+                                                                   id="osc2_wave_sin"
+                                                                   autocomplete="off"
+                                                                   value="0" />
+                                                            Sin
+                                                        </label>
 
-                                                    <img id="osc2_wave_tri"
-                                                         title="Triangle"
-                                                         src="tracker/image/gui/wave-tri.png"
-                                                         alt="Tri"
-                                                         style="margin-right: 10px" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Square">
+                                                            <input type="radio"
+                                                                   name="osc2_wave"
+                                                                   id="osc2_wave_sqr"
+                                                                   autocomplete="off"
+                                                                   value="1" />
+                                                            Sqr
+                                                        </label>
 
-                                                    <img id="osc2_wave_saw" title="Saw"
-                                                         src="tracker/image/gui/wave-saw.png"
-                                                         alt="Saw"
-                                                         style="margin-right: 10px" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Saw">
+                                                            <input type="radio"
+                                                                   name="osc2_wave"
+                                                                   id="osc2_wave_saw"
+                                                                   autocomplete="off"
+                                                                   value="2" />
+                                                            Saw
+                                                        </label>
 
-                                                    <img id="osc2_wave_sqr" title="Square"
-                                                         src="tracker/image/gui/wave-sqr.png"
-                                                         alt="Sqr" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Triangle">
+                                                            <input type="radio"
+                                                                   name="osc2_wave"
+                                                                   id="osc2_wave_tri"
+                                                                   autocomplete="off"
+                                                                   value="3" />
+                                                            Tri
+                                                        </label>
+                                                    </div>
                                                 </td>
                                             </tr>
 
@@ -493,25 +553,48 @@
                                                 <td>Wave</td>
 
                                                 <td>
-                                                    <img id="lfo_wave_sin" title="Sine"
-                                                         src="tracker/image/gui/wave-sin.png"
-                                                         alt="Sin"
-                                                         style="margin-right: 10px" />
+                                                    <div class="btn-group"
+                                                         data-toggle="buttons">
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Sine">
+                                                            <input type="radio"
+                                                                   name="lfo_wave"
+                                                                   id="lfo_wave_sin"
+                                                                   autocomplete="off"
+                                                                   value="0" />
+                                                            Sin
+                                                        </label>
 
-                                                    <img id="lfo_wave_tri"
-                                                         title="Triangle"
-                                                         src="tracker/image/gui/wave-tri.png"
-                                                         alt="Tri"
-                                                         style="margin-right: 10px" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Square">
+                                                            <input type="radio"
+                                                                   name="lfo_wave"
+                                                                   id="lfo_wave_sqr"
+                                                                   autocomplete="off"
+                                                                   value="1" />
+                                                            Sqr
+                                                        </label>
 
-                                                    <img id="lfo_wave_saw" title="Saw"
-                                                         src="tracker/image/gui/wave-saw.png"
-                                                         alt="Saw"
-                                                         style="margin-right: 10px" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Saw">
+                                                            <input type="radio"
+                                                                   name="lfo_wave"
+                                                                   id="lfo_wave_saw"
+                                                                   autocomplete="off"
+                                                                   value="2" />
+                                                            Saw
+                                                        </label>
 
-                                                    <img id="lfo_wave_sqr" title="Square"
-                                                         src="tracker/image/gui/wave-sqr.png"
-                                                         alt="Sqr" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Triangle">
+                                                            <input type="radio"
+                                                                   name="lfo_wave"
+                                                                   id="lfo_wave_tri"
+                                                                   autocomplete="off"
+                                                                   value="3" />
+                                                            Tri
+                                                        </label>
+                                                    </div>
                                                 </td>
                                             </tr>
 
@@ -522,7 +605,6 @@
                                                     <input title="Amount" id="lfo_amt"
                                                            type="range" min="0"
                                                            max="255" />
-
                                                 </td>
                                             </tr>
 
@@ -558,20 +640,38 @@
                                                 <td>Filt</td>
 
                                                 <td>
-                                                    <img id="fx_filt_lp" title="Low pass"
-                                                         src="tracker/image/gui/filt-lp.png"
-                                                         alt="LP"
-                                                         style="margin-right: 10px" />
+                                                    <div class="btn-group"
+                                                         data-toggle="buttons">
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="High pass">
+                                                            <input type="radio"
+                                                                   name="fx_filt"
+                                                                   id="fx_filt_hp"
+                                                                   autocomplete="off"
+                                                                   value="1" />
+                                                            HP
+                                                        </label>
 
-                                                    <img id="fx_filt_hp" title="High pass"
-                                                         src="tracker/image/gui/filt-hp.png"
-                                                         alt="HP"
-                                                         style="margin-right: 10px" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Low pass">
+                                                            <input type="radio"
+                                                                   name="fx_filt"
+                                                                   id="fx_filt_lp"
+                                                                   autocomplete="off"
+                                                                   value="2" />
+                                                            LP
+                                                        </label>
 
-                                                    <img id="fx_filt_bp" title="Band pass"
-                                                         src="tracker/image/gui/filt-bp.png"
-                                                         alt="BP"
-                                                         style="margin-right: 10px" />
+                                                        <label class="btn btn-default btn-sm"
+                                                               title="Band pass">
+                                                            <input type="radio"
+                                                                   name="fx_filt"
+                                                                   id="fx_filt_bp"
+                                                                   autocomplete="off"
+                                                                   value="3" />
+                                                            BP
+                                                        </label>
+                                                    </div>
                                                 </td>
                                             </tr>
 
@@ -673,7 +773,7 @@
                             </div>
 
                             <button id="octaveDown" title="Octave down"
-                                    class="btn btn-default btn-sm">
+                                    class="btn btn-default btn-sm btn-sqr">
                                 <i class="fa fa-chevron-left fw"></i>
                             </button>
 
@@ -681,7 +781,7 @@
                                  width="421" height="112" alt="Keyboard" />&nbsp;
 
                             <button id="octaveUp" title="Octave up"
-                                    class="btn btn-default btn-sm">
+                                    class="btn btn-default btn-sm btn-sqr">
                                 <i class="fa fa-chevron-right fw"></i>
                             </button>
                         </div>
