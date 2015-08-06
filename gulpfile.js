@@ -17,10 +17,11 @@ var gulp         = require("gulp"),              // Gulp JS
     jade         = require("gulp-jade"),         // Jade compiler
     replace      = require("gulp-replace"),      // replace
     zip          = require("gulp-zip"),          // zip
-    runSequence  = require("run-sequence");      // sync
+    runSequence  = require("run-sequence"),      // sync
+    notify       = require("gulp-notify");       // notifications
 
 var banner = [
-    '/**',
+    '/*!',
     ' * This file is part of ReSampled SoundBox.',
     ' *',
     ' * Based on SoundBox by Marcus Geelnard (c) 2011-2013',
@@ -60,6 +61,7 @@ var ROOT              = ".",
     NODE              = ROOT + "/node_modules",
     DEMO              = ROOT + "/demo",
     TRACKER           = ROOT + "/tracker",
+    TRACKER_FONTS     = TRACKER + "/fonts",
     TRACKER_LESS      = TRACKER + "/less",
     TRACKER_CSS       = TRACKER + "/css",
     TRACKER_JS        = TRACKER + "/js",
@@ -171,8 +173,27 @@ function buildCss() {
         .pipe(out(TRACKER_CSS + "/app.css"));
 }
 
+function buildFonts() {
+    gutil.log("Creating fonts in " + chalk.magenta(TRACKER_FONTS) + " ...");
+    mkdirp(TRACKER_FONTS);
+
+    gulp
+        .src(NODE + "/font-awesome/fonts/*")
+        .pipe(gulp.dest(TRACKER_FONTS));
+}
+
 function buildJs() {
     gutil.log("Creating JS in " + chalk.magenta(TRACKER_JS) + " ...");
+
+    gulp
+        .src([
+            NODE + "/jquery/dist/jquery.js",
+            NODE + "/bootstrap/dist/js/bootstrap.js",
+            NODE + "/jquery-knob/dist/jquery.knob.min.js"
+        ])
+        .pipe(concat("vendor.js"))
+        .pipe(uglify())
+        .pipe(gulp.dest(TRACKER_JS));
 
     gulp
         .src(TRACKER_JS_SRC + "/player-worker.js")
@@ -182,7 +203,6 @@ function buildJs() {
 
     gulp
         .src([
-            NODE + "/jquery-knob/dist/jquery.knob.min.js",
             TRACKER_JS_SRC + "/jquery.rs.slider.js",
             TRACKER_JS_SRC + "/demo-songs.js",
             TRACKER_JS_SRC + "/presets.js",
@@ -217,6 +237,7 @@ gulp.task("compressDemo", compressDemo);
 // tracker
 gulp.task("buildJs", buildJs);
 gulp.task("buildCss", buildCss);
+gulp.task("buildFonts", buildFonts);
 
 // watcher
 gulp.task("watch", function () {
