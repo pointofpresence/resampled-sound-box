@@ -1858,50 +1858,7 @@ var CGUI = function () {
     };
 
     var showAboutDialog = function () {
-        var parent = document.getElementById("dialog");
-        parent.innerHTML = "";
-
-        // Create dialog content
-        var o;
-        o = document.createElement("img");
-        o.src = imgPath + "logo-big.png";
-        parent.appendChild(o);
-
-        o = document.createElement("p");
-        o.appendChild(document.createTextNode("an HTML5 synth music tracker"));
-        parent.appendChild(o);
-
-        o = document.createElement("p");
-        o.innerHTML = "Licensed under the <a href=\"LICENSE\">GPL v3</a> license " +
-            "(get the <a href=\"http://gitorious.org/soundbox/soundbox\">source</a>).";
-        o.style.fontStyle = "italic";
-        parent.appendChild(o);
-
-        o = document.createElement("p");
-        o.appendChild(document.createTextNode("To get started, open a demo song."));
-        parent.appendChild(o);
-
-        o = document.createElement("a");
-        o.href = "help.html";
-        o.appendChild(document.createTextNode("Help"));
-        parent.appendChild(o);
-        parent.appendChild(document.createElement("br"));
-        parent.appendChild(document.createElement("br"));
-
-        var form = document.createElement("form");
-        o = document.createElement("input");
-        o.type = "submit";
-        o.value = "Close";
-
-        o.onclick = function () {
-            hideDialog();
-            return false;
-        };
-
-        form.appendChild(o);
-        parent.appendChild(form);
-
-        showDialog();
+        $("#modal-about").modal();
     };
 
     //--------------------------------------------------------------------------

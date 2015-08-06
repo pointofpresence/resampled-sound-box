@@ -63,22 +63,6 @@ p img {
     vertical-align: middle;
 }
 
-a {
-    color: #006;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #448;
-}
-
-h1 {
-    margin: 0;
-    text-align: center;
-    background: #eee;
-}
-
 table.ui h3 {
     padding: 0;
     margin: 0 0 4px 0;
@@ -457,5 +441,23 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
 
     label {
         margin-bottom: 0;
+    }
+}
+
+// Modals
+
+#modal-about {
+    .modal-body {
+        h3 {
+            color: @color-primary;
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 26px;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 26px * 1.6;
+        }
     }
 }
