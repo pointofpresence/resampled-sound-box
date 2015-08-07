@@ -1676,17 +1676,10 @@ var CGUI = function () {
     };
 
     var showOpenDialog = function () {
-        var parent = document.getElementById("dialog");
+        var parent = $("#modal-open .modal-body").get(0);
         parent.innerHTML = "";
 
         // Create dialog content
-        var o;
-        o = document.createElement("h3");
-        o.appendChild(document.createTextNode("Open song"));
-        parent.appendChild(o);
-
-        parent.appendChild(document.createElement("br"));
-
         var form = document.createElement("form");
 
         var listDiv = document.createElement("div");
@@ -1695,7 +1688,7 @@ var CGUI = function () {
         listDiv.style.lineHeight = "1.8em";
 
         // List demo songs...
-        var demoSongsElements = [];
+        var demoSongsElements = [], o;
 
         for (var i = 0; i < gDemoSongs.length; i++) {
             o = document.createElement("input");
@@ -1789,20 +1782,9 @@ var CGUI = function () {
         };
 
         form.appendChild(o);
-        form.appendChild(document.createTextNode(" "));
-        o = document.createElement("input");
-        o.type = "submit";
-        o.value = "Cancel";
-
-        o.onclick = function () {
-            hideDialog();
-            return false;
-        };
-
-        form.appendChild(o);
         parent.appendChild(form);
 
-        showDialog();
+        $("#modal-open").modal();
     };
 
     var showSaveDialog = function () {
@@ -1912,7 +1894,7 @@ var CGUI = function () {
         // Generate audio data
         var doneFun = function (wave) {
             var blob = new Blob([wave], {type: "application/octet-stream"});
-            saveAs(blob, "SoundBox-music.wav");
+            saveAs(blob, "rendered.wav");
         };
 
         generateAudio(doneFun);
@@ -1931,7 +1913,6 @@ var CGUI = function () {
 
     var setStatus = function (msg) {
         document.getElementById("statusText").innerHTML = msg;
-        // window.status = msg;
     };
 
     var generateAudio = function (doneFun, opts) {

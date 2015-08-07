@@ -33,6 +33,7 @@
     "jquery": "^2.1.4",
     "jquery-knob": "^1.2.11",
     "mkdirp": "^0.5.1",
+    "require-dir": "^0.3.0",
     "resampled-json-io": "0.0.1",
     "run-sequence": "^1.1.2"
   },

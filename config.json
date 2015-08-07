@@ -1,0 +1,12 @@
+{
+  "root":            ".",
+  "node":            "./node_modules",
+  "demo":            "./demo",
+  "tracker":         "./tracker",
+  "trackerFonts":    "./tracker/fonts",
+  "trackerLess":     "./tracker/less",
+  "trackerCss":      "./tracker/css",
+  "trackerJs":       "./tracker/js",
+  "trackerJsSrc":    "./tracker/js/src",
+  "trackerJsVendor": "./tracker/js/third_party"
+}
