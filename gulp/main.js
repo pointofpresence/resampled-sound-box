@@ -11,7 +11,8 @@ var gutil        = require("gulp-util"),         // log and other
     concat       = require("gulp-concat"),       // concat
     runSequence  = require("run-sequence"),      // sync
     uglify       = require("gulp-uglify"),       // JS min
-    dateFormat   = require("dateformat");        // date helper
+    dateFormat   = require("dateformat"),        // date helper
+    webServer    = require("gulp-webserver");    // web server
 
 function buildCss() {
     gutil.log("Creating CSS in " + chalk.magenta(config.trackerCss) + " ...");
@@ -90,11 +91,9 @@ function buildJs() {
         .pipe(gulp.dest(config.trackerJs));
 }
 
-// tracker
 gulp.task("buildJs", buildJs);
 gulp.task("buildCss", buildCss);
 gulp.task("buildFonts", buildFonts);
-gulp.task("build", runSequence(["buildJs", "buildCss", "buildFonts"]));
 
 // watcher
 gulp.task("watch", function () {
@@ -111,3 +110,13 @@ gulp.task("watch", function () {
     gulp.watch(config.trackerJsSrc + "/**/*.js", buildJs);
     gulp.watch(config.trackerLess + "/**/*.less", buildCss);
 });
+
+gulp.task("webserver", function () {
+    return gulp
+        .src(config.root)
+        .pipe(webServer(config.webserver.server));
+});
+
+gulp.task("build", runSequence(["buildJs", "buildCss", "buildFonts"]));
+
+gulp.task("default", runSequence("build", "watch", "webserver"));

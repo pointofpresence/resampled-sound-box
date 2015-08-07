@@ -8,5 +8,13 @@
   "trackerCss":      "./tracker/css",
   "trackerJs":       "./tracker/js",
   "trackerJsSrc":    "./tracker/js/src",
-  "trackerJsVendor": "./tracker/js/third_party"
+  "trackerJsVendor": "./tracker/js/third_party",
+  "webserver":       {
+    "server": {
+      "livereload": true,
+      "port":       1281,
+      "open":       false,
+      "fallback":   "index.html"
+    }
+  }
 }
