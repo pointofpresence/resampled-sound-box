@@ -1790,55 +1790,25 @@ var CGUI = function () {
     };
 
     var showSaveDialog = function () {
-        var parent = document.getElementById("dialog");
-        parent.innerHTML = "";
+        var $modal  = $("#modal-save"),
+            $link   = $("#save-song-data"),
+            $button = $("#save-song-button");
 
-        // Create dialog content
-        var o, o2;
-        o = document.createElement("h3");
-        o.appendChild(document.createTextNode("Save song"));
-        parent.appendChild(o);
+        var url      = makeURLSongData(songToBin(mSong)),
+            shortURL = url.length < 70 ? url : url.slice(0, 67) + "...";
 
-        o = document.createElement("p");
-        o.appendChild(document.createTextNode("Data URL (copy/paste, bookmark, mail etc):"));
-        parent.appendChild(o);
+        $link.attr("title", url);
+        $link.attr("href", url);
+        $link.text(shortURL);
 
-        o = document.createElement("p");
-        o2 = document.createElement("a");
-        var url = makeURLSongData(songToBin(mSong));
-        var shortURL = url.length < 70 ? url : url.slice(0, 67) + "...";
-        o2.href = url;
-        o2.title = url;
-        o2.appendChild(document.createTextNode(shortURL));
-        o.appendChild(o2);
-        parent.appendChild(o);
-
-        var form = document.createElement("form");
-        o = document.createElement("input");
-        o.type = "submit";
-        o.value = "Save binary";
-        o.title = "Save the song as a binary file.";
-
-        o.onclick = function () {
+        $button.on("click", function (e) {
+            e.preventDefault();
             var dataURI = "data:application/octet-stream;base64," + btoa(songToBin(mSong));
             window.open(dataURI);
-            hideDialog();
-            return false;
-        };
+            $modal.modal("hide");
+        });
 
-        form.appendChild(o);
-        o = document.createElement("input");
-        o.type = "submit";
-        o.value = "Close";
-
-        o.onclick = function () {
-            hideDialog();
-            return false;
-        };
-
-        form.appendChild(o);
-        parent.appendChild(form);
-        showDialog();
+        $modal.modal();
     };
 
     var showAboutDialog = function () {
