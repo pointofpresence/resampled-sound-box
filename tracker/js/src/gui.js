@@ -1887,6 +1887,9 @@ var CGUI = function () {
     };
 
     var stopAudio = function () {
+        var $leds = $(".led"); //TODO: Cache
+        $leds.css("opacity", 0);
+
         stopFollower();
 
         if (mAudio) {
@@ -2006,14 +2009,9 @@ var CGUI = function () {
             ctx.stroke();
 
             // Draw leds
-            ctx.fillStyle = "rgb(0,0,0)";
-            ctx.fillRect(0, h, w, 20);
+            var $leds = $(".led"); //TODO: Cache
 
             for (i = 0; i < 8; ++i) {
-                // Draw un-lit led
-                var x = Math.round(26 + 23.0 * i);
-                ctx.drawImage(mPlayGfxLedOffImg, x, h);
-
                 if (i >= mFollowerFirstCol && i <= mFollowerLastCol) {
                     // Get envelope profile for this channel
                     var env_a = mSong.songData[i].i[ENV_ATTACK],
@@ -2045,9 +2043,7 @@ var CGUI = function () {
                         }
 
                         // Draw lit led with alpha blending
-                        ctx.globalAlpha = alpha * alpha;
-                        ctx.drawImage(mPlayGfxLedOnImg, x, h);
-                        ctx.globalAlpha = 1.0;
+                        $leds.eq(i).css("opacity", alpha);
                     }
                 }
             }

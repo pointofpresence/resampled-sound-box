@@ -111,6 +111,19 @@
     #cell-sequencer {
         padding-top: 4px;
 
+        #leds {
+            margin-left: 22px;
+
+            .led {
+                height: 1px;
+                width: 17px;
+                background-color: @color-primary;
+                float: left;
+                margin-right: 1px;
+                opacity: 0;
+            }
+        }
+
         #sequencer {
             .track-wrapper();
             width: @sequencer-width;
@@ -130,6 +143,7 @@
         #pattern {
             .track-wrapper();
             width: @pattern-width;
+            margin-top: 1px;
 
             td {
                 padding: 0 2px;
@@ -146,6 +160,7 @@
         #fxtrack {
             .track-wrapper();
             width: @fx-width;
+            margin-top: 1px;
 
             td {
                 padding: 0 2px;
