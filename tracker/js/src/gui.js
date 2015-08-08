@@ -1887,7 +1887,7 @@ var CGUI = function () {
     };
 
     var stopAudio = function () {
-        var $leds = $(".led"); //TODO: Cache
+        var $leds = $(".led"); //TODO: Cache me
         $leds.css("opacity", 0);
 
         stopFollower();
