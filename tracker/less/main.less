@@ -11,10 +11,6 @@
 // Common
 @import "common";
 
-#sequencer.edit, #pattern.edit, #fxtrack.edit {
-    border-color: #f44;
-}
-
 #fxtrack {
     width: 53px;
     max-height: 485px;
@@ -126,6 +122,10 @@ table.tracks {
         #sequencer {
             .track-wrapper();
             width: @sequencer-width;
+
+            &.edit {
+                border-color: @color-line;
+            }
 
             td {
                 padding: 0 2px;
