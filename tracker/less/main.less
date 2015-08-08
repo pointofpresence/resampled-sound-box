@@ -2,26 +2,21 @@
 @import "../../node_modules/font-awesome/less/font-awesome";
 @import "../../node_modules/bootswatch/superhero/variables";
 @import "../../node_modules/bootswatch/superhero/bootswatch";
-
-@color-body: #2b3e50;
-@color-body-overlayed: #161f28;
-@color-default: #4e5d6c;
-@color-default-hover: #485563;
-@color-primary: #df691a;
-@color-line: #596a7b;
-@color-text: #ebebeb;
-
+// Variables
+@import "variables";
+// Mixins
+@import "mixins";
+// Slider
 @import "rs.slider.less";
-
-.main-font() {
-    font-family: "Inconsolata", monospace;
-    font-size: 17px;
-}
 
 body {
     .main-font();
     padding: 0;
     margin: 0;
+
+    &:not(.loaded) {
+        overflow: hidden;
+    }
 }
 
 #content {
@@ -31,10 +26,6 @@ body {
     margin-left: auto;
     margin-right: auto;
     padding: 0;
-}
-
-#guiMaster {
-    width: 100%;
 }
 
 #sequencer.edit, #pattern.edit, #fxtrack.edit {
@@ -114,11 +105,6 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
     padding-bottom: 6px;
 }
 
-@sequencer-width: 220px;
-@pattern-width: 146px;
-@fx-width: 70px;
-@tracks-height: 483px;
-
 .track-wrapper() {
     border: 1px solid @color-body;
     height: @tracks-height;
@@ -134,6 +120,7 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
 
 #guiMaster {
     background: @color-default;
+    width: 100%;
 
     td {
         vertical-align: top;
@@ -300,150 +287,7 @@ table.tracks td.selected, table.tracks tr.beat td.selected {
 }
 
 // Modals
-
-#modal-about {
-    .modal-body {
-        h3 {
-            color: @color-primary;
-            margin-top: 0;
-            margin-bottom: 0;
-            font-size: 26px;
-        }
-
-        h2 {
-            margin-top: 0;
-            font-size: 26px * 1.6;
-        }
-
-        img {
-            width: 48px;
-            margin-bottom: 10px;
-        }
-    }
-}
-
-#modal-open {
-    .radio:first-child {
-        margin-top: 0;
-    }
-
-    .alert {
-        margin-bottom: 0;
-        margin-top: 20px;
-    }
-}
-
-#modal-progress {
-    .progress {
-        margin-bottom: 0;
-    }
-}
+@import "modals";
 
 // Loader
-
-body:not(.loaded) {
-    overflow: hidden;
-}
-
-#loader-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1100;
-    padding: 0;
-    margin: 0;
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg); /* Firefox 16+, IE 10+, Opera */
-        }
-        100% {
-            transform: rotate(360deg); /* Firefox 16+, IE 10+, Opera */
-        }
-    }
-
-    #loader {
-        display: block;
-        position: relative;
-        left: 50%;
-        top: 50%;
-        width: 150px;
-        height: 150px;
-        margin: -75px 0 0 -75px;
-        border-radius: 50%;
-        border: 3px solid transparent;
-        border-top-color: @color-text;
-        animation: spin 2s linear infinite;
-        z-index: 1300;
-
-        &:before {
-            content: "";
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            right: 5px;
-            bottom: 5px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: @color-body-overlayed;
-            animation: spin 3s linear infinite;
-        }
-
-        &:after {
-            content: "";
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            right: 15px;
-            bottom: 15px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: @color-primary;
-            animation: spin 1.5s linear infinite;
-        }
-    }
-
-    .loader-section {
-        position: fixed;
-        top: 0;
-        width: 51%;
-        height: 100%;
-        background: @color-body-overlayed;
-        z-index: 1200;
-
-        &.section-left {
-            left: 0;
-        }
-
-        &.section-right {
-            right: 0;
-        }
-    }
-}
-
-.loaded {
-    #loader-wrapper {
-        visibility: hidden;
-        transform: translateY(-100%);
-        transition: all 0.3s 1s ease-out;
-
-        .loader-section {
-            &.section-left {
-                transform: translateX(-100%);
-                transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-            }
-
-            &.section-right {
-                transform: translateX(100%);
-                transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-            }
-        }
-
-        #loader {
-            opacity: 0;
-            transition: all 0.3s ease-out;
-        }
-    }
-}
+@import "loader";
