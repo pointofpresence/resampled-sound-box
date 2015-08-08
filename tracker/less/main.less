@@ -11,64 +11,6 @@
 // Common
 @import "common";
 
-#fxtrack {
-    width: 53px;
-    max-height: 485px;
-    overflow: auto;
-    overflow-y: scroll;
-}
-
-#statusText {
-    margin-top: 10px;
-    text-align: center;
-}
-
-table.tracks {
-    .track-cell();
-
-    th {
-        .track-cell();
-
-        width: 18px;
-        color: #ffe;
-        background: #112;
-
-        &.playpos {
-            background: #667;
-            color: #fff;
-        }
-    }
-
-    td {
-        .track-cell();
-
-        color: #dda;
-        background: #447;
-
-        &:hover {
-            .cell-hover();
-        }
-
-        &.selected {
-            .cell-selected();
-        }
-    }
-
-    tr.beat {
-        td {
-            background: #559;
-
-            &:hover {
-                .cell-hover();
-            }
-
-            &.selected {
-                .cell-selected();
-            }
-        }
-    }
-}
-
 #guiMaster {
     background: @color-default;
     width: 100%;
@@ -84,6 +26,52 @@ table.tracks {
 
         &.border-right {
             border-right: 1px solid @color-line;
+        }
+    }
+
+    table.tracks {
+        .track-cell();
+
+        th {
+            .track-cell();
+
+            width: 18px;
+            color: #ffe;
+            background: #112;
+
+            &.playpos {
+                background: #667;
+                color: #fff;
+            }
+        }
+
+        td {
+            .track-cell();
+
+            color: #dda;
+            background: #447;
+
+            &:hover {
+                .cell-hover();
+            }
+
+            &.selected {
+                .cell-selected();
+            }
+        }
+
+        tr.beat {
+            td {
+                background: #559;
+
+                &:hover {
+                    .cell-hover();
+                }
+
+                &.selected {
+                    .cell-selected();
+                }
+            }
         }
     }
 
@@ -113,6 +101,10 @@ table.tracks {
         .btn {
             text-align: left;
         }
+
+        #statusText {
+            text-align: center;
+        }
     }
 
     // playlist
@@ -122,10 +114,6 @@ table.tracks {
         #sequencer {
             .track-wrapper();
             width: @sequencer-width;
-
-            &.edit {
-                border-color: @color-line;
-            }
 
             td {
                 padding: 0 2px;
