@@ -38,6 +38,12 @@
     </head>
 
     <body onload="gui_init()">
+        <div id="loader-wrapper">
+            <div id="loader"></div>
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+
         <div id="content">
             <div id="cover">
                 <div id="dialog"></div>
@@ -108,16 +114,24 @@
                         </div>
 
                         <div class="modal-body">
-
+                            <form>
+                                <div class="alert alert-info" role="alert">
+                                    <strong>Hint!</strong> You can also drag'n'drop binary
+                                    files into the editor.
+                                </div>
+                            </form>
                         </div>
 
                         <div class="modal-footer">
                             <div class="row">
-                                <div class="col-lg-9">
-                                    <!-- *** -->
+                                <div class="col-lg-6 text-left">
+                                    <button type="button" class="btn btn-primary"
+                                            id="open-song-button"
+                                            data-dismiss="modal">Open
+                                    </button>
                                 </div>
 
-                                <div class="col-lg-3">
+                                <div class="col-lg-6 text-right">
                                     <button type="button" class="btn btn-default"
                                             data-dismiss="modal">Close
                                     </button>

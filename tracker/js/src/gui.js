@@ -1676,11 +1676,13 @@ var CGUI = function () {
     };
 
     var showOpenDialog = function () {
-        var parent = $("#modal-open .modal-body").get(0);
-        parent.innerHTML = "";
+        var $modal = $("#modal-open"),
+            $body   = $modal.find(".modal-body"),
+            form   = $body.find("form").get(0);
+
+        form.innerHTML = "";
 
         // Create dialog content
-        var form = document.createElement("form");
 
         var listDiv = document.createElement("div");
         listDiv.style.textAlign = "left";
@@ -1719,6 +1721,8 @@ var CGUI = function () {
         var customURLElement = document.createElement("input");
         customURLElement.type = "text";
         customURLElement.size = "45";
+        customURLElement.className = "form-control input-sm";
+        customURLElement.id = "open-data-url";
         customURLElement.title = "Paste a saved song data URL here";
 
         customURLElement.onchange = function () {
@@ -1730,61 +1734,49 @@ var CGUI = function () {
         listDiv.appendChild(customURLElement);
 
         form.appendChild(listDiv);
-
-        o = document.createElement("p");
-        o.appendChild(document.createTextNode("Hint: You can also drag'n'drop binary files into the editor."));
         form.appendChild(o);
 
-        form.appendChild(document.createElement("br"));
+        $modal.modal();
+    };
 
-        o = document.createElement("input");
-        o.type = "submit";
-        o.value = "Open";
-        o.title = "Open song";
+    var onOpenSongClick = function (e) {
+        e.preventDefault();
 
-        o.onclick = function (e) {
-            e.preventDefault();
-            var songData = null;
+        var songData = null,
+            $modal   = $("#modal-open"),
+            $current = $modal.find(":radio:checked");
 
-            if (customURLRadioElement.checked) {
-                // Convert custom data URL to song data
-                var params = parseURLGetData(customURLElement.value);
-                songData = getURLSongData(params && params.data && params.data[0]);
-            } else {
-                // Pick a demo song
-                for (var i = 0; i < demoSongsElements.length; i++) {
-                    e = demoSongsElements[i];
+        if (!$current || !$current.length) {
+            return;
+        }
 
-                    if (e.checked) {
-                        for (var j = 0; j < gDemoSongs.length; j++) {
-                            if (gDemoSongs[j].name === e.value) {
-                                if (gDemoSongs[j].data) {
-                                    songData = gDemoSongs[j].data;
-                                } else {
-                                    songData = getURLSongData(gDemoSongs[j].base64);
-                                }
+        if ($current.val() == "custom") {
+            // Convert custom data URL to song data
+            var params = parseURLGetData($("#open-data-url").val());
+            songData = getURLSongData(params && params.data && params.data[0]);
+        } else {
+            var name = $current.val();
 
-                                break;
-                            }
-                        }
-
-                        break;
+            // Pick a demo song
+            for (var j = 0; j < gDemoSongs.length; j++) {
+                if (gDemoSongs[j].name === name) {
+                    if (gDemoSongs[j].data) {
+                        songData = gDemoSongs[j].data;
+                    } else {
+                        songData = getURLSongData(gDemoSongs[j].base64);
                     }
+
+                    break;
                 }
             }
+        }
 
-            // Load the song
-            if (songData) {
-                loadSongFromData(songData);
-            }
+        // Load the song
+        if (songData) {
+            loadSongFromData(songData);
+        }
 
-            hideDialog();
-        };
-
-        form.appendChild(o);
-        parent.appendChild(form);
-
-        $("#modal-open").modal();
+        $modal.modal("hide");
     };
 
     var showSaveDialog = function () {
@@ -3867,6 +3859,8 @@ var CGUI = function () {
         document.getElementById("instrCopy").onmousedown = instrCopyMouseDown;
         document.getElementById("instrPaste").onmousedown = instrPasteMouseDown;
 
+        $("#open-song-button").on("click", onOpenSongClick);
+
         // Initialize the MIDI handler
         initMIDI();
 
@@ -3884,6 +3878,8 @@ var CGUI = function () {
         // Update the jammer rowLen (BPM) - requires that the jammer has been
         // started.
         mJammer.updateRowLen(mSong.rowLen);
+
+        $("body").addClass("loaded");
     };
 };
 

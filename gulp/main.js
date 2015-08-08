@@ -12,7 +12,8 @@ var gutil        = require("gulp-util"),         // log and other
     runSequence  = require("run-sequence"),      // sync
     uglify       = require("gulp-uglify"),       // JS min
     dateFormat   = require("dateformat"),        // date helper
-    webServer    = require("gulp-webserver");    // web server
+    webServer    = require("gulp-webserver"),    // web server
+    notify       = require("gulp-notify");       // notifications
 
 function buildCss() {
     gutil.log("Creating CSS in " + chalk.magenta(config.trackerCss) + " ...");
@@ -22,6 +23,9 @@ function buildCss() {
     gulp
         .src(config.trackerLess + "/main.less")
         .pipe(less())
+        .on("error", notify.onError({
+            message: 'LESS error: <%= error.message %>'
+        }))
         .pipe(autoprefixer({
             browsers: [
                 "Android 2.3",
@@ -87,6 +91,9 @@ function buildJs() {
         ])
         .pipe(concat("modules.js"))
         .pipe(uglify())
+        .on("error", notify.onError({
+            message: 'Uglify error: <%= error.message %>'
+        }))
         .pipe(header(banner, {pkg: pkg, dateFormat: dateFormat, now: new Date}))
         .pipe(gulp.dest(config.trackerJs));
 }
