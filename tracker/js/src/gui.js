@@ -1618,22 +1618,6 @@ var CGUI = function () {
         updateSongSpeed();
     };
 
-    var showDialog = function () {
-        var e = document.getElementById("cover");
-        e.style.visibility = "visible";
-        e = document.getElementById("dialog");
-        e.style.visibility = "visible";
-        deactivateMasterEvents();
-    };
-
-    var hideDialog = function () {
-        var e = document.getElementById("cover");
-        e.style.visibility = "hidden";
-        e = document.getElementById("dialog");
-        e.style.visibility = "hidden";
-        activateMasterEvents();
-    };
-
     var showProgressDialog = function (msg) {
         var $modal    = $("#modal-progress"),
             $title    = $("#modal-progressLabel"),
