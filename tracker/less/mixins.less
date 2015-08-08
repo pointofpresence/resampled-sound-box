@@ -1,4 +1,32 @@
+@import "variables";
+
 .main-font() {
     font-family: "Inconsolata", monospace;
     font-size: 17px;
+}
+
+.track-wrapper() {
+    border: 1px solid @color-body;
+    height: @tracks-height;
+    overflow: auto;
+    margin-bottom: 4px;
+}
+
+.track-cell() {
+    border: 1px solid #333;
+    border-collapse: collapse;
+    padding: 0 2px;
+    font-size: 10px;
+    text-align: center;
+    cursor: default;
+};
+
+.cell-hover() {
+    color: #ddd;
+    background: #77d;
+}
+
+.cell-selected() {
+    color: #fff;
+    background: #88f;
 }

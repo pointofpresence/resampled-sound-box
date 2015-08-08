@@ -1,0 +1,45 @@
+@import "variables";
+@import "mixins";
+
+body {
+    .main-font();
+    padding: 0;
+    margin: 0;
+
+    &:not(.loaded) {
+        overflow: hidden;
+    }
+}
+
+#content {
+    position: relative;
+    width: 1180px;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+}
+
+.btn-sqr {
+    border: 1px solid @color-default-hover;
+    width: 32px;
+    margin-bottom: 6px;
+}
+
+.btn-icon {
+    & > .fa {
+        margin-right: 10px;
+    }
+}
+
+.knob-wrap {
+    text-align: center;
+
+    & > div {
+        margin: 0 auto;
+    }
+
+    label {
+        margin-bottom: 0;
+    }
+}
