@@ -1635,30 +1635,13 @@ var CGUI = function () {
     };
 
     var showProgressDialog = function (msg) {
-        var parent = document.getElementById("dialog");
-        parent.innerHTML = "";
+        var $modal    = $("#modal-progress"),
+            $title    = $("#modal-progressLabel"),
+            $progress = $("#progressBar");
 
-        // Create dialog content
-        var o, o2;
-        o = document.createElement("img");
-        o.src = imgPath + "progress.gif";
-        parent.appendChild(o);
-
-        //noinspection JSValidateTypes
-        o = document.createTextNode(msg);
-
-        parent.appendChild(o);
-
-        //noinspection JSValidateTypes
-        o = document.createElement("div");
-
-        o.id = "progressBarParent";
-        parent.appendChild(o);
-        o2 = document.createElement("div");
-        o2.id = "progressBar";
-        o.appendChild(o2);
-
-        showDialog();
+        $title.text(msg);
+        $progress.css("width", "0%");
+        $modal.modal();
     };
 
     var loadSongFromData = function (songData) {
@@ -1900,7 +1883,7 @@ var CGUI = function () {
         mPlayer.generate(mSong, opts, function (progress) {
             // Update progress bar
             var o = document.getElementById("progressBar");
-            o.style.width = Math.floor(200 * progress) + "px";
+            o.style.width = Math.floor(100 * progress) + "%";
 
             if (progress >= 1) {
                 // Create the wave file
@@ -1911,7 +1894,7 @@ var CGUI = function () {
                 setStatus("Generation time: " + (d2.getTime() - d1.getTime()) / 1000 + "s");
 
                 // Hide dialog
-                hideDialog();
+                $("#modal-progress").modal("hide");
 
                 // Call the callback function
                 doneFun(wave);
@@ -2803,6 +2786,7 @@ var CGUI = function () {
                 if (p[0] >= (mBlackKeyPos[i] - 10) &&
                     p[0] <= (mBlackKeyPos[i] + 10)) {
                     n = mBlackKeyPos[i + 1];
+
                     break;
                 }
             }
