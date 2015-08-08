@@ -3867,7 +3867,7 @@ var CGUI = function () {
 // Program start
 //------------------------------------------------------------------------------
 
-function gui_init() {
+$(function () {
     try {
         // Create a global GUI object, and initialize it
         var gGui = new CGUI();
@@ -3875,4 +3875,4 @@ function gui_init() {
     } catch (err) {
         alert("Unexpected error: " + err.message);
     }
-}
+});
