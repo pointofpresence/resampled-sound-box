@@ -59,12 +59,11 @@ function buildJs() {
         .src([
             config.node + "/jquery/dist/jquery.js",
             config.node + "/bootstrap/dist/js/bootstrap.js",
-            config.node + "/jquery-knob/dist/jquery.knob.min.js",
-            config.node + "/raphael/raphael.js",
-            config.trackerJsVendor + "/jquery.bend-gauge.js"
+            config.node + "/jquery-knob/dist/jquery.knob.min.js"
+
         ])
         .pipe(concat("vendor.js"))
-        .pipe(uglify())
+        .pipe(uglify({mangle: false}))
         .pipe(gulp.dest(config.trackerJs));
 
     gulp
@@ -75,6 +74,7 @@ function buildJs() {
 
     gulp
         .src([
+
             config.trackerJsSrc + "/jquery.rs.slider.js",
             config.trackerJsSrc + "/demo-songs.js",
             config.trackerJsSrc + "/presets.js",

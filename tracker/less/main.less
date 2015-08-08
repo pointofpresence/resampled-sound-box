@@ -177,10 +177,16 @@
     #cell-meter {
         width: @sequencer-width + 8px;
 
-        #playGfxCanvas {
-            width: @sequencer-width;
-            height: 65px;
-            border: 1px solid @color-body;
+        .progress {
+            margin-bottom: 0;
+
+            &:last-child {
+                margin-top: 13px;
+            }
+
+            .progress-bar {
+                transition: none;
+            }
         }
     }
 

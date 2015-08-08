@@ -43,14 +43,11 @@ var CGUI = function () {
         mGETParams;
 
     // Resources
-    var mSong             = {},
-        mAudio            = null,
-        mAudioTimer       = new CAudioTimer(),
-        mPlayer           = new CPlayer(),
-        mPlayGfxVUImg     = new Image(),
-        mPlayGfxLedOffImg = new Image(),
-        mPlayGfxLedOnImg  = new Image(),
-        mJammer           = new CJammer();
+    var mSong       = {},
+        mAudio      = null,
+        mAudioTimer = new CAudioTimer(),
+        mPlayer     = new CPlayer(),
+        mJammer     = new CJammer();
 
     // Constant look-up-tables
     var mNoteNames = [
@@ -1944,107 +1941,80 @@ var CGUI = function () {
     };
 
     var redrawPlayerGfx = function (t) {
-        var o   = document.getElementById("playGfxCanvas"),
-            w   = mPlayGfxVUImg.width > 0 ? mPlayGfxVUImg.width : o.width,
-            h   = mPlayGfxVUImg.height > 0 ? mPlayGfxVUImg.height : 51,
-            ctx = o.getContext("2d");
+        // Calculate singal powers
+        var pl = 0, pr = 0;
 
-        if (ctx) {
-            // Draw the VU meter BG
-            ctx.drawImage(mPlayGfxVUImg, 0, 0);
+        if (mFollowerActive && t >= 0) {
+            // Get the waveform
+            var wave = mPlayer.getData(t, 1000);
 
-            // Calculate singal powers
-            var pl = 0, pr = 0;
+            // Calculate volume
+            var i, l, r,
+                sl = 0, sr = 0, l_old = 0, r_old = 0;
 
-            if (mFollowerActive && t >= 0) {
-                // Get the waveform
-                var wave = mPlayer.getData(t, 1000);
+            for (i = 1; i < wave.length; i += 2) {
+                l = wave[i - 1];
+                r = wave[i];
 
-                // Calculate volume
-                var i, l, r,
-                    sl = 0, sr = 0, l_old = 0, r_old = 0;
+                // Band-pass filter (low-pass + high-pass)
+                sl = 0.8 * l + 0.1 * sl - 0.3 * l_old;
+                sr = 0.8 * r + 0.1 * sr - 0.3 * r_old;
 
-                for (i = 1; i < wave.length; i += 2) {
-                    l = wave[i - 1];
-                    r = wave[i];
+                l_old = l;
+                r_old = r;
 
-                    // Band-pass filter (low-pass + high-pass)
-                    sl = 0.8 * l + 0.1 * sl - 0.3 * l_old;
-                    sr = 0.8 * r + 0.1 * sr - 0.3 * r_old;
-
-                    l_old = l;
-                    r_old = r;
-
-                    // Sum of squares
-                    pl += sl * sl;
-                    pr += sr * sr;
-                }
-
-                // Low-pass filtered mean power (RMS)
-                pl = Math.sqrt(pl / wave.length) * 0.2 + mFollowerLastVULeft * 0.8;
-                pr = Math.sqrt(pr / wave.length) * 0.2 + mFollowerLastVURight * 0.8;
-
-                mFollowerLastVULeft = pl;
-                mFollowerLastVURight = pr;
+                // Sum of squares
+                pl += sl * sl;
+                pr += sr * sr;
             }
 
-            // Convert to angles in the VU meter
-            var a1 = pl > 0 ? 1.3 + 0.5 * Math.log(pl) : -1000;
-            a1 = a1 < -1 ? -1 : a1 > 1 ? 1 : a1;
-            a1 *= 0.57;
+            // Low-pass filtered mean power (RMS)
+            pl = Math.sqrt(pl / wave.length) * 0.2 + mFollowerLastVULeft * 0.8;
+            pr = Math.sqrt(pr / wave.length) * 0.2 + mFollowerLastVURight * 0.8;
 
-            var a2 = pr > 0 ? 1.3 + 0.5 * Math.log(pr) : -1000;
-            a2 = a2 < -1 ? -1 : a2 > 1 ? 1 : a2;
-            a2 *= 0.57;
+            mFollowerLastVULeft = pl;
+            mFollowerLastVURight = pr;
+        }
 
-            // Draw VU hands
-            ctx.strokeStyle = "rgb(0,0,0)";
-            ctx.beginPath();
-            ctx.moveTo(w * 0.25, h * 2.1);
-            ctx.lineTo(w * 0.25 + h * 1.8 * Math.sin(a1), h * 2.1 - h * 1.8 * Math.cos(a1));
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(w * 0.75, h * 2.1);
-            ctx.lineTo(w * 0.75 + h * 1.8 * Math.sin(a2), h * 2.1 - h * 1.8 * Math.cos(a2));
-            ctx.stroke();
+        mPanLeft.css("width", Math.min(Math.floor(pl * 100 * 5), 100) + "%");
+        mPanRight.css("width", Math.min(Math.floor(pr * 100 * 5), 100) + "%");
 
-            // Draw leds
-            var $leds = $(".led"); //TODO: Cache
+        // Draw leds
+        var $leds = $(".led"); //TODO: Cache
 
-            for (i = 0; i < 8; ++i) {
-                if (i >= mFollowerFirstCol && i <= mFollowerLastCol) {
-                    // Get envelope profile for this channel
-                    var env_a = mSong.songData[i].i[ENV_ATTACK],
-                        env_s = mSong.songData[i].i[ENV_SUSTAIN],
-                        env_r = mSong.songData[i].i[ENV_RELEASE];
+        for (i = 0; i < 8; ++i) {
+            if (i >= mFollowerFirstCol && i <= mFollowerLastCol) {
+                // Get envelope profile for this channel
+                var env_a = mSong.songData[i].i[ENV_ATTACK],
+                    env_s = mSong.songData[i].i[ENV_SUSTAIN],
+                    env_r = mSong.songData[i].i[ENV_RELEASE];
 
-                    env_a = env_a * env_a * 4;
-                    env_r = env_s * env_s * 4 + env_r * env_r * 4;
+                env_a = env_a * env_a * 4;
+                env_r = env_s * env_s * 4 + env_r * env_r * 4;
 
-                    var env_tot = env_a + env_r;
+                var env_tot = env_a + env_r;
 
-                    if (env_tot < 10000) {
-                        env_tot = 10000;
-                        env_r = env_tot - env_a;
+                if (env_tot < 10000) {
+                    env_tot = 10000;
+                    env_r = env_tot - env_a;
+                }
+
+                // Get number of samples since last new note
+                var numSamp = getSamplesSinceNote(t, i);
+
+                if (numSamp >= 0 && numSamp < env_tot) {
+                    // Calculate current envelope (same method as the synth, except
+                    // sustain)
+                    var alpha;
+
+                    if (numSamp < env_a) {
+                        alpha = numSamp / env_a;
+                    } else {
+                        alpha = 1 - (numSamp - env_a) / env_r;
                     }
 
-                    // Get number of samples since last new note
-                    var numSamp = getSamplesSinceNote(t, i);
-
-                    if (numSamp >= 0 && numSamp < env_tot) {
-                        // Calculate current envelope (same method as the synth, except
-                        // sustain)
-                        var alpha;
-
-                        if (numSamp < env_a) {
-                            alpha = numSamp / env_a;
-                        } else {
-                            alpha = 1 - (numSamp - env_a) / env_r;
-                        }
-
-                        // Draw lit led with alpha blending
-                        $leds.eq(i).css("opacity", alpha);
-                    }
+                    // Draw lit led with alpha blending
+                    $leds.eq(i).css("opacity", alpha);
                 }
             }
         }
@@ -3608,6 +3578,9 @@ var CGUI = function () {
 
     }
 
+    var mPanLeft = $("#pan-left");
+    var mPanRight = $("#pan-right");
+
     this.init = function () {
         $(".knob").knob({
             inline:      false,
@@ -3627,24 +3600,8 @@ var CGUI = function () {
         mBaseURL = getURLBase(window.location.href);
         mGETParams = parseURLGetData(window.location.href);
 
-        // Preload images
-        preloadImage(imgPath + "progress.gif");
-
         // Set up presets
         initPresets();
-
-        // Load images for the play graphics canvas
-        mPlayGfxVUImg.onload = function () {
-            redrawPlayerGfx(-1);
-        };
-
-        mPlayGfxLedOffImg.onload = function () {
-            redrawPlayerGfx(-1);
-        };
-
-        mPlayGfxVUImg.src = imgPath + "playGfxBg.png";
-        mPlayGfxLedOffImg.src = imgPath + "led-off.png";
-        mPlayGfxLedOnImg.src = imgPath + "led-on.png";
 
         // Build the UI tables
         buildSequencerTable();
