@@ -1677,64 +1677,74 @@ var CGUI = function () {
 
     var showOpenDialog = function () {
         var $modal = $("#modal-open"),
-            $body   = $modal.find(".modal-body"),
+            $body  = $modal.find(".modal-body"),
             form   = $body.find("form").get(0);
 
         form.innerHTML = "";
 
-        // Create dialog content
-
         var listDiv = document.createElement("div");
-        listDiv.style.textAlign = "left";
-        listDiv.style.marginLeft = "30px";
-        listDiv.style.lineHeight = "1.8em";
 
         // List demo songs...
-        var demoSongsElements = [], o;
-
         for (var i = 0; i < gDemoSongs.length; i++) {
-            o = document.createElement("input");
-            o.type = "radio";
-            o.name = "radiogroup1";
-            o.value = gDemoSongs[i].name;
+            var $row = $("<div />", {
+                "class": "radio"
+            });
 
-            if (i === 0) {
-                o.checked = true;
-            }
+            var $label = $("<label />");
 
-            demoSongsElements.push(o);
-            listDiv.appendChild(o);
-            o = document.createElement("span");
-            o.innerHTML = gDemoSongs[i].description;
-            listDiv.appendChild(o);
-            listDiv.appendChild(document.createElement("br"));
+            $label
+                .append($("<input/>", {
+                    type:    "radio",
+                    name:    "radiogroup1",
+                    value:   gDemoSongs[i].name,
+                    checked: i === 0
+                }))
+                .append($("<span/>", {
+                    html: gDemoSongs[i].description
+                }));
+
+            $row.append($label);
+            listDiv.appendChild($row.get(0));
         }
 
         // Add input for a custom data URL
-        var customURLRadioElement = document.createElement("input");
-        customURLRadioElement.type = "radio";
-        customURLRadioElement.name = "radiogroup1";
-        customURLRadioElement.value = "custom";
-        listDiv.appendChild(customURLRadioElement);
-        listDiv.appendChild(document.createTextNode(" Data URL: "));
+        $row = $("<div />", {
+            "class": "radio"
+        });
+
+        $label = $("<label />");
+
+        $label
+            .append($("<input/>", {
+                type:  "radio",
+                name:  "radiogroup1",
+                value: "custom",
+                id:    "open-custom-radio"
+            }))
+            .append($("<span/>", {
+                html: "Data URL:"
+            }));
+
+        $row.append($label);
+        listDiv.appendChild($row.get(0));
 
         var customURLElement = document.createElement("input");
         customURLElement.type = "text";
-        customURLElement.size = "45";
         customURLElement.className = "form-control input-sm";
         customURLElement.id = "open-data-url";
         customURLElement.title = "Paste a saved song data URL here";
+        customURLElement.placeholder = customURLElement.title;
 
         customURLElement.onchange = function () {
-            customURLRadioElement.checked = true;
+            $("#open-custom-radio").prop("checked", true);
         };
 
         customURLElement.onkeydown = customURLElement.onchange;
         customURLElement.onclick = customURLElement.onchange;
+        customURLElement.onpaste = customURLElement.onchange;
         listDiv.appendChild(customURLElement);
 
         form.appendChild(listDiv);
-        form.appendChild(o);
 
         $modal.modal();
     };
