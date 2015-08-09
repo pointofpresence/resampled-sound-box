@@ -1158,8 +1158,6 @@ var CGUI = function () {
     };
 
     var unfocusHTMLInputElements = function () {
-        document.getElementById("bpm").blur();
-        document.getElementById("rpp").blur();
         document.getElementById("instrPreset").blur();
     };
 
