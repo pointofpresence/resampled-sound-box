@@ -1452,8 +1452,12 @@ var CGUI = function () {
     };
 
     var updateSlider = function (o, x, ignore) {
+        console.log("update");
+        console.log("ignore", ignore);
+
         if (!ignore) {
-            o.value = x;
+            var range = $(o);
+            range.rsSlider("value", x);
         }
     };
 

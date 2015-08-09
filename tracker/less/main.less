@@ -200,12 +200,33 @@
         padding-right: 16px;
         padding-bottom: 16px;
 
-        legend {
-            font-size: 14px;
-        }
+        #instrument {
+            fieldset {
+                margin-bottom: 16px;
 
-        td {
-            padding: 1px;
+                legend {
+                    font-size: 14px;
+                    margin-bottom: 8px;
+                    border-bottom: 1px solid @color-line;
+                }
+
+                .form-group {
+                    margin-bottom: 0;
+
+                    &.switch {
+                        margin-bottom: 4px;
+
+                        .control-label {
+                            padding-top: 7px;
+                        }
+                    }
+
+                    .control-label {
+                        padding-top: 0;
+                        padding-right: 0;
+                    }
+                }
+            }
         }
 
         hr {

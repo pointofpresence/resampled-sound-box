@@ -258,10 +258,12 @@
                     </td>
 
                     <td id="cell-midi" class="border-bottom">
-                        <select id="midiInput" title="Select a MIDI source"
-                                class="form-control">
-                            <option value="">(select MIDI)</option>
-                        </select>
+                        <div class="form-group">
+                            <select id="midiInput" title="Select a MIDI source"
+                                    class="form-control">
+                                <option value="">(select MIDI)</option>
+                            </select>
+                        </div>
                     </td>
                 </tr>
 
@@ -478,18 +480,19 @@
 
                         <hr />
 
-                        <table class="ui">
-                            <tr>
-                                <!-- Oscillator 1 -->
-                                <td>
+                        <div id="instrument">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <!-- Oscillator 1 -->
+
                                     <fieldset>
                                         <legend>Oscillator 1</legend>
 
-                                        <table class="subui">
-                                            <tr>
-                                                <td>Wave</td>
+                                        <form class="form-horizontal">
+                                            <div class="form-group switch">
+                                                <label class="col-lg-2 control-label">Wave</label>
 
-                                                <td>
+                                                <div class="col-lg-10">
                                                     <div class="btn-group"
                                                          data-toggle="buttons">
                                                         <label class="btn btn-default btn-sm"
@@ -532,51 +535,52 @@
                                                             Tri
                                                         </label>
                                                     </div>
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Vol</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Vol</label>
 
-                                                <td title="Volume">
+                                                <div class="col-lg-10">
                                                     <input type="range" min="0" max="255"
                                                            id="osc1_vol"
                                                            title="Volume" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Semi</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Semi</label>
 
-                                                <td title="Semitune">
+                                                <div class="col-lg-10">
                                                     <input type="range" min="92" max="164"
                                                            id="osc1_semi"
                                                            title="Semitune" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>X-Env</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">X-Env</label>
 
-                                                <td title="Envelope modulates frequency">
+                                                <div class="col-lg-10">
                                                     <input id="osc1_xenv" type="checkbox"
                                                            title="Envelope modulates frequency" />
-                                                </td>
-                                            </tr>
-                                        </table>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </fieldset>
-                                </td>
+                                </div>
 
-                                <!-- Oscillator 2 -->
-                                <td>
+                                <div class="col-lg-6">
+                                    <!-- Oscillator 2 -->
+
                                     <fieldset>
                                         <legend>Oscillator 2</legend>
 
-                                        <table class="subui">
-                                            <tr>
-                                                <td>Wave</td>
+                                        <form class="form-horizontal">
+                                            <div class="form-group switch">
+                                                <label class="col-lg-2 control-label">Wave</label>
 
-                                                <td>
+                                                <div class="col-lg-10">
                                                     <div class="btn-group"
                                                          data-toggle="buttons">
                                                         <label class="btn btn-default btn-sm"
@@ -619,123 +623,126 @@
                                                             Tri
                                                         </label>
                                                     </div>
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Vol</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Vol</label>
 
-                                                <td title="Volume">
+                                                <div class="col-lg-10">
                                                     <input title="Volume" type="range"
                                                            min="0" max="255"
                                                            id="osc2_vol" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Semi</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Semi</label>
 
-                                                <td title="Semitune">
+                                                <div class="col-lg-10">
                                                     <input title="Semitune" id="osc2_semi"
                                                            type="range"
                                                            min="92" max="164" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Det</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Det</label>
 
-                                                <td title="Detune">
+                                                <div class="col-lg-10">
                                                     <input id="osc2_det" type="range"
                                                            min="0" max="255"
                                                            title="Detune" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>X-Env</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">X-Env</label>
 
-                                                <td title="Envelope modulates frequency">
+                                                <div class="col-lg-10">
                                                     <input id="osc2_xenv" type="checkbox"
                                                            title="Envelope modulates frequency" />
-                                                </td>
-                                            </tr>
-                                        </table>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </fieldset>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
 
-                            <!-- Noise -->
-                            <tr>
-                                <td>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <!-- Noise -->
+
                                     <fieldset>
                                         <legend>Noise</legend>
 
-                                        <table class="subui">
-                                            <tr>
-                                                <td>Vol</td>
+                                        <form class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Vol</label>
 
-                                                <td title="Volume">
+                                                <div class="col-lg-10">
                                                     <input id="noise_vol" type="range"
                                                            min="0" max="255"
                                                            title="Volume" />
-                                                </td>
-                                            </tr>
-                                        </table>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </fieldset>
-                                </td>
+                                </div>
 
-                                <!-- Envelope -->
-                                <td>
+                                <div class="col-lg-6">
+                                    <!-- Envelope -->
+
                                     <fieldset>
                                         <legend>Envelope</legend>
 
-                                        <table class="subui">
-                                            <tr>
-                                                <td>Att</td>
+                                        <form class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Att</label>
 
-                                                <td title="Attack">
+                                                <div class="col-lg-10">
                                                     <input title="Attack" id="env_att"
                                                            type="range" min="0"
                                                            max="255" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Sust</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Sust</label>
 
-                                                <td title="Sustain">
+                                                <div class="col-lg-10">
                                                     <input title="Sustain" id="env_sust"
                                                            type="range" min="0"
                                                            max="255" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Rel</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Rel</label>
 
-                                                <td title="Release">
+                                                <div class="col-lg-10">
                                                     <input title="Release" id="env_rel"
                                                            type="range" min="0"
                                                            max="255" />
-                                                </td>
-                                            </tr>
-                                        </table>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </fieldset>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
 
-                            <!-- LFO -->
-                            <tr>
-                                <td>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <!-- LFO -->
+
                                     <fieldset>
                                         <legend>LFO</legend>
 
-                                        <table class="subui">
-                                            <tr>
-                                                <td>Wave</td>
+                                        <form class="form-horizontal">
+                                            <div class="form-group switch">
+                                                <label class="col-lg-2 control-label">Wave</label>
 
-                                                <td>
+                                                <div class="col-lg-10">
                                                     <div class="btn-group"
                                                          data-toggle="buttons">
                                                         <label class="btn btn-default btn-sm"
@@ -778,51 +785,52 @@
                                                             Tri
                                                         </label>
                                                     </div>
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Amt</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Amt</label>
 
-                                                <td title="Amount">
+                                                <div class="col-lg-10">
                                                     <input title="Amount" id="lfo_amt"
                                                            type="range" min="0"
                                                            max="255" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Freq</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Freq</label>
 
-                                                <td title="Frequency">
+                                                <div class="col-lg-10">
                                                     <input title="Frequency" id="lfo_freq"
                                                            type="range" min="0"
                                                            max="16" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>FXFreq</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">FXFreq</label>
 
-                                                <td title="FX frequency modulation">
+                                                <div class="col-lg-10">
                                                     <input id="lfo_fxfreq" type="checkbox"
                                                            title="FX frequency modulation" />
-                                                </td>
-                                            </tr>
-                                        </table>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </fieldset>
-                                </td>
+                                </div>
 
-                                <!-- FX -->
-                                <td>
+                                <div class="col-lg-6">
+                                    <!-- FX -->
+
                                     <fieldset>
                                         <legend>FX</legend>
 
-                                        <table class="subui">
-                                            <tr>
-                                                <td>Filt</td>
+                                        <form class="form-horizontal">
+                                            <div class="form-group switch">
+                                                <label class="col-lg-2 control-label">Filt</label>
 
-                                                <td>
+                                                <div class="col-lg-10">
                                                     <div class="btn-group"
                                                          data-toggle="buttons">
                                                         <label class="btn btn-default btn-sm"
@@ -855,97 +863,96 @@
                                                             BP
                                                         </label>
                                                     </div>
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Freq</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Freq</label>
 
-                                                <td title="Filter frequency">
+                                                <div class="col-lg-10">
                                                     <input id="fx_freq" type="range"
                                                            min="0" max="255"
                                                            title="Filter frequency" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Res</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Res</label>
 
-                                                <td title="Filter resonance">
+                                                <div class="col-lg-10">
                                                     <input id="fx_res" type="range"
                                                            min="0" max="254"
                                                            title="Filter resonance" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Dist</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Dist</label>
 
-                                                <td title="Distortion">
+                                                <div class="col-lg-10">
                                                     <input id="fx_dist" type="range"
                                                            min="0" max="255"
                                                            title="Distortion" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Drive</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Drive</label>
 
-                                                <td title="Volume drive">
+                                                <div class="col-lg-10">
                                                     <input id="fx_drive" type="range"
                                                            min="0" max="255"
                                                            title="Volume drive" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Pan</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Pan</label>
 
-                                                <td title="Pan amount">
+                                                <div class="col-lg-10">
                                                     <input id="fx_pan_amt" type="range"
                                                            min="0" max="255"
                                                            title="Pan amount" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Freq</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Freq</label>
 
-                                                <td title="Pan frequency">
+                                                <div class="col-lg-10">
                                                     <input id="fx_pan_freq"
                                                            type="range"
                                                            min="0" max="16"
                                                            title="Pan frequency" />
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
 
-                                            <tr>
-                                                <td>Delay</td>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Delay</label>
 
-                                                <td title="Delay amount">
+                                                <div class="col-lg-10">
                                                     <input id="fx_dly_amt"
                                                            type="range"
                                                            min="0" max="255"
                                                            title="Delay amount" />
+                                                </div>
+                                            </div>
 
-                                                </td>
-                                            </tr>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">Time</label>
 
-                                            <tr>
-                                                <td>Time</td>
-
-                                                <td title="Delay time">
+                                                <div class="col-lg-10">
                                                     <input id="fx_dly_time"
                                                            type="range"
                                                            min="0" max="16"
                                                            title="Delay time" />
-                                                </td>
-                                            </tr>
-                                        </table>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </fieldset>
-                                </td>
-                            </tr>
-                        </table>
+                                </div>
+                            </div>
+                        </div>
 
                         <hr />
 

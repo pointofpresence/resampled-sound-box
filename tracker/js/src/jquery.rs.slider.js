@@ -1,28 +1,51 @@
 ;
 (function ($) {
+    "use strict";
+
     var defaults = {
         change: $.noop
     };
 
+    var modifyOffset = function (target, call) {
+        console.log('modifyOffset');
+
+        var el  = $(target),
+            val = el.val() || 0;
+
+        el.next("output").text(val);
+
+        if (call) {
+            (el.data("cb") || $.noop)();
+        }
+    };
+
     var methods = {
         change: function (cb) {
-            $(this).on("change", function () {
-                $(this).next("output").val($(this).val());
-                cb();
-            });
+            this.data("cb", cb);
+        },
+
+        value: function (v) {
+            console.log('value');
+            $(this).val(v || 0);
+            modifyOffset(this, false);
         },
 
         init: function (options) {
             var configCommon = $.extend(defaults, options || {});
 
             return this.each(function () {
-                var $this = $(this),
+                var $this    = $(this),
                     personal = $this.data("config") || {}, // own element props
-                    config = $.extend(configCommon, personal);
+                    config   = $.extend(configCommon, personal);
 
                 $this.wrap($("<div/>", {"class": "rs-slider"}));
                 $this.after($("<output/>", {"class": "rangevalue"}));
-                $this.next("output").val(parseInt($this.val()));
+
+                $this.on("change, input", function () {
+                    modifyOffset(this, true);
+                });
+
+                modifyOffset(this, false);
             });
         }
     };
