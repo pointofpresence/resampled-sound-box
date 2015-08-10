@@ -57,43 +57,6 @@ var CGUI = function () {
     ];
 
     //--------------------------------------------------------------------------
-    // URL parsing & generation
-    //--------------------------------------------------------------------------
-
-    var getURLBase = function (url) {
-        var queryStart = url.indexOf("?");
-        return url.slice(0, queryStart >= 0 ? queryStart : url.length);
-    };
-
-    var parseURLGetData = function (url) {
-        var queryStart = url.indexOf("?") + 1,
-            queryEnd   = url.indexOf("#") + 1 || url.length + 1,
-            query      = url.slice(queryStart, queryEnd - 1);
-
-        var params = {};
-
-        if (query === url || query === "") {
-            return params;
-        }
-
-        var nvPairs = query.replace(/\+/g, " ").split("&");
-
-        for (var i = 0; i < nvPairs.length; i++) {
-            var nv = nvPairs[i].split("="),
-                n  = decodeURIComponent(nv[0]),
-                v  = decodeURIComponent(nv[1]);
-
-            if (!(n in params)) {
-                params[n] = [];
-            }
-
-            params[n].push(nv.length === 2 ? v : null);
-        }
-
-        return params;
-    };
-
-    //--------------------------------------------------------------------------
     // Song import/export functions
     //--------------------------------------------------------------------------
 
@@ -280,7 +243,7 @@ var CGUI = function () {
     };
 
     var onMIDISystemError = function (err) {
-        // TODO(m): Log an error message somehow (err.code)...
+        console.error(err);
     };
 
     var initMIDI = function () {
@@ -306,12 +269,6 @@ var CGUI = function () {
             parent.appendChild(o);
         }
     };
-
-
-
-
-
-
 
     var unfocusHTMLInputElements = function () {
         document.getElementById("instrPreset").blur();
@@ -433,17 +390,6 @@ var CGUI = function () {
         }
     };
 
-    var toHex = function (num, count) {
-        var s            = num.toString(16).toUpperCase(),
-            leadingZeros = count - s.length;
-
-        for (var i = 0; i < leadingZeros; ++i) {
-            s = "0" + s;
-        }
-
-        return s;
-    };
-
     var updateFxTrack = function (scrollIntoView, selectionOnly) {
         buildFxTable();
 
@@ -462,7 +408,7 @@ var CGUI = function () {
 
                     if (fxCmd) {
                         var fxVal = mSong.songData[mSeqCol].c[pat].f[i + mSong.patternLen];
-                        fxTxt = toHex(fxCmd, 2) + ":" + toHex(fxVal, 2);
+                        fxTxt = CUtil.toHex(fxCmd, 2) + ":" + CUtil.toHex(fxVal, 2);
                     }
                 }
 
@@ -590,15 +536,18 @@ var CGUI = function () {
         mJammer.addNote(note);
 
         // Edit pattern if we're in pattern edit mode.
-        if (mEditMode == EDIT_PATTERN &&
-            mSeqCol == mSeqCol2 && mSeqRow == mSeqRow2 &&
-            mPatternCol == mPatternCol2 && mPatternRow == mPatternRow2) {
+        if (mEditMode == EDIT_PATTERN
+            && mSeqCol == mSeqCol2
+            && mSeqRow == mSeqRow2
+            && mPatternCol == mPatternCol2
+            && mPatternRow == mPatternRow2) {
             var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
             if (pat >= 0) {
                 mSong.songData[mSeqCol].c[pat].n[mPatternRow + mPatternCol * mSong.patternLen] = note;
                 setSelectedPatternCell(mPatternCol, (mPatternRow + 1) % mSong.patternLen);
                 updatePattern();
+
                 return true;
             }
         }
@@ -882,7 +831,7 @@ var CGUI = function () {
 
         if ($current.val() == "custom") {
             // Convert custom data URL to song data
-            var params = parseURLGetData($("#open-data-url").val());
+            var params = CUtil.parseURLGetData($("#open-data-url").val());
             songData = CSong.getURLSongData(params && params.data && params.data[0]);
         } else {
             var name = $current.val();
@@ -2712,8 +2661,8 @@ var CGUI = function () {
         $("input[type=range]").rsSlider({});
 
         // Parse URL
-        mBaseURL = getURLBase(window.location.href);
-        mGETParams = parseURLGetData(window.location.href);
+        mBaseURL = CUtil.getURLBase(window.location.href);
+        mGETParams = CUtil.parseURLGetData(window.location.href);
 
         // Set up presets
         initPresets();

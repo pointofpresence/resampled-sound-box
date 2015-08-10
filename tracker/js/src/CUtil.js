@@ -65,5 +65,49 @@ var CUtil = {
             } while (o = o.offsetParent);
         }
         return [left, top];
+    },
+
+    toHex: function (num, count) {
+        var s            = num.toString(16).toUpperCase(),
+            leadingZeros = count - s.length;
+
+        for (var i = 0; i < leadingZeros; ++i) {
+            s = "0" + s;
+        }
+
+        return s;
+    },
+
+    getURLBase: function (url) {
+        var queryStart = url.indexOf("?");
+        return url.slice(0, queryStart >= 0 ? queryStart : url.length);
+    },
+
+    parseURLGetData: function (url) {
+        var queryStart = url.indexOf("?") + 1,
+            queryEnd   = url.indexOf("#") + 1 || url.length + 1,
+            query      = url.slice(queryStart, queryEnd - 1);
+
+        var params = {};
+
+        if (query === url || query === "") {
+            return params;
+        }
+
+        var nvPairs = query.replace(/\+/g, " ").split("&");
+
+        for (var i = 0; i < nvPairs.length; i++) {
+            var nv = nvPairs[i].split("="),
+                n  = decodeURIComponent(nv[0]),
+                v  = decodeURIComponent(nv[1]);
+
+            if (!(n in params)) {
+                params[n] = [];
+            }
+
+            params[n].push(nv.length === 2 ? v : null);
+        }
+
+        return params;
     }
 };
