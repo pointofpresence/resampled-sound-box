@@ -63,7 +63,7 @@ function buildJs() {
 
         ])
         .pipe(concat("vendor.js"))
-        .pipe(uglify({mangle: false}))
+        .pipe(uglify())
         .pipe(gulp.dest(config.trackerJs));
 
     gulp
@@ -92,7 +92,7 @@ function buildJs() {
             config.trackerJsSrc + "/gui.js"
         ])
         .pipe(concat("modules.js"))
-        .pipe(uglify())
+        //.pipe(uglify())
         .on("error", notify.onError({
             message: 'Uglify error: <%= error.message %>'
         }))

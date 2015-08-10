@@ -1290,6 +1290,7 @@ var CGUI = function () {
 
     var updateFxTrack = function (scrollIntoView, selectionOnly) {
         buildFxTable();
+
         var singlePattern = (mSeqCol == mSeqCol2 && mSeqRow == mSeqRow2),
             pat           = singlePattern ? mSong.songData[mSeqCol].p[mSeqRow] - 1 : -1,
             o;
@@ -1886,8 +1887,7 @@ var CGUI = function () {
     };
 
     var stopAudio = function () {
-        var $leds = $(".led"); //TODO: Cache me
-        $leds.css("opacity", 0);
+        mLeds.css("opacity", 0);
 
         stopFollower();
 
@@ -1942,6 +1942,8 @@ var CGUI = function () {
         return -1;
     };
 
+    var mLeds = $(".led");
+
     var redrawPlayerGfx = function (t) {
         // Calculate singal powers
         var pl = 0, pr = 0;
@@ -1982,8 +1984,6 @@ var CGUI = function () {
         mPanRight.css("width", Math.min(Math.floor(pr * 100 * 5), 100) + "%");
 
         // Draw leds
-        var $leds = $(".led"); //TODO: Cache
-
         for (i = 0; i < 8; ++i) {
             if (i >= mFollowerFirstCol && i <= mFollowerLastCol) {
                 // Get envelope profile for this channel
@@ -2016,7 +2016,7 @@ var CGUI = function () {
                     }
 
                     // Draw lit led with alpha blending
-                    $leds.eq(i).css("opacity", alpha);
+                    mLeds.eq(i).css("opacity", alpha);
                 }
             }
         }
@@ -2138,10 +2138,7 @@ var CGUI = function () {
     //----------------------------------------------------------------------------
 
     var playSong = function (e) {
-        if (!e) {
-            e = window.event;
-        }
-
+        e = e || window.event;
         e.preventDefault();
 
         // Stop the currently playing audio
@@ -2183,10 +2180,7 @@ var CGUI = function () {
     };
 
     var playRange = function (e) {
-        if (!e) {
-            e = window.event;
-        }
-
+        e = e || window.event;
         e.preventDefault();
 
         // Stop the currently playing audio
@@ -2235,10 +2229,7 @@ var CGUI = function () {
     };
 
     var stopPlaying = function (e) {
-        if (!e) {
-            e = window.event;
-        }
-
+        e = e || window.event;
         e.preventDefault();
 
         if (mAudio == null) {
@@ -2561,8 +2552,7 @@ var CGUI = function () {
             var fxValue;
 
             if (fxCmd >= 0) {
-                fxValue = +($(o).is(":checked")); //mSong.songData[mSeqCol].i[fxCmd] ? 0
-                                                  // : 1;
+                fxValue = +($(o).is(":checked"));
                 mSong.songData[mSeqCol].i[fxCmd] = fxValue;
             }
 
@@ -2590,8 +2580,9 @@ var CGUI = function () {
         if (mSeqCol == mSeqCol2) {
             var wave = e.currentTarget.value;
 
-            if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
-                mFxTrackRow == mFxTrackRow2) {
+            if (mEditMode == EDIT_FXTRACK
+                && mSeqRow == mSeqRow2
+                && mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
@@ -2614,8 +2605,9 @@ var CGUI = function () {
         if (mSeqCol == mSeqCol2) {
             var wave = e.currentTarget.value;
 
-            if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
-                mFxTrackRow == mFxTrackRow2) {
+            if (mEditMode == EDIT_FXTRACK
+                && mSeqRow == mSeqRow2
+                && mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
@@ -2638,8 +2630,9 @@ var CGUI = function () {
         if (mSeqCol == mSeqCol2) {
             var wave = e.currentTarget.value;
 
-            if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
-                mFxTrackRow == mFxTrackRow2) {
+            if (mEditMode == EDIT_FXTRACK
+                && mSeqRow == mSeqRow2
+                && mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
@@ -2662,8 +2655,9 @@ var CGUI = function () {
         if (mSeqCol == mSeqCol2) {
             var filt = e.currentTarget.value;
 
-            if (mEditMode == EDIT_FXTRACK && mSeqRow == mSeqRow2 &&
-                mFxTrackRow == mFxTrackRow2) {
+            if (mEditMode == EDIT_FXTRACK
+                && mSeqRow == mSeqRow2
+                && mFxTrackRow == mFxTrackRow2) {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
@@ -2679,23 +2673,23 @@ var CGUI = function () {
         }
     };
 
-    var octaveUp = function (e) {
+    var onOctaveUpClick = function (e) {
         e = e || window.event;
         e.preventDefault();
 
         if (mKeyboardOctave < 8) {
             mKeyboardOctave++;
-            document.getElementById("keyboardOctave").innerHTML = "" + mKeyboardOctave;
+            $("#keyboardOctave").text(mKeyboardOctave);
         }
     };
 
-    var octaveDown = function (e) {
+    var onOctaveDownClick = function (e) {
         e = e || window.event;
         e.preventDefault();
 
         if (mKeyboardOctave > 1) {
             mKeyboardOctave--;
-            document.getElementById("keyboardOctave").innerHTML = "" + mKeyboardOctave;
+            $("#keyboardOctave").text(mKeyboardOctave);
         }
     };
 
@@ -2724,7 +2718,7 @@ var CGUI = function () {
         }
     };
 
-    var keyboardMouseDown = function (e) {
+    var onKeyboardClick = function (e) {
         e = e || window.event;
 
         var p = getMousePos(e, true);
@@ -2770,11 +2764,8 @@ var CGUI = function () {
         }
     };
 
-    var fxTrackMouseDown = function (e) {
-        if (!e) {
-            e = window.event;
-        }
-
+    var onFxTrackMouseDown = function (e) {
+        e = e || window.event;
         e.preventDefault();
 
         if (!mFollowerActive) {
@@ -2788,7 +2779,7 @@ var CGUI = function () {
         setEditMode(EDIT_FXTRACK);
     };
 
-    var fxTrackMouseOver = function (e) {
+    var onFxTrackMouseOver = function (e) {
         if (mSelectingFxRange) {
             e = e || window.event;
             e.preventDefault();
@@ -2800,7 +2791,7 @@ var CGUI = function () {
         }
     };
 
-    var fxTrackMouseUp = function (e) {
+    var onFxTrackMouseUp = function (e) {
         if (mSelectingFxRange) {
             e = e || window.event;
             e.preventDefault();
@@ -2813,7 +2804,7 @@ var CGUI = function () {
         }
     };
 
-    var patternMouseDown = function (e) {
+    var onPatternMouseDown = function (e) {
         e = e || window.event;
         e.preventDefault();
 
@@ -2829,7 +2820,7 @@ var CGUI = function () {
         setEditMode(EDIT_PATTERN);
     };
 
-    var patternMouseOver = function (e) {
+    var onPatternMouseOver = function (e) {
         if (mSelectingPatternRange) {
             e = e || window.event;
             e.preventDefault();
@@ -2842,7 +2833,7 @@ var CGUI = function () {
         }
     };
 
-    var patternMouseUp = function (e) {
+    var onPatternMouseUp = function (e) {
         if (mSelectingPatternRange) {
             e = e || window.event;
             e.preventDefault();
@@ -2856,7 +2847,7 @@ var CGUI = function () {
         }
     };
 
-    var sequencerMouseDown = function (e) {
+    var onSequencerMouseDown = function (e) {
         e = e || window.event;
         e.preventDefault();
 
@@ -2884,7 +2875,7 @@ var CGUI = function () {
         updateInstrument(newChannel);
     };
 
-    var sequencerMouseOver = function (e) {
+    var onSequencerMouseOver = function (e) {
         if (mSelectingSeqRange) {
             e = e || window.event;
             e.preventDefault();
@@ -2900,7 +2891,7 @@ var CGUI = function () {
         }
     };
 
-    var sequencerMouseUp = function (e) {
+    var onSequencerMouseUp = function (e) {
         if (mSelectingSeqRange) {
             e = e || window.event;
             e.preventDefault();
@@ -2918,128 +2909,85 @@ var CGUI = function () {
         }
     };
 
-    var mActiveSlider = null;
-
     var onSliderChange = function (e) {
         if (mSeqCol == mSeqCol2) {
             e = e || window.event;
 
-            mActiveSlider = getEventElement(e);
+            updateSliderParam($(e.currentTarget));
             unfocusHTMLInputElements();
         }
     };
 
-    var mouseMove = function (e) {
-        e = e || window.event;
-        e.preventDefault();
+    //@formatter:off
+    var sliderProps = {
+        osc1_vol:    {min: 0,  max: 255, cmd: OSC1_VOL},
+        osc1_semi:   {min: 92, max: 164, cmd: OSC1_SEMI},
+        osc2_vol:    {min: 0,  max: 255, cmd: OSC2_VOL},
+        osc2_semi:   {min: 92, max: 164, cmd: OSC2_SEMI},
+        osc2_det:    {min: 0,  max: 255, cmd: OSC2_DETUNE, nonLinear: true},
+        noise_vol:   {min: 0,  max: 255, cmd: NOISE_VOL},
+        env_att:     {min: 0,  max: 255, cmd: ENV_ATTACK},
+        env_sust:    {min: 0,  max: 255, cmd: ENV_SUSTAIN},
+        env_rel:     {min: 0,  max: 255, cmd: ENV_RELEASE},
+        lfo_amt:     {min: 0,  max: 255, cmd: LFO_AMT},
+        lfo_freq:    {min: 0,  max: 16,  cmd: LFO_FREQ},
+        fx_freq:     {min: 0,  max: 255, cmd: FX_FREQ,     nonLinear: true},
+        fx_res:      {min: 0,  max: 254, cmd: FX_RESONANCE},
+        fx_dist:     {min: 0,  max: 255, cmd: FX_DIST,     nonLinear: true},
+        fx_drive:    {min: 0,  max: 255, cmd: FX_DRIVE},
+        fx_pan_amt:  {min: 0,  max: 255, cmd: FX_PAN_AMT},
+        fx_pan_freq: {min: 0,  max: 16,  cmd: FX_PAN_FREQ},
+        fx_dly_amt:  {min: 0,  max: 255, cmd: FX_DELAY_AMT},
+        fx_dly_time: {min: 0,  max: 16,  cmd: FX_DELAY_TIME}
+    };
+    //@formatter:on
 
-        // Handle slider?
-        if (mActiveSlider) {
-            // Calculate slider position
-            var pos    = getMousePos(e, false),
-                origin = getElementPos(mActiveSlider.parentNode),
-                x      = pos[0] - 6 - origin[0];
+    var updateSliderParam = function ($e) {
+        var x     = $e.val(),
+            props = sliderProps[$e.attr("id")];
 
-            x = x < 0 ? 0 : (x > 191 ? 1 : (x / 191));
+        if (!props) {
+            throw new Error("Unknown slider");
+        }
 
-            // Adapt to the range of the slider
-            if (mActiveSlider.sliderProps.nonLinear) {
-                x = x * x;
-            }
+        // Adapt to the range of the slider
+        if (props.nonLinear) {
+            x *= x;
+        }
 
-            var min = mActiveSlider.sliderProps.min,
-                max = mActiveSlider.sliderProps.max;
+        // Check which instrument property to update
+        var cmdNo = sliderProps[$e.attr("id")].cmd,
+            instr = mSong.songData[mSeqCol];
 
-            x = Math.round(min + ((max - min) * x));
+        if (mEditMode == EDIT_FXTRACK && mFxTrackRow == mFxTrackRow2) {
+            // Update the effect command in the FX track
+            if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
+                var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
-            if (mActiveSlider.tagName == "INPUT")
-                x = mActiveSlider.value;
-
-            // Check which instrument property to update
-            var cmdNo = -1;
-
-            if (mActiveSlider.id == "osc1_vol") {
-                cmdNo = OSC1_VOL;
-            } else if (mActiveSlider.id == "osc1_semi") {
-                cmdNo = OSC1_SEMI;
-            } else if (mActiveSlider.id == "osc2_vol") {
-                cmdNo = OSC2_VOL;
-            } else if (mActiveSlider.id == "osc2_semi") {
-                cmdNo = OSC2_SEMI;
-            } else if (mActiveSlider.id == "osc2_det") {
-                cmdNo = OSC2_DETUNE;
-            } else if (mActiveSlider.id == "noise_vol") {
-                cmdNo = NOISE_VOL;
-            } else if (mActiveSlider.id == "env_att") {
-                cmdNo = ENV_ATTACK;
-            } else if (mActiveSlider.id == "env_sust") {
-                cmdNo = ENV_SUSTAIN;
-            } else if (mActiveSlider.id == "env_rel") {
-                cmdNo = ENV_RELEASE;
-            } else if (mActiveSlider.id == "lfo_amt") {
-                cmdNo = LFO_AMT;
-            } else if (mActiveSlider.id == "lfo_freq") {
-                cmdNo = LFO_FREQ;
-            } else if (mActiveSlider.id == "fx_freq") {
-                cmdNo = FX_FREQ;
-            } else if (mActiveSlider.id == "fx_res") {
-                cmdNo = FX_RESONANCE;
-            } else if (mActiveSlider.id == "fx_dist") {
-                cmdNo = FX_DIST;
-            } else if (mActiveSlider.id == "fx_drive") {
-                cmdNo = FX_DRIVE;
-            } else if (mActiveSlider.id == "fx_pan_amt") {
-                cmdNo = FX_PAN_AMT;
-            } else if (mActiveSlider.id == "fx_pan_freq") {
-                cmdNo = FX_PAN_FREQ;
-            } else if (mActiveSlider.id == "fx_dly_amt") {
-                cmdNo = FX_DELAY_AMT;
-            } else if (mActiveSlider.id == "fx_dly_time") {
-                cmdNo = FX_DELAY_TIME;
-            }
-
-            var instr = mSong.songData[mSeqCol];
-            if (mEditMode == EDIT_FXTRACK && mFxTrackRow == mFxTrackRow2) {
-                // Update the effect command in the FX track
-                if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
-                    var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
-
-                    if (pat >= 0) {
-                        mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = cmdNo + 1;
-                        mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = x;
-                        updateFxTrack();
-                    }
+                if (pat >= 0) {
+                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = cmdNo + 1;
+                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = x;
+                    updateFxTrack();
                 }
             }
-
-            // Update the instrument property
-            if (cmdNo >= 0) {
-                instr.i[cmdNo] = x;
-            }
-
-            // Update the jammer instrument
-            mJammer.updateInstr(instr.i);
-
-            // Update the slider position
-            // updateSlider(mActiveSlider, x, true);
-            clearPresetSelection();
-
         }
-    };
 
-    var mouseUp = function (e) {
-//        if (mActiveSlider) {
-//            mActiveSlider = null;
-//            return false;
-//        }
-//
-//        return true;
+        // Update the instrument property
+        if (cmdNo >= 0) {
+            instr.i[cmdNo] = x;
+        }
+
+        // Update the jammer instrument
+        mJammer.updateInstr(instr.i);
+
+        clearPresetSelection();
     };
 
     var keyDown = function (e) {
         e = e || window.event;
 
         // Check if we're editing BPM / RPP
+        //noinspection JSValidateTypes
         var editingBpmRpp =
                 document.activeElement === document.getElementById("bpm") ||
                 document.activeElement === document.getElementById("rpp");
@@ -3198,9 +3146,11 @@ var CGUI = function () {
                     updatePattern();
                     updateFxTrack();
                     updateInstrument(true);
+
                     return false;
                 } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell((mPatternCol + 1) % 4, mPatternRow);
+
                     return false;
                 }
 
@@ -3212,9 +3162,11 @@ var CGUI = function () {
                     updatePattern();
                     updateFxTrack();
                     updateInstrument(true);
+
                     return false;
                 } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell((mPatternCol - 1 + 4) % 4, mPatternRow);
+
                     return false;
                 }
 
@@ -3225,12 +3177,15 @@ var CGUI = function () {
                     setSelectedSequencerCell(mSeqCol, (mSeqRow + 1) % MAX_SONG_ROWS);
                     updatePattern();
                     updateFxTrack();
+
                     return false;
                 } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell(mPatternCol, (mPatternRow + 1) % mSong.patternLen);
+
                     return false;
                 } else if (mEditMode == EDIT_FXTRACK) {
                     setSelectedFxTrackRow((mFxTrackRow + 1) % mSong.patternLen);
+
                     return false;
                 }
 
@@ -3241,12 +3196,15 @@ var CGUI = function () {
                     setSelectedSequencerCell(mSeqCol, (mSeqRow - 1 + MAX_SONG_ROWS) % MAX_SONG_ROWS);
                     updatePattern();
                     updateFxTrack();
+
                     return false;
                 } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell(mPatternCol, (mPatternRow - 1 + mSong.patternLen) % mSong.patternLen);
+
                     return false;
                 } else if (mEditMode == EDIT_FXTRACK) {
                     setSelectedFxTrackRow((mFxTrackRow - 1 + mSong.patternLen) % mSong.patternLen);
+
                     return false;
                 }
 
@@ -3261,9 +3219,11 @@ var CGUI = function () {
                     return false;
                 } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell(mPatternCol, 0);
+
                     return false;
                 } else if (mEditMode == EDIT_FXTRACK) {
                     setSelectedFxTrackRow(0);
+
                     return false;
                 }
 
@@ -3278,9 +3238,11 @@ var CGUI = function () {
                     return false;
                 } else if (mEditMode == EDIT_PATTERN) {
                     setSelectedPatternCell(mPatternCol, mSong.patternLen - 1);
+
                     return false;
                 } else if (mEditMode == EDIT_FXTRACK) {
                     setSelectedFxTrackRow(mSong.patternLen - 1);
+
                     return false;
                 }
 
@@ -3289,6 +3251,7 @@ var CGUI = function () {
             case 32: // SPACE
                 if (mEditMode != EDIT_NONE) {
                     playRange(e);
+
                     return false;
                 }
 
@@ -3398,10 +3361,10 @@ var CGUI = function () {
     var activateMasterEvents = function () {
         // Set up the master mouse event handlers
         document.onmousedown = null;
-        document.addEventListener("mousemove", mouseMove, false);
-        document.addEventListener("touchmove", mouseMove, false);
-        document.addEventListener("mouseup", mouseUp, false);
-        document.addEventListener("touchend", mouseUp, false);
+//        document.addEventListener("mousemove", mouseMove, false);
+//        document.addEventListener("touchmove", mouseMove, false);
+//        document.addEventListener("mouseup", mouseUp, false);
+//        document.addEventListener("touchend", mouseUp, false);
 
         // Set up the master key event handler
         document.onkeydown = keyDown;
@@ -3455,9 +3418,9 @@ var CGUI = function () {
                 td = document.createElement("td");
                 td.id = "sc" + col + "r" + row;
                 td.textContent = " ";
-                td.addEventListener("mousedown", sequencerMouseDown, false);
-                td.addEventListener("mouseover", sequencerMouseOver, false);
-                td.addEventListener("mouseup", sequencerMouseUp, false);
+                td.addEventListener("mousedown", onSequencerMouseDown, false);
+                td.addEventListener("mouseover", onSequencerMouseOver, false);
+                td.addEventListener("mouseup", onSequencerMouseUp, false);
                 tr.appendChild(td);
             }
 
@@ -3530,9 +3493,9 @@ var CGUI = function () {
                 td = document.createElement("td");
                 td.id = "pc" + col + "r" + row;
                 td.textContent = " ";
-                td.addEventListener("mousedown", patternMouseDown, false);
-                td.addEventListener("mouseover", patternMouseOver, false);
-                td.addEventListener("mouseup", patternMouseUp, false);
+                td.addEventListener("mousedown", onPatternMouseDown, false);
+                td.addEventListener("mouseover", onPatternMouseOver, false);
+                td.addEventListener("mouseup", onPatternMouseUp, false);
                 tr.appendChild(td);
             }
 
@@ -3564,9 +3527,9 @@ var CGUI = function () {
             td = document.createElement("td");
             td.id = "fxr" + row;
             td.textContent = String.fromCharCode(160);  // &nbsp;
-            td.addEventListener("mousedown", fxTrackMouseDown, false);
-            td.addEventListener("mouseover", fxTrackMouseOver, false);
-            td.addEventListener("mouseup", fxTrackMouseUp, false);
+            td.addEventListener("mousedown", onFxTrackMouseDown, false);
+            td.addEventListener("mouseover", onFxTrackMouseOver, false);
+            td.addEventListener("mouseup", onFxTrackMouseUp, false);
             tr.appendChild(td);
             table.appendChild(tr);
         }
@@ -3609,42 +3572,42 @@ var CGUI = function () {
         buildSequencerTable();
 
         // Set up GUI elements
-        document.getElementById("osc1_vol").sliderProps = {min: 0, max: 255};
-        document.getElementById("osc1_semi").sliderProps = {min: 92, max: 164};
-
-        document.getElementById("osc2_vol").sliderProps = {min: 0, max: 255};
-        document.getElementById("osc2_semi").sliderProps = {min: 92, max: 164};
-
-        document.getElementById("osc2_det").sliderProps = {
-            min: 0, max: 255, nonLinear: true
-        };
-
-        document.getElementById("noise_vol").sliderProps = {min: 0, max: 255};
-
-        document.getElementById("env_att").sliderProps = {min: 0, max: 255};
-        document.getElementById("env_sust").sliderProps = {min: 0, max: 255};
-        document.getElementById("env_rel").sliderProps = {min: 0, max: 255};
-
-        document.getElementById("lfo_amt").sliderProps = {min: 0, max: 255};
-        document.getElementById("lfo_freq").sliderProps = {min: 0, max: 16};
-
-        document.getElementById("fx_freq").sliderProps = {
-            min: 0, max: 255, nonLinear: true
-        };
-
-        document.getElementById("fx_res").sliderProps = {min: 0, max: 254};
-
-        document.getElementById("fx_dist").sliderProps = {
-            min: 0, max: 255, nonLinear: true
-        };
-
-        document.getElementById("fx_drive").sliderProps = {min: 0, max: 255};
-
-        document.getElementById("fx_pan_amt").sliderProps = {min: 0, max: 255};
-        document.getElementById("fx_pan_freq").sliderProps = {min: 0, max: 16};
-
-        document.getElementById("fx_dly_amt").sliderProps = {min: 0, max: 255};
-        document.getElementById("fx_dly_time").sliderProps = {min: 0, max: 16};
+//        document.getElementById("osc1_vol").sliderProps = {min: 0, max: 255};
+//        document.getElementById("osc1_semi").sliderProps = {min: 92, max: 164};
+//
+//        document.getElementById("osc2_vol").sliderProps = {min: 0, max: 255};
+//        document.getElementById("osc2_semi").sliderProps = {min: 92, max: 164};
+//
+//        document.getElementById("osc2_det").sliderProps = {
+//            min: 0, max: 255, nonLinear: true
+//        };
+//
+//        document.getElementById("noise_vol").sliderProps = {min: 0, max: 255};
+//
+//        document.getElementById("env_att").sliderProps = {min: 0, max: 255};
+//        document.getElementById("env_sust").sliderProps = {min: 0, max: 255};
+//        document.getElementById("env_rel").sliderProps = {min: 0, max: 255};
+//
+//        document.getElementById("lfo_amt").sliderProps = {min: 0, max: 255};
+//        document.getElementById("lfo_freq").sliderProps = {min: 0, max: 16};
+//
+//        document.getElementById("fx_freq").sliderProps = {
+//            min: 0, max: 255, nonLinear: true
+//        };
+//
+//        document.getElementById("fx_res").sliderProps = {min: 0, max: 254};
+//
+//        document.getElementById("fx_dist").sliderProps = {
+//            min: 0, max: 255, nonLinear: true
+//        };
+//
+//        document.getElementById("fx_drive").sliderProps = {min: 0, max: 255};
+//
+//        document.getElementById("fx_pan_amt").sliderProps = {min: 0, max: 255};
+//        document.getElementById("fx_pan_freq").sliderProps = {min: 0, max: 16};
+//
+//        document.getElementById("fx_dly_amt").sliderProps = {min: 0, max: 255};
+//        document.getElementById("fx_dly_time").sliderProps = {min: 0, max: 16};
 
         // Create audio element, and always play the audio as soon as it's ready
         try {
@@ -3749,14 +3712,14 @@ var CGUI = function () {
         $("#fx_dist").rsSlider("change", onSliderChange);
         $("#fx_drive").rsSlider("change", onSliderChange);
 
-        document.getElementById("octaveDown").addEventListener("mousedown", octaveDown, false);
-        document.getElementById("octaveDown").addEventListener("touchstart", octaveDown, false);
-        document.getElementById("octaveUp").addEventListener("mousedown", octaveUp, false);
-        document.getElementById("octaveUp").addEventListener("touchstart", octaveUp, false);
+        document.getElementById("octaveDown").addEventListener("mousedown", onOctaveDownClick, false);
+        document.getElementById("octaveDown").addEventListener("touchstart", onOctaveDownClick, false);
+        document.getElementById("octaveUp").addEventListener("mousedown", onOctaveUpClick, false);
+        document.getElementById("octaveUp").addEventListener("touchstart", onOctaveUpClick, false);
 
         // Keyboard
-        document.getElementById("keyboard").addEventListener("mousedown", keyboardMouseDown, false);
-        document.getElementById("keyboard").addEventListener("touchstart", keyboardMouseDown, false);
+        document.getElementById("keyboard").addEventListener("mousedown", onKeyboardClick, false);
+        document.getElementById("keyboard").addEventListener("touchstart", onKeyboardClick, false);
 
         // Instrument menu
         document.getElementById("instrCopy").onmousedown = instrCopyMouseDown;
