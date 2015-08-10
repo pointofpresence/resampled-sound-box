@@ -6,7 +6,7 @@
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
  *
  * @version v0.0.1
- * @build Tue Aug 11 2015 00:19:35
+ * @build Tue Aug 11 2015 00:30:27
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *
@@ -6045,39 +6045,6 @@ var CGUI = function () {
         return Math.round((60 * 44100 / 4) / mSong.rowLen);
     };
 
-    // Instrument property indices
-    var OSC1_WAVEFORM = 0,
-        OSC1_VOL      = 1,
-        OSC1_SEMI     = 2,
-        OSC1_XENV     = 3,
-
-        OSC2_WAVEFORM = 4,
-        OSC2_VOL      = 5,
-        OSC2_SEMI     = 6,
-        OSC2_DETUNE   = 7,
-        OSC2_XENV     = 8,
-
-        NOISE_VOL     = 9,
-
-        ENV_ATTACK    = 10,
-        ENV_SUSTAIN   = 11,
-        ENV_RELEASE   = 12,
-
-        LFO_WAVEFORM  = 13,
-        LFO_AMT       = 14,
-        LFO_FREQ      = 15,
-        LFO_FX_FREQ   = 16,
-
-        FX_FILTER     = 17,
-        FX_FREQ       = 18,
-        FX_RESONANCE  = 19,
-        FX_DIST       = 20,
-        FX_DRIVE      = 21,
-        FX_PAN_AMT    = 22,
-        FX_PAN_FREQ   = 23,
-        FX_DELAY_AMT  = 24,
-        FX_DELAY_TIME = 25;
-
     var makeNewSong = function () {
         var song = {}, i, j, k, instr, col;
 
@@ -6563,42 +6530,42 @@ var CGUI = function () {
         var instr = mSong.songData[mSeqCol];
 
         // Osc #1
-        updateRadio("osc1_wave", instr.i[OSC1_WAVEFORM]);
-        updateSlider(document.getElementById("osc1_vol"), instr.i[OSC1_VOL]);
-        updateSlider(document.getElementById("osc1_semi"), instr.i[OSC1_SEMI]);
-        updateCheckBox(document.getElementById("osc1_xenv"), instr.i[OSC1_XENV]);
+        updateRadio("osc1_wave", instr.i[CSong.instProps.OSC1_WAVEFORM]);
+        updateSlider(document.getElementById("osc1_vol"), instr.i[CSong.instProps.OSC1_VOL]);
+        updateSlider(document.getElementById("osc1_semi"), instr.i[CSong.instProps.OSC1_SEMI]);
+        updateCheckBox(document.getElementById("osc1_xenv"), instr.i[CSong.instProps.OSC1_XENV]);
 
         // Osc #2
-        updateRadio("osc2_wave", instr.i[OSC2_WAVEFORM]);
-        updateSlider(document.getElementById("osc2_vol"), instr.i[OSC2_VOL]);
-        updateSlider(document.getElementById("osc2_semi"), instr.i[OSC2_SEMI]);
-        updateSlider(document.getElementById("osc2_det"), instr.i[OSC2_DETUNE]);
-        updateCheckBox(document.getElementById("osc2_xenv"), instr.i[OSC2_XENV]);
+        updateRadio("osc2_wave", instr.i[CSong.instProps.OSC2_WAVEFORM]);
+        updateSlider(document.getElementById("osc2_vol"), instr.i[CSong.instProps.OSC2_VOL]);
+        updateSlider(document.getElementById("osc2_semi"), instr.i[CSong.instProps.OSC2_SEMI]);
+        updateSlider(document.getElementById("osc2_det"), instr.i[CSong.instProps.OSC2_DETUNE]);
+        updateCheckBox(document.getElementById("osc2_xenv"), instr.i[CSong.instProps.OSC2_XENV]);
 
         // Noise
-        updateSlider(document.getElementById("noise_vol"), instr.i[NOISE_VOL]);
+        updateSlider(document.getElementById("noise_vol"), instr.i[CSong.instProps.NOISE_VOL]);
 
         // Envelope
-        updateSlider(document.getElementById("env_att"), instr.i[ENV_ATTACK]);
-        updateSlider(document.getElementById("env_sust"), instr.i[ENV_SUSTAIN]);
-        updateSlider(document.getElementById("env_rel"), instr.i[ENV_RELEASE]);
+        updateSlider(document.getElementById("env_att"), instr.i[CSong.instProps.ENV_ATTACK]);
+        updateSlider(document.getElementById("env_sust"), instr.i[CSong.instProps.ENV_SUSTAIN]);
+        updateSlider(document.getElementById("env_rel"), instr.i[CSong.instProps.ENV_RELEASE]);
 
         // LFO
-        updateRadio("lfo_wave", instr.i[LFO_WAVEFORM]);
-        updateSlider(document.getElementById("lfo_amt"), instr.i[LFO_AMT]);
-        updateSlider(document.getElementById("lfo_freq"), instr.i[LFO_FREQ]);
-        updateCheckBox(document.getElementById("lfo_fxfreq"), instr.i[LFO_FX_FREQ]);
+        updateRadio("lfo_wave", instr.i[CSong.instProps.LFO_WAVEFORM]);
+        updateSlider(document.getElementById("lfo_amt"), instr.i[CSong.instProps.LFO_AMT]);
+        updateSlider(document.getElementById("lfo_freq"), instr.i[CSong.instProps.LFO_FREQ]);
+        updateCheckBox(document.getElementById("lfo_fxfreq"), instr.i[CSong.instProps.LFO_FX_FREQ]);
 
         // FX
-        updateRadio("fx_filt", instr.i[FX_FILTER]);
-        updateSlider(document.getElementById("fx_freq"), instr.i[FX_FREQ]);
-        updateSlider(document.getElementById("fx_res"), instr.i[FX_RESONANCE]);
-        updateSlider(document.getElementById("fx_dly_amt"), instr.i[FX_DELAY_AMT]);
-        updateSlider(document.getElementById("fx_dly_time"), instr.i[FX_DELAY_TIME]);
-        updateSlider(document.getElementById("fx_pan_amt"), instr.i[FX_PAN_AMT]);
-        updateSlider(document.getElementById("fx_pan_freq"), instr.i[FX_PAN_FREQ]);
-        updateSlider(document.getElementById("fx_dist"), instr.i[FX_DIST]);
-        updateSlider(document.getElementById("fx_drive"), instr.i[FX_DRIVE]);
+        updateRadio("fx_filt", instr.i[CSong.instProps.FX_FILTER]);
+        updateSlider(document.getElementById("fx_freq"), instr.i[CSong.instProps.FX_FREQ]);
+        updateSlider(document.getElementById("fx_res"), instr.i[CSong.instProps.FX_RESONANCE]);
+        updateSlider(document.getElementById("fx_dly_amt"), instr.i[CSong.instProps.FX_DELAY_AMT]);
+        updateSlider(document.getElementById("fx_dly_time"), instr.i[CSong.instProps.FX_DELAY_TIME]);
+        updateSlider(document.getElementById("fx_pan_amt"), instr.i[CSong.instProps.FX_PAN_AMT]);
+        updateSlider(document.getElementById("fx_pan_freq"), instr.i[CSong.instProps.FX_PAN_FREQ]);
+        updateSlider(document.getElementById("fx_dist"), instr.i[CSong.instProps.FX_DIST]);
+        updateSlider(document.getElementById("fx_drive"), instr.i[CSong.instProps.FX_DRIVE]);
 
         // Clear the preset selection?
         if (resetPreset) {
@@ -7071,9 +7038,9 @@ var CGUI = function () {
         for (i = 0; i < 8; ++i) {
             if (i >= mFollowerFirstCol && i <= mFollowerLastCol) {
                 // Get envelope profile for this channel
-                var env_a = mSong.songData[i].i[ENV_ATTACK],
-                    env_s = mSong.songData[i].i[ENV_SUSTAIN],
-                    env_r = mSong.songData[i].i[ENV_RELEASE];
+                var env_a = mSong.songData[i].i[CSong.instProps.ENV_ATTACK],
+                    env_s = mSong.songData[i].i[CSong.instProps.ENV_SUSTAIN],
+                    env_r = mSong.songData[i].i[CSong.instProps.ENV_RELEASE];
 
                 env_a = env_a * env_a * 4;
                 env_r = env_s * env_s * 4 + env_r * env_r * 4;
@@ -7625,11 +7592,11 @@ var CGUI = function () {
             var fxCmd = -1;
 
             if (o.id === "osc1_xenv") {
-                fxCmd = OSC1_XENV;
+                fxCmd = CSong.instProps.OSC1_XENV;
             } else if (o.id === "osc2_xenv") {
-                fxCmd = OSC2_XENV;
+                fxCmd = CSong.instProps.OSC2_XENV;
             } else if (o.id === "lfo_fxfreq") {
-                fxCmd = LFO_FX_FREQ;
+                fxCmd = CSong.instProps.LFO_FX_FREQ;
             }
 
             // Update the instrument (toggle boolean)
@@ -7670,13 +7637,13 @@ var CGUI = function () {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
-                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = OSC1_WAVEFORM + 1;
+                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = CSong.instProps.OSC1_WAVEFORM + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = wave;
                     updateFxTrack();
                 }
             }
 
-            mSong.songData[mSeqCol].i[OSC1_WAVEFORM] = wave;
+            mSong.songData[mSeqCol].i[CSong.instProps.OSC1_WAVEFORM] = wave;
             updateInstrument();
             unfocusHTMLInputElements();
         }
@@ -7695,13 +7662,13 @@ var CGUI = function () {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
-                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = OSC2_WAVEFORM + 1;
+                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = CSong.instProps.OSC2_WAVEFORM + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = wave;
                     updateFxTrack();
                 }
             }
 
-            mSong.songData[mSeqCol].i[OSC2_WAVEFORM] = wave;
+            mSong.songData[mSeqCol].i[CSong.instProps.OSC2_WAVEFORM] = wave;
             updateInstrument(true);
             unfocusHTMLInputElements();
         }
@@ -7720,13 +7687,13 @@ var CGUI = function () {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
-                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = LFO_WAVEFORM + 1;
+                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = CSong.instProps.LFO_WAVEFORM + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = wave;
                     updateFxTrack();
                 }
             }
 
-            mSong.songData[mSeqCol].i[LFO_WAVEFORM] = wave;
+            mSong.songData[mSeqCol].i[CSong.instProps.LFO_WAVEFORM] = wave;
             updateInstrument(true);
             unfocusHTMLInputElements();
         }
@@ -7745,13 +7712,13 @@ var CGUI = function () {
                 var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
 
                 if (pat >= 0) {
-                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = FX_FILTER + 1;
+                    mSong.songData[mSeqCol].c[pat].f[mFxTrackRow] = CSong.instProps.FX_FILTER + 1;
                     mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen] = filt;
                     updateFxTrack();
                 }
             }
 
-            mSong.songData[mSeqCol].i[FX_FILTER] = filt;
+            mSong.songData[mSeqCol].i[CSong.instProps.FX_FILTER] = filt;
             updateInstrument(true);
             unfocusHTMLInputElements();
         }
@@ -8004,25 +7971,25 @@ var CGUI = function () {
 
     //@formatter:off
     var sliderProps = {
-        osc1_vol:    {min: 0,  max: 255, cmd: OSC1_VOL},
-        osc1_semi:   {min: 92, max: 164, cmd: OSC1_SEMI},
-        osc2_vol:    {min: 0,  max: 255, cmd: OSC2_VOL},
-        osc2_semi:   {min: 92, max: 164, cmd: OSC2_SEMI},
-        osc2_det:    {min: 0,  max: 255, cmd: OSC2_DETUNE, nonLinear: true},
-        noise_vol:   {min: 0,  max: 255, cmd: NOISE_VOL},
-        env_att:     {min: 0,  max: 255, cmd: ENV_ATTACK},
-        env_sust:    {min: 0,  max: 255, cmd: ENV_SUSTAIN},
-        env_rel:     {min: 0,  max: 255, cmd: ENV_RELEASE},
-        lfo_amt:     {min: 0,  max: 255, cmd: LFO_AMT},
-        lfo_freq:    {min: 0,  max: 16,  cmd: LFO_FREQ},
-        fx_freq:     {min: 0,  max: 255, cmd: FX_FREQ,     nonLinear: true},
-        fx_res:      {min: 0,  max: 254, cmd: FX_RESONANCE},
-        fx_dist:     {min: 0,  max: 255, cmd: FX_DIST,     nonLinear: true},
-        fx_drive:    {min: 0,  max: 255, cmd: FX_DRIVE},
-        fx_pan_amt:  {min: 0,  max: 255, cmd: FX_PAN_AMT},
-        fx_pan_freq: {min: 0,  max: 16,  cmd: FX_PAN_FREQ},
-        fx_dly_amt:  {min: 0,  max: 255, cmd: FX_DELAY_AMT},
-        fx_dly_time: {min: 0,  max: 16,  cmd: FX_DELAY_TIME}
+        osc1_vol:    {min: 0,  max: 255, cmd: CSong.instProps.OSC1_VOL},
+        osc1_semi:   {min: 92, max: 164, cmd: CSong.instProps.OSC1_SEMI},
+        osc2_vol:    {min: 0,  max: 255, cmd: CSong.instProps.OSC2_VOL},
+        osc2_semi:   {min: 92, max: 164, cmd: CSong.instProps.OSC2_SEMI},
+        osc2_det:    {min: 0,  max: 255, cmd: CSong.instProps.OSC2_DETUNE, nonLinear: true},
+        noise_vol:   {min: 0,  max: 255, cmd: CSong.instProps.NOISE_VOL},
+        env_att:     {min: 0,  max: 255, cmd: CSong.instProps.ENV_ATTACK},
+        env_sust:    {min: 0,  max: 255, cmd: CSong.instProps.ENV_SUSTAIN},
+        env_rel:     {min: 0,  max: 255, cmd: CSong.instProps.ENV_RELEASE},
+        lfo_amt:     {min: 0,  max: 255, cmd: CSong.instProps.LFO_AMT},
+        lfo_freq:    {min: 0,  max: 16,  cmd: CSong.instProps.LFO_FREQ},
+        fx_freq:     {min: 0,  max: 255, cmd: CSong.instProps.FX_FREQ,     nonLinear: true},
+        fx_res:      {min: 0,  max: 254, cmd: CSong.instProps.FX_RESONANCE},
+        fx_dist:     {min: 0,  max: 255, cmd: CSong.instProps.FX_DIST,     nonLinear: true},
+        fx_drive:    {min: 0,  max: 255, cmd: CSong.instProps.FX_DRIVE},
+        fx_pan_amt:  {min: 0,  max: 255, cmd: CSong.instProps.FX_PAN_AMT},
+        fx_pan_freq: {min: 0,  max: 16,  cmd: CSong.instProps.FX_PAN_FREQ},
+        fx_dly_amt:  {min: 0,  max: 255, cmd: CSong.instProps.FX_DELAY_AMT},
+        fx_dly_time: {min: 0,  max: 16,  cmd: CSong.instProps.FX_DELAY_TIME}
     };
     //@formatter:on
 
