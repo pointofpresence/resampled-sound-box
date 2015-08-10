@@ -134,37 +134,9 @@ var CGUI = function () {
         return songData;
     };
 
-    var makeURLSongData = function (data) {
-        var str = btoa(data), str2 = "";
-
-        for (var i = 0; i < str.length; ++i) {
-            var chr = str[i];
-
-            if (chr === "+") {
-                chr = "-";
-            }
-
-            if (chr === "/") {
-                chr = "_";
-            }
-
-            if (chr === "=") {
-                chr = "";
-            }
-
-            str2 += chr;
-        }
-
-        return mBaseURL + "?data=" + str2;
-    };
-
     //--------------------------------------------------------------------------
     // Song import/export functions
     //--------------------------------------------------------------------------
-
-    var calcSamplesPerRow = function (bpm) {
-        return Math.round((60 * 44100 / 4) / bpm);
-    };
 
     var getBPM = function () {
         return Math.round((60 * 44100 / 4) / mSong.rowLen);
@@ -207,7 +179,7 @@ var CGUI = function () {
         var song = {}, i, j, k, instr, col;
 
         // Row length
-        song.rowLen = calcSamplesPerRow(120);
+        song.rowLen = CSong.calcSamplesPerRow(120);
 
         // Last pattern to play
         song.endPattern = 2;
@@ -272,552 +244,7 @@ var CGUI = function () {
         return song;
     };
 
-    var songToBin = function (song) {
-        var bin = new CBinWriter();
 
-        // Row length (i.e. song speed)
-        bin.putULONG(song.rowLen);
-
-        // Last pattern to play
-        bin.putUBYTE(song.endPattern - 2);
-
-        // Rows per pattern
-        bin.putUBYTE(song.patternLen);
-
-        // All 8 instruments
-        var i, j, k, instr, col;
-
-        for (i = 0; i < 8; i++) {
-            instr = song.songData[i];
-
-            // Oscillator 1
-            bin.putUBYTE(instr.i[OSC1_WAVEFORM]);
-            bin.putUBYTE(instr.i[OSC1_VOL]);
-            bin.putUBYTE(instr.i[OSC1_SEMI]);
-            bin.putUBYTE(instr.i[OSC1_XENV]);
-
-            // Oscillator 2
-            bin.putUBYTE(instr.i[OSC2_WAVEFORM]);
-            bin.putUBYTE(instr.i[OSC2_VOL]);
-            bin.putUBYTE(instr.i[OSC2_SEMI]);
-            bin.putUBYTE(instr.i[OSC2_DETUNE]);
-            bin.putUBYTE(instr.i[OSC2_XENV]);
-
-            // Noise oscillator
-            bin.putUBYTE(instr.i[NOISE_VOL]);
-
-            // Envelope
-            bin.putUBYTE(instr.i[ENV_ATTACK]);
-            bin.putUBYTE(instr.i[ENV_SUSTAIN]);
-            bin.putUBYTE(instr.i[ENV_RELEASE]);
-
-            // LFO
-            bin.putUBYTE(instr.i[LFO_WAVEFORM]);
-            bin.putUBYTE(instr.i[LFO_AMT]);
-            bin.putUBYTE(instr.i[LFO_FREQ]);
-            bin.putUBYTE(instr.i[LFO_FX_FREQ]);
-
-            // Effects
-            bin.putUBYTE(instr.i[FX_FILTER]);
-            bin.putUBYTE(instr.i[FX_FREQ]);
-            bin.putUBYTE(instr.i[FX_RESONANCE]);
-            bin.putUBYTE(instr.i[FX_DIST]);
-            bin.putUBYTE(instr.i[FX_DRIVE]);
-            bin.putUBYTE(instr.i[FX_PAN_AMT]);
-            bin.putUBYTE(instr.i[FX_PAN_FREQ]);
-            bin.putUBYTE(instr.i[FX_DELAY_AMT]);
-            bin.putUBYTE(instr.i[FX_DELAY_TIME]);
-
-            // Patterns
-            for (j = 0; j < MAX_SONG_ROWS; j++) {
-                bin.putUBYTE(instr.p[j]);
-            }
-
-            // Columns
-            for (j = 0; j < MAX_PATTERNS; j++) {
-                col = instr.c[j];
-
-                for (k = 0; k < song.patternLen * 4; k++) {
-                    bin.putUBYTE(col.n[k]);
-                }
-
-                for (k = 0; k < song.patternLen * 2; k++) {
-                    bin.putUBYTE(col.f[k]);
-                }
-            }
-        }
-
-        // Pack the song data
-        // FIXME: To avoid bugs, we try different compression methods here until we
-        // find something that works (this should not be necessary).
-        var unpackedData = bin.getData(), packedData, testData, compressionMethod = 0;
-
-        for (i = 9; i > 0; i--) {
-            packedData = RawDeflate.deflate(unpackedData, i);
-            testData = RawDeflate.inflate(packedData);
-
-            if (unpackedData === testData) {
-                compressionMethod = 2;
-                break;
-            }
-        }
-
-        if (compressionMethod == 0) {
-            packedData = rle_encode(bin.getData());
-            testData = rle_decode(packedData);
-
-            if (unpackedData === testData) {
-                compressionMethod = 1;
-            } else {
-                packedData = unpackedData;
-            }
-        }
-
-        // Create a new binary stream - this is the actual file
-        bin = new CBinWriter();
-
-        // Signature ("SBox")
-        bin.putULONG(2020557395);
-
-        // Format version
-        bin.putUBYTE(10);
-
-        // Compression method
-        //  0: none
-        //  1: RLE
-        //  2: DEFLATE
-        bin.putUBYTE(compressionMethod);
-
-        // Append packed data
-        bin.append(packedData);
-
-        return bin.getData();
-    };
-
-    var soundboxBinToSong = function (d) {
-        var bin  = new CBinParser(d),
-            song = {};
-
-        // Signature
-        var signature = bin.getULONG();
-
-        // Format version
-        var version = bin.getUBYTE();
-
-        // Check if this is a SoundBox song
-        if (signature != 2020557395 || (version < 1 || version > 10)) {
-            return undefined;
-        }
-
-        if (version >= 8) {
-            // Get compression method
-            //  0: none
-            //  1: RLE
-            //  2: DEFLATE
-            var compressionMethod = bin.getUBYTE();
-
-            // Unpack song data
-            var packedData = bin.getTail(), unpackedData;
-
-            switch (compressionMethod) {
-                default:
-                case 0:
-                    unpackedData = packedData;
-                    break;
-                case 1:
-                    unpackedData = rle_decode(packedData);
-                    break;
-                case 2:
-                    unpackedData = RawDeflate.inflate(packedData);
-                    break;
-            }
-
-            bin = new CBinParser(unpackedData);
-        }
-
-        // Row length
-        song.rowLen = bin.getULONG();
-
-        // Last pattern to play
-        song.endPattern = bin.getUBYTE() + 2;
-
-        // Number of rows per pattern
-        if (version >= 10) {
-            song.patternLen = bin.getUBYTE();
-        } else {
-            song.patternLen = 32;
-        }
-
-        // All 8 instruments
-        song.songData = [];
-
-        var i, j, k, instr, col;
-
-        for (i = 0; i < 8; i++) {
-            instr = {};
-            instr.i = [];
-
-            // Oscillator 1
-            if (version < 6) {
-                instr.i[OSC1_SEMI] = bin.getUBYTE();
-                instr.i[OSC1_XENV] = bin.getUBYTE();
-                instr.i[OSC1_VOL] = bin.getUBYTE();
-                instr.i[OSC1_WAVEFORM] = bin.getUBYTE();
-            } else {
-                instr.i[OSC1_WAVEFORM] = bin.getUBYTE();
-                instr.i[OSC1_VOL] = bin.getUBYTE();
-                instr.i[OSC1_SEMI] = bin.getUBYTE();
-                instr.i[OSC1_XENV] = bin.getUBYTE();
-            }
-
-            // Oscillator 2
-            if (version < 6) {
-                instr.i[OSC2_SEMI] = bin.getUBYTE();
-                instr.i[OSC2_DETUNE] = bin.getUBYTE();
-                instr.i[OSC2_XENV] = bin.getUBYTE();
-                instr.i[OSC2_VOL] = bin.getUBYTE();
-                instr.i[OSC2_WAVEFORM] = bin.getUBYTE();
-            } else {
-                instr.i[OSC2_WAVEFORM] = bin.getUBYTE();
-                instr.i[OSC2_VOL] = bin.getUBYTE();
-                instr.i[OSC2_SEMI] = bin.getUBYTE();
-                instr.i[OSC2_DETUNE] = bin.getUBYTE();
-                instr.i[OSC2_XENV] = bin.getUBYTE();
-            }
-
-            // Noise oscillator
-            instr.i[NOISE_VOL] = bin.getUBYTE();
-
-            // Envelope
-            if (version < 5) {
-                instr.i[ENV_ATTACK] = Math.round(Math.sqrt(bin.getULONG()) / 2);
-                instr.i[ENV_SUSTAIN] = Math.round(Math.sqrt(bin.getULONG()) / 2);
-                instr.i[ENV_RELEASE] = Math.round(Math.sqrt(bin.getULONG()) / 2);
-            } else {
-                instr.i[ENV_ATTACK] = bin.getUBYTE();
-                instr.i[ENV_SUSTAIN] = bin.getUBYTE();
-                instr.i[ENV_RELEASE] = bin.getUBYTE();
-            }
-
-            if (version < 6) {
-                // Effects
-                instr.i[FX_FILTER] = bin.getUBYTE();
-
-                if (version < 5) {
-                    instr.i[FX_FREQ] = Math.round(bin.getUSHORT() / 43.23529);
-                } else {
-                    instr.i[FX_FREQ] = bin.getUBYTE();
-                }
-
-                instr.i[FX_RESONANCE] = bin.getUBYTE();
-
-                instr.i[FX_DELAY_TIME] = bin.getUBYTE();
-                instr.i[FX_DELAY_AMT] = bin.getUBYTE();
-                instr.i[FX_PAN_FREQ] = bin.getUBYTE();
-                instr.i[FX_PAN_AMT] = bin.getUBYTE();
-                instr.i[FX_DIST] = bin.getUBYTE();
-                instr.i[FX_DRIVE] = bin.getUBYTE();
-
-                // LFO
-                instr.i[LFO_FX_FREQ] = bin.getUBYTE();
-                instr.i[LFO_FREQ] = bin.getUBYTE();
-                instr.i[LFO_AMT] = bin.getUBYTE();
-                instr.i[LFO_WAVEFORM] = bin.getUBYTE();
-            }
-            else {
-                // LFO
-                instr.i[LFO_WAVEFORM] = bin.getUBYTE();
-                instr.i[LFO_AMT] = bin.getUBYTE();
-                instr.i[LFO_FREQ] = bin.getUBYTE();
-                instr.i[LFO_FX_FREQ] = bin.getUBYTE();
-
-                // Effects
-                instr.i[FX_FILTER] = bin.getUBYTE();
-                instr.i[FX_FREQ] = bin.getUBYTE();
-                instr.i[FX_RESONANCE] = bin.getUBYTE();
-                instr.i[FX_DIST] = bin.getUBYTE();
-                instr.i[FX_DRIVE] = bin.getUBYTE();
-                instr.i[FX_PAN_AMT] = bin.getUBYTE();
-                instr.i[FX_PAN_FREQ] = bin.getUBYTE();
-                instr.i[FX_DELAY_AMT] = bin.getUBYTE();
-                instr.i[FX_DELAY_TIME] = bin.getUBYTE();
-            }
-
-            // Patterns
-            var song_rows = version < 9 ? 48 : MAX_SONG_ROWS;
-            instr.p = [];
-
-            for (j = 0; j < song_rows; j++) {
-                instr.p[j] = bin.getUBYTE();
-            }
-
-            for (j = song_rows; j < MAX_SONG_ROWS; j++) {
-                instr.p[j] = 0;
-            }
-
-            // Columns
-            var num_patterns = version < 9 ? 10 : MAX_PATTERNS;
-
-            instr.c = [];
-
-            for (j = 0; j < num_patterns; j++) {
-                col = {};
-                col.n = [];
-
-                if (version == 1) {
-                    for (k = 0; k < song.patternLen; k++) {
-                        col.n[k] = bin.getUBYTE();
-                        col.n[k + song.patternLen] = 0;
-                        col.n[k + 2 * song.patternLen] = 0;
-                        col.n[k + 3 * song.patternLen] = 0;
-                    }
-                } else {
-                    for (k = 0; k < song.patternLen * 4; k++) {
-                        col.n[k] = bin.getUBYTE();
-                    }
-                }
-
-                col.f = [];
-
-                if (version < 4) {
-                    for (k = 0; k < song.patternLen * 2; k++) {
-                        col.f[k] = 0;
-                    }
-                } else {
-                    for (k = 0; k < song.patternLen * 2; k++) {
-                        col.f[k] = bin.getUBYTE();
-                    }
-                }
-
-                instr.c[j] = col;
-            }
-
-            for (j = num_patterns; j < MAX_PATTERNS; j++) {
-                col = {};
-                col.n = [];
-
-                for (k = 0; k < song.patternLen * 4; k++) {
-                    col.n[k] = 0;
-                }
-
-                col.f = [];
-
-                for (k = 0; k < song.patternLen * 2; k++) {
-                    col.f[k] = 0;
-                }
-
-                instr.c[j] = col;
-            }
-
-            // Fixup conversions
-            if (version < 3) {
-                if (instr.i[OSC1_WAVEFORM] == 2) {
-                    instr.i[OSC1_VOL] = Math.round(instr.i[OSC1_VOL] / 2);
-                }
-
-                if (instr.i[OSC2_WAVEFORM] == 2) {
-                    instr.i[OSC2_VOL] = Math.round(instr.i[OSC2_VOL] / 2);
-                }
-
-                if (instr.i[LFO_WAVEFORM] == 2) {
-                    instr.i[LFO_AMT] = Math.round(instr.i[LFO_AMT] / 2);
-                }
-
-                instr.i[FX_DRIVE] = instr.i[FX_DRIVE] < 224 ? instr.i[FX_DRIVE] + 32 : 255;
-            }
-
-            if (version < 7) {
-                instr.i[FX_RESONANCE] = 255 - instr.i[FX_RESONANCE];
-            }
-
-            song.songData[i] = instr;
-        }
-
-        return song;
-    };
-
-    var sonantBinToSong = function (d) {
-        // Check if this is a sonant song (correct length & reasonable end pattern)
-        if (d.length != 3333) {
-            return undefined;
-        }
-
-        if ((d.charCodeAt(3332) & 255) > 48) {
-            return undefined;
-        }
-
-        var bin  = new CBinParser(d),
-            song = {};
-
-        // Row length
-        song.rowLen = bin.getULONG();
-
-        // Number of rows per pattern
-        song.patternLen = 32;
-
-        // All 8 instruments
-        song.songData = [];
-        var i, j, k, instr, col, master;
-
-        for (i = 0; i < 8; i++) {
-            instr = {};
-            instr.i = [];
-
-            // Oscillator 1
-            instr.i[OSC1_SEMI] = 12 * (bin.getUBYTE() - 8) + 128;
-            instr.i[OSC1_SEMI] += bin.getUBYTE();
-            bin.getUBYTE(); // Skip (detune)
-            instr.i[OSC1_XENV] = bin.getUBYTE();
-            instr.i[OSC1_VOL] = bin.getUBYTE();
-            instr.i[OSC1_WAVEFORM] = bin.getUBYTE();
-
-            // Oscillator 2
-            instr.i[OSC2_SEMI] = 12 * (bin.getUBYTE() - 8) + 128;
-            instr.i[OSC2_SEMI] += bin.getUBYTE();
-            instr.i[OSC2_DETUNE] = bin.getUBYTE();
-            instr.i[OSC2_XENV] = bin.getUBYTE();
-            instr.i[OSC2_VOL] = bin.getUBYTE();
-            instr.i[OSC2_WAVEFORM] = bin.getUBYTE();
-
-            // Noise oscillator
-            instr.i[NOISE_VOL] = bin.getUBYTE();
-            bin.getUBYTE(); // Pad!
-            bin.getUBYTE(); // Pad!
-            bin.getUBYTE(); // Pad!
-
-            // Envelope
-            instr.i[ENV_ATTACK] = Math.round(Math.sqrt(bin.getULONG()) / 2);
-            instr.i[ENV_SUSTAIN] = Math.round(Math.sqrt(bin.getULONG()) / 2);
-            instr.i[ENV_RELEASE] = Math.round(Math.sqrt(bin.getULONG()) / 2);
-            master = bin.getUBYTE(); // env_master
-
-            // Effects
-            instr.i[FX_FILTER] = bin.getUBYTE();
-            bin.getUBYTE(); // Pad!
-            bin.getUBYTE(); // Pad!
-            instr.i[FX_FREQ] = Math.round(bin.getFLOAT() / 43.23529);
-            instr.i[FX_RESONANCE] = 255 - bin.getUBYTE();
-            instr.i[FX_DELAY_TIME] = bin.getUBYTE();
-            instr.i[FX_DELAY_AMT] = bin.getUBYTE();
-            instr.i[FX_PAN_FREQ] = bin.getUBYTE();
-            instr.i[FX_PAN_AMT] = bin.getUBYTE();
-            instr.i[FX_DIST] = 0;
-            instr.i[FX_DRIVE] = 32;
-
-            // LFO
-            bin.getUBYTE(); // Skip! (lfo_osc1_freq)
-            instr.i[LFO_FX_FREQ] = bin.getUBYTE();
-            instr.i[LFO_FREQ] = bin.getUBYTE();
-            instr.i[LFO_AMT] = bin.getUBYTE();
-            instr.i[LFO_WAVEFORM] = bin.getUBYTE();
-
-            // Patterns
-            instr.p = [];
-
-            for (j = 0; j < 48; j++) {
-                instr.p[j] = bin.getUBYTE();
-            }
-
-            for (j = 48; j < MAX_SONG_ROWS; j++) {
-                instr.p[j] = 0;
-            }
-
-            // Columns
-            instr.c = [];
-
-            for (j = 0; j < 10; j++) {
-                col = {};
-                col.n = [];
-
-                for (k = 0; k < 32; k++) {
-                    col.n[k] = bin.getUBYTE();
-                    col.n[k + 32] = 0;
-                    col.n[k + 64] = 0;
-                    col.n[k + 96] = 0;
-                }
-
-                col.f = [];
-
-                for (k = 0; k < 32 * 2; k++) {
-                    col.f[k] = 0;
-                }
-
-                instr.c[j] = col;
-            }
-
-            for (j = 10; j < MAX_PATTERNS; j++) {
-                col = {};
-                col.n = [];
-
-                for (k = 0; k < 32 * 4; k++) {
-                    col.n[k] = 0;
-                }
-
-                col.f = [];
-
-                for (k = 0; k < 32 * 2; k++) {
-                    col.f[k] = 0;
-                }
-
-                instr.c[j] = col;
-            }
-
-            bin.getUBYTE(); // Pad!
-            bin.getUBYTE(); // Pad!
-
-            // Fixup conversions
-            if (instr.i[FX_FILTER] < 1 || instr.i[FX_FILTER] > 3) {
-                instr.i[FX_FILTER] = 2;
-                instr.i[FX_FREQ] = 255; // 11025;
-            }
-
-            instr.i[OSC1_VOL] *= master / 255;
-            instr.i[OSC2_VOL] *= master / 255;
-            instr.i[NOISE_VOL] *= master / 255;
-
-            if (instr.i[OSC1_WAVEFORM] == 2) {
-                instr.i[OSC1_VOL] /= 2;
-            }
-
-            if (instr.i[OSC2_WAVEFORM] == 2) {
-                instr.i[OSC2_VOL] /= 2;
-            }
-
-            if (instr.i[LFO_WAVEFORM] == 2) {
-                instr.i[LFO_AMT] /= 2;
-            }
-
-            instr.i[OSC1_VOL] = Math.round(instr.i[OSC1_VOL]);
-            instr.i[OSC2_VOL] = Math.round(instr.i[OSC2_VOL]);
-            instr.i[NOISE_VOL] = Math.round(instr.i[NOISE_VOL]);
-            instr.i[LFO_AMT] = Math.round(instr.i[LFO_AMT]);
-
-            song.songData[i] = instr;
-        }
-
-        // Last pattern to play
-        song.endPattern = bin.getUBYTE() + 2;
-
-        return song;
-    };
-
-    var binToSong = function (d) {
-        // Try to parse the binary data as a SoundBox song
-        var song = soundboxBinToSong(d);
-
-        // Try to parse the binary data as a Sonant song
-        if (!song) {
-            song = sonantBinToSong(d);
-        }
-
-        // If we couldn't parse the song, just make a clean new song
-        if (!song) {
-            alert("Song format not recognized.");
-            return undefined;
-        }
-
-        return song;
-    };
 
     var songToJS = function (song) {
         var i, j, k, pattern,
@@ -1514,10 +941,10 @@ var CGUI = function () {
 
     var updateSongSpeed = function () {
         // Determine song speed
-        var bpm = parseInt(document.getElementById("bpm").value);
+        var bpm = parseInt($("#bpm").val());
 
         if (bpm && (bpm >= 10) && (bpm <= 1000)) {
-            mSong.rowLen = calcSamplesPerRow(bpm);
+            mSong.rowLen = CSong.calcSamplesPerRow(bpm);
             mJammer.updateRowLen(mSong.rowLen);
         }
     };
@@ -1615,7 +1042,7 @@ var CGUI = function () {
     };
 
     var loadSongFromData = function (songData) {
-        var song = binToSong(songData);
+        var song = CSong.binToSong(songData);
 
         if (song) {
             stopAudio();
@@ -1747,7 +1174,7 @@ var CGUI = function () {
             $link   = $("#save-song-data"),
             $button = $("#save-song-button");
 
-        var url      = makeURLSongData(songToBin(mSong)),
+        var url      = CSong.makeURLSongData(mBaseURL, CSong.songToBin(mSong)),
             shortURL = url.length < 70 ? url : url.slice(0, 67) + "...";
 
         $link.attr("title", url);
@@ -1756,7 +1183,7 @@ var CGUI = function () {
 
         $button.on("click", function (e) {
             e.preventDefault();
-            var dataURI = "data:application/octet-stream;base64," + btoa(songToBin(mSong));
+            var dataURI = "data:application/octet-stream;base64," + btoa(CSong.songToBin(mSong));
             window.open(dataURI);
             $modal.modal("hide");
         });
@@ -3568,7 +2995,7 @@ var CGUI = function () {
 
         // Load the song
         var songData = getURLSongData(mGETParams && mGETParams.data && mGETParams.data[0]),
-            song     = songData ? binToSong(songData) : null;
+            song     = songData ? CSong.binToSong(songData) : null;
 
         mSong = song ? song : makeNewSong();
 
