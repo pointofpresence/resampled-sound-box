@@ -6,7 +6,7 @@
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
  *
  * @version v0.0.1
- * @build Mon Aug 10 2015 20:25:54
+ * @build Mon Aug 10 2015 20:46:11
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *
@@ -5060,8 +5060,6 @@ var CAudioTimer = function () {
 //------------------------------------------------------------------------------
 
 var CGUI = function () {
-    var imgPath = "tracker/image/gui/";
-
     // Edit modes
     var EDIT_NONE     = 0,
         EDIT_SEQUENCE = 1,
@@ -5106,15 +5104,12 @@ var CGUI = function () {
 
     // Constant look-up-tables
     var mNoteNames = [
-        'C-', 'C#', 'D-', 'D#', 'E-', 'F-', 'F#', 'G-', 'G#', 'A-', 'A#', 'B-'
+        "C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "B-"
     ];
 
     var mBlackKeyPos = [
         26, 1, 63, 3, 116, 6, 150, 8, 184, 10, 238, 13, 274, 15, 327, 18, 362, 20, 394, 22
     ];
-
-    // Prealoaded resources
-    var mPreload = [];
 
     //--------------------------------------------------------------------------
     // URL parsing & generation
@@ -6127,12 +6122,6 @@ var CGUI = function () {
     // Helper functions
     //--------------------------------------------------------------------------
 
-    var preloadImage = function (url) {
-        var img = new Image();
-        img.src = url;
-        mPreload.push(img);
-    };
-
     var initPresets = function () {
         var parent = document.getElementById("instrPreset"),
             o, instr;
@@ -6506,9 +6495,6 @@ var CGUI = function () {
     };
 
     var updateSlider = function (o, x, ignore) {
-        console.log("update");
-        console.log("ignore", ignore);
-
         if (!ignore) {
             var range = $(o);
             range.rsSlider("value", x);
@@ -8416,10 +8402,6 @@ var CGUI = function () {
     var activateMasterEvents = function () {
         // Set up the master mouse event handlers
         document.onmousedown = null;
-//        document.addEventListener("mousemove", mouseMove, false);
-//        document.addEventListener("touchmove", mouseMove, false);
-//        document.addEventListener("mouseup", mouseUp, false);
-//        document.addEventListener("touchend", mouseUp, false);
 
         // Set up the master key event handler
         document.onkeydown = keyDown;
@@ -8625,44 +8607,6 @@ var CGUI = function () {
 
         // Build the UI tables
         buildSequencerTable();
-
-        // Set up GUI elements
-//        document.getElementById("osc1_vol").sliderProps = {min: 0, max: 255};
-//        document.getElementById("osc1_semi").sliderProps = {min: 92, max: 164};
-//
-//        document.getElementById("osc2_vol").sliderProps = {min: 0, max: 255};
-//        document.getElementById("osc2_semi").sliderProps = {min: 92, max: 164};
-//
-//        document.getElementById("osc2_det").sliderProps = {
-//            min: 0, max: 255, nonLinear: true
-//        };
-//
-//        document.getElementById("noise_vol").sliderProps = {min: 0, max: 255};
-//
-//        document.getElementById("env_att").sliderProps = {min: 0, max: 255};
-//        document.getElementById("env_sust").sliderProps = {min: 0, max: 255};
-//        document.getElementById("env_rel").sliderProps = {min: 0, max: 255};
-//
-//        document.getElementById("lfo_amt").sliderProps = {min: 0, max: 255};
-//        document.getElementById("lfo_freq").sliderProps = {min: 0, max: 16};
-//
-//        document.getElementById("fx_freq").sliderProps = {
-//            min: 0, max: 255, nonLinear: true
-//        };
-//
-//        document.getElementById("fx_res").sliderProps = {min: 0, max: 254};
-//
-//        document.getElementById("fx_dist").sliderProps = {
-//            min: 0, max: 255, nonLinear: true
-//        };
-//
-//        document.getElementById("fx_drive").sliderProps = {min: 0, max: 255};
-//
-//        document.getElementById("fx_pan_amt").sliderProps = {min: 0, max: 255};
-//        document.getElementById("fx_pan_freq").sliderProps = {min: 0, max: 16};
-//
-//        document.getElementById("fx_dly_amt").sliderProps = {min: 0, max: 255};
-//        document.getElementById("fx_dly_time").sliderProps = {min: 0, max: 16};
 
         // Create audio element, and always play the audio as soon as it's ready
         try {
