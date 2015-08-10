@@ -6,7 +6,7 @@
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
  *
  * @version v0.0.1
- * @build Mon Aug 10 2015 21:13:22
+ * @build Mon Aug 10 2015 23:53:04
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *
@@ -5121,7 +5121,164 @@ var CSong = {
         return Math.round((60 * 44100 / 4) / bpm);
     },
 
-    songToBin : function (song) {
+    songToJS: function (song) {
+        var i, j, k, pattern,
+            jsData = "";
+
+        jsData += "    // This music has been exported by SoundBox. You can use it with\n";
+        jsData += "    // http://sb.bitsnbites.eu/player-small.js in your own product.\n\n";
+
+        jsData += "    // See http://sb.bitsnbites.eu/demo.html for an example of how to\n";
+        jsData += "    // use it in a demo.\n\n";
+
+        jsData += "    // Song data\n";
+        jsData += "    var song = {\n";
+
+        jsData += "      songData: [\n";
+
+        for (i = 0; i < 8; i++) {
+            var instr = song.songData[i];
+
+            jsData += "        { // Instrument " + i + "\n";
+            jsData += "          i: [\n";
+            jsData += "          " + instr.i[this.instProps.OSC1_WAVEFORM] + ", // OSC1_WAVEFORM\n";
+            jsData += "          " + instr.i[this.instProps.OSC1_VOL] + ", // OSC1_VOL\n";
+            jsData += "          " + instr.i[this.instProps.OSC1_SEMI] + ", // OSC1_SEMI\n";
+            jsData += "          " + instr.i[this.instProps.OSC1_XENV] + ", // OSC1_XENV\n";
+            jsData += "          " + instr.i[this.instProps.OSC2_WAVEFORM] + ", // OSC2_WAVEFORM\n";
+            jsData += "          " + instr.i[this.instProps.OSC2_VOL] + ", // OSC2_VOL\n";
+            jsData += "          " + instr.i[this.instProps.OSC2_SEMI] + ", // OSC2_SEMI\n";
+            jsData += "          " + instr.i[this.instProps.OSC2_DETUNE] + ", // OSC2_DETUNE\n";
+            jsData += "          " + instr.i[this.instProps.OSC2_XENV] + ", // OSC2_XENV\n";
+            jsData += "          " + instr.i[this.instProps.NOISE_VOL] + ", // NOISE_VOL\n";
+            jsData += "          " + instr.i[this.instProps.ENV_ATTACK] + ", // ENV_ATTACK\n";
+            jsData += "          " + instr.i[this.instProps.ENV_SUSTAIN] + ", // ENV_SUSTAIN\n";
+            jsData += "          " + instr.i[this.instProps.ENV_RELEASE] + ", // ENV_RELEASE\n";
+            jsData += "          " + instr.i[this.instProps.LFO_WAVEFORM] + ", // LFO_WAVEFORM\n";
+            jsData += "          " + instr.i[this.instProps.LFO_AMT] + ", // LFO_AMT\n";
+            jsData += "          " + instr.i[this.instProps.LFO_FREQ] + ", // LFO_FREQ\n";
+            jsData += "          " + instr.i[this.instProps.LFO_FX_FREQ] + ", // LFO_FX_FREQ\n";
+            jsData += "          " + instr.i[this.instProps.FX_FILTER] + ", // FX_FILTER\n";
+            jsData += "          " + instr.i[this.instProps.FX_FREQ] + ", // FX_FREQ\n";
+            jsData += "          " + instr.i[this.instProps.FX_RESONANCE] + ", // FX_RESONANCE\n";
+            jsData += "          " + instr.i[this.instProps.FX_DIST] + ", // FX_DIST\n";
+            jsData += "          " + instr.i[this.instProps.FX_DRIVE] + ", // FX_DRIVE\n";
+            jsData += "          " + instr.i[this.instProps.FX_PAN_AMT] + ", // FX_PAN_AMT\n";
+            jsData += "          " + instr.i[this.instProps.FX_PAN_FREQ] + ", // FX_PAN_FREQ\n";
+            jsData += "          " + instr.i[this.instProps.FX_DELAY_AMT] + ", // FX_DELAY_AMT\n";
+            jsData += "          " + instr.i[this.instProps.FX_DELAY_TIME] + " // FX_DELAY_TIME\n";
+            jsData += "          ],\n";
+
+            // Sequencer data for this instrument
+            jsData += "          // Patterns\n";
+            jsData += "          p: [";
+
+            var lastRow    = song.endPattern - 2,
+                maxPattern = 0, lastNonZero = 0;
+
+            for (j = 0; j <= lastRow; j++) {
+                pattern = instr.p[j];
+
+                if (pattern > maxPattern) {
+                    maxPattern = pattern;
+                }
+
+                if (pattern) {
+                    lastNonZero = j;
+                }
+            }
+
+            for (j = 0; j <= lastNonZero; j++) {
+                pattern = instr.p[j];
+
+                if (pattern) {
+                    jsData += pattern;
+                }
+
+                if (j < lastNonZero) {
+                    jsData += ",";
+                }
+            }
+
+            jsData += "],\n";
+
+            // Pattern data for this instrument
+            jsData += "          // Columns\n";
+            jsData += "          c: [\n";
+
+            for (j = 0; j < maxPattern; j++) {
+                jsData += "            {n: [";
+                lastNonZero = 0;
+
+                for (k = 0; k < song.patternLen * 4; k++) {
+                    if (instr.c[j].n[k]) {
+                        lastNonZero = k;
+                    }
+                }
+
+                for (k = 0; k <= lastNonZero; k++) {
+                    var note = instr.c[j].n[k];
+
+                    if (note) {
+                        jsData += note;
+                    }
+
+                    if (k < lastNonZero) {
+                        jsData += ",";
+                    }
+                }
+
+                jsData += "],\n";
+                jsData += "             f: [";
+                lastNonZero = 0;
+
+                for (k = 0; k < song.patternLen * 2; k++) {
+                    if (instr.c[j].f[k]) {
+                        lastNonZero = k;
+                    }
+                }
+
+                for (k = 0; k <= lastNonZero; k++) {
+                    var fx = instr.c[j].f[k];
+
+                    if (fx) {
+                        jsData += fx;
+                    }
+
+                    if (k < lastNonZero) {
+                        jsData += ",";
+                    }
+                }
+
+                jsData += "]}";
+
+                if (j < maxPattern - 1) {
+                    jsData += ",";
+                }
+
+                jsData += "\n";
+            }
+
+            jsData += "          ]\n";
+            jsData += "        }";
+
+            if (i < 7) {
+                jsData += ",";
+            }
+
+            jsData += "\n";
+        }
+
+        jsData += "      ],\n";
+        jsData += "      rowLen: " + song.rowLen + ",   // In sample lengths\n";
+        jsData += "      patternLen: " + song.patternLen + ",  // Rows per pattern\n";
+        jsData += "      endPattern: " + song.endPattern + "  // End pattern\n";
+        jsData += "    };\n";
+
+        return jsData;
+    },
+
+    songToBin: function (song) {
         var bin = new CBinWriter();
 
         // Row length (i.e. song speed)
@@ -5667,6 +5824,46 @@ var CSong = {
         }
 
         return song;
+    },
+
+    getURLSongData: function (dataParam) {
+        var songData;
+
+        if (dataParam) {
+            var str = dataParam, str2 = "";
+
+            if (str.indexOf("data:") == 0) {
+                // This is a data: URI (e.g. data:application/x-extension-sbx;base64,....)
+                var idx = str.indexOf("base64,");
+
+                if (idx > 0) {
+                    str2 = str.substr(idx + 7);
+                }
+            } else {
+                // This is GET data from an http URL
+                for (var i = 0; i < str.length; ++i) {
+                    var chr = str[i];
+
+                    if (chr === "-") {
+                        chr = "+";
+                    }
+
+                    if (chr === "_") {
+                        chr = "/";
+                    }
+
+                    str2 += chr;
+                }
+            }
+
+            try {
+                songData = atob(str2);
+            } catch (err) {
+                console.error("Decode error");
+            }
+        }
+
+        return songData;
     }
 };
 "use strict";
@@ -5762,47 +5959,6 @@ var CGUI = function () {
         }
 
         return params;
-    };
-
-    var getURLSongData = function (dataParam) {
-        var songData = undefined;
-
-        if (dataParam) {
-            var str = dataParam, str2 = "";
-
-            if (str.indexOf("data:") == 0) {
-                // This is a data: URI (e.g. data:application/x-extension-sbx;base64,....)
-                var idx = str.indexOf("base64,");
-
-                if (idx > 0) {
-                    str2 = str.substr(idx + 7);
-                }
-            } else {
-                // This is GET data from an http URL
-                for (var i = 0; i < str.length; ++i) {
-                    var chr = str[i];
-
-                    if (chr === "-") {
-                        chr = "+";
-                    }
-
-                    if (chr === "_") {
-                        chr = "/";
-                    }
-
-                    str2 += chr;
-                }
-            }
-
-            try {
-                //noinspection JSValidateTypes
-                songData = atob(str2);
-            } catch (err) {
-                songData = undefined;
-            }
-        }
-
-        return songData;
     };
 
     //--------------------------------------------------------------------------
@@ -5913,165 +6069,6 @@ var CGUI = function () {
         song.songData[0].p[0] = 1;
 
         return song;
-    };
-
-
-
-    var songToJS = function (song) {
-        var i, j, k, pattern,
-            jsData = "";
-
-        jsData += "    // This music has been exported by SoundBox. You can use it with\n";
-        jsData += "    // http://sb.bitsnbites.eu/player-small.js in your own product.\n\n";
-
-        jsData += "    // See http://sb.bitsnbites.eu/demo.html for an example of how to\n";
-        jsData += "    // use it in a demo.\n\n";
-
-        jsData += "    // Song data\n";
-        jsData += "    var song = {\n";
-
-        jsData += "      songData: [\n";
-
-        for (i = 0; i < 8; i++) {
-            var instr = song.songData[i];
-
-            jsData += "        { // Instrument " + i + "\n";
-            jsData += "          i: [\n";
-            jsData += "          " + instr.i[OSC1_WAVEFORM] + ", // OSC1_WAVEFORM\n";
-            jsData += "          " + instr.i[OSC1_VOL] + ", // OSC1_VOL\n";
-            jsData += "          " + instr.i[OSC1_SEMI] + ", // OSC1_SEMI\n";
-            jsData += "          " + instr.i[OSC1_XENV] + ", // OSC1_XENV\n";
-            jsData += "          " + instr.i[OSC2_WAVEFORM] + ", // OSC2_WAVEFORM\n";
-            jsData += "          " + instr.i[OSC2_VOL] + ", // OSC2_VOL\n";
-            jsData += "          " + instr.i[OSC2_SEMI] + ", // OSC2_SEMI\n";
-            jsData += "          " + instr.i[OSC2_DETUNE] + ", // OSC2_DETUNE\n";
-            jsData += "          " + instr.i[OSC2_XENV] + ", // OSC2_XENV\n";
-            jsData += "          " + instr.i[NOISE_VOL] + ", // NOISE_VOL\n";
-            jsData += "          " + instr.i[ENV_ATTACK] + ", // ENV_ATTACK\n";
-            jsData += "          " + instr.i[ENV_SUSTAIN] + ", // ENV_SUSTAIN\n";
-            jsData += "          " + instr.i[ENV_RELEASE] + ", // ENV_RELEASE\n";
-            jsData += "          " + instr.i[LFO_WAVEFORM] + ", // LFO_WAVEFORM\n";
-            jsData += "          " + instr.i[LFO_AMT] + ", // LFO_AMT\n";
-            jsData += "          " + instr.i[LFO_FREQ] + ", // LFO_FREQ\n";
-            jsData += "          " + instr.i[LFO_FX_FREQ] + ", // LFO_FX_FREQ\n";
-            jsData += "          " + instr.i[FX_FILTER] + ", // FX_FILTER\n";
-            jsData += "          " + instr.i[FX_FREQ] + ", // FX_FREQ\n";
-            jsData += "          " + instr.i[FX_RESONANCE] + ", // FX_RESONANCE\n";
-            jsData += "          " + instr.i[FX_DIST] + ", // FX_DIST\n";
-            jsData += "          " + instr.i[FX_DRIVE] + ", // FX_DRIVE\n";
-            jsData += "          " + instr.i[FX_PAN_AMT] + ", // FX_PAN_AMT\n";
-            jsData += "          " + instr.i[FX_PAN_FREQ] + ", // FX_PAN_FREQ\n";
-            jsData += "          " + instr.i[FX_DELAY_AMT] + ", // FX_DELAY_AMT\n";
-            jsData += "          " + instr.i[FX_DELAY_TIME] + " // FX_DELAY_TIME\n";
-            jsData += "          ],\n";
-
-            // Sequencer data for this instrument
-            jsData += "          // Patterns\n";
-            jsData += "          p: [";
-
-            var lastRow    = song.endPattern - 2,
-                maxPattern = 0, lastNonZero = 0;
-
-            for (j = 0; j <= lastRow; j++) {
-                pattern = instr.p[j];
-
-                if (pattern > maxPattern) {
-                    maxPattern = pattern;
-                }
-
-                if (pattern) {
-                    lastNonZero = j;
-                }
-            }
-
-            for (j = 0; j <= lastNonZero; j++) {
-                pattern = instr.p[j];
-
-                if (pattern) {
-                    jsData += pattern;
-                }
-
-                if (j < lastNonZero) {
-                    jsData += ",";
-                }
-            }
-
-            jsData += "],\n";
-
-            // Pattern data for this instrument
-            jsData += "          // Columns\n";
-            jsData += "          c: [\n";
-
-            for (j = 0; j < maxPattern; j++) {
-                jsData += "            {n: [";
-                lastNonZero = 0;
-
-                for (k = 0; k < song.patternLen * 4; k++) {
-                    if (instr.c[j].n[k]) {
-                        lastNonZero = k;
-                    }
-                }
-
-                for (k = 0; k <= lastNonZero; k++) {
-                    var note = instr.c[j].n[k];
-
-                    if (note) {
-                        jsData += note;
-                    }
-
-                    if (k < lastNonZero) {
-                        jsData += ",";
-                    }
-                }
-
-                jsData += "],\n";
-                jsData += "             f: [";
-                lastNonZero = 0;
-
-                for (k = 0; k < song.patternLen * 2; k++) {
-                    if (instr.c[j].f[k]) {
-                        lastNonZero = k;
-                    }
-                }
-
-                for (k = 0; k <= lastNonZero; k++) {
-                    var fx = instr.c[j].f[k];
-
-                    if (fx) {
-                        jsData += fx;
-                    }
-
-                    if (k < lastNonZero) {
-                        jsData += ",";
-                    }
-                }
-
-                jsData += "]}";
-
-                if (j < maxPattern - 1) {
-                    jsData += ",";
-                }
-
-                jsData += "\n";
-            }
-
-            jsData += "          ]\n";
-            jsData += "        }";
-
-            if (i < 7) {
-                jsData += ",";
-            }
-
-            jsData += "\n";
-        }
-
-        jsData += "      ],\n";
-        jsData += "      rowLen: " + song.rowLen + ",   // In sample lengths\n";
-        jsData += "      patternLen: " + song.patternLen + ",  // Rows per pattern\n";
-        jsData += "      endPattern: " + song.endPattern + "  // End pattern\n";
-        jsData += "    };\n";
-
-        return jsData;
     };
 
     //----------------------------------------------------------------------------
@@ -6814,7 +6811,7 @@ var CGUI = function () {
         if ($current.val() == "custom") {
             // Convert custom data URL to song data
             var params = parseURLGetData($("#open-data-url").val());
-            songData = getURLSongData(params && params.data && params.data[0]);
+            songData = CSong.getURLSongData(params && params.data && params.data[0]);
         } else {
             var name = $current.val();
 
@@ -6824,7 +6821,7 @@ var CGUI = function () {
                     if (gDemoSongs[j].data) {
                         songData = gDemoSongs[j].data;
                     } else {
-                        songData = getURLSongData(gDemoSongs[j].base64);
+                        songData = CSong.getURLSongData(gDemoSongs[j].base64);
                     }
 
                     break;
@@ -6923,12 +6920,13 @@ var CGUI = function () {
         generateAudio(doneFun);
     };
 
+    //noinspection JSUnusedLocalSymbols
     var exportJS = function (e) {
         // Update song ranges
         updateSongRanges();
 
         // Generate JS song data
-        var dataURI = "data:text/javascript;base64," + btoa(songToJS(mSong));
+        var dataURI = "data:text/javascript;base64," + btoa(CSong.songToJS(mSong));
         window.open(dataURI);
 
         return false;
@@ -8436,7 +8434,7 @@ var CGUI = function () {
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            loadSongFromData(getURLSongData(e.target.result));
+            loadSongFromData(CSong.getURLSongData(e.target.result));
         };
 
         reader.readAsDataURL(file);
@@ -8665,7 +8663,7 @@ var CGUI = function () {
         }
 
         // Load the song
-        var songData = getURLSongData(mGETParams && mGETParams.data && mGETParams.data[0]),
+        var songData = CSong.getURLSongData(mGETParams && mGETParams.data && mGETParams.data[0]),
             song     = songData ? CSong.binToSong(songData) : null;
 
         mSong = song ? song : makeNewSong();
