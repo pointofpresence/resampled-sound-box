@@ -89,6 +89,7 @@ function buildJs() {
             config.trackerJsSrc + "/CBinParser.js",
             config.trackerJsSrc + "/CBinWriter.js",
             config.trackerJsSrc + "/CAudioTimer.js",
+            config.trackerJsSrc + "/CUtil.js",
             config.trackerJsSrc + "/CSong.js",
             config.trackerJsSrc + "/gui.js"
         ])

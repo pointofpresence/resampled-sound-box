@@ -6,7 +6,7 @@
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
  *
  * @version v0.0.1
- * @build Mon Aug 10 2015 23:53:04
+ * @build Tue Aug 11 2015 00:04:57
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *

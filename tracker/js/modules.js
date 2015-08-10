@@ -6,7 +6,7 @@
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
  *
  * @version v0.0.1
- * @build Mon Aug 10 2015 23:53:04
+ * @build Tue Aug 11 2015 00:04:57
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *
@@ -5055,6 +5055,75 @@ var CAudioTimer = function () {
 };
 "use strict";
 
+var CUtil = {
+    getEventElement: function (e) {
+        var o = null;
+
+        if (!e) {
+            e = window.event;
+        }
+
+        if (e.target) {
+            o = e.target;
+        } else if (e.srcElement) {
+            o = e.srcElement;
+        }
+
+        if (o.nodeType == 3) { // defeat Safari bug
+            o = o.parentNode;
+        }
+
+        return o;
+    },
+
+    getMousePos: function (e, rel) {
+        // Get the mouse document position
+        var p = [0, 0];
+
+        if (e.pageX && e.pageY) {
+            p = [e.pageX, e.pageY];
+        } else if (e.clientX && e.clientY) {
+            p = [
+                e.clientX + document.body.scrollLeft +
+                document.documentElement.scrollLeft,
+                e.clientY + document.body.scrollTop +
+                document.documentElement.scrollTop
+            ];
+        } else { //noinspection JSUnresolvedVariable
+            if (e.touches && e.touches.length > 0) {
+                //noinspection JSUnresolvedVariable
+                p = [
+                    e.touches[0].clientX + document.body.scrollLeft +
+                    document.documentElement.scrollLeft,
+                    e.touches[0].clientY + document.body.scrollTop +
+                    document.documentElement.scrollTop
+                ];
+            }
+        }
+
+        if (!rel) {
+            return p;
+        }
+
+        // Get the element document position
+        var pElem = this.getElementPos(this.getEventElement(e));
+        return [p[0] - pElem[0], p[1] - pElem[1]];
+    },
+
+    getElementPos: function (o) {
+        var left = 0, top = 0;
+
+        if (o.offsetParent) {
+            do {
+                left += o.offsetLeft;
+                top += o.offsetTop;
+            } while (o = o.offsetParent);
+        }
+        return [left, top];
+    }
+};
+"use strict";
+
 var CSong = {
     instProps: {
         OSC1_WAVEFORM: 0,
@@ -6175,71 +6244,11 @@ var CGUI = function () {
         }
     };
 
-    var getElementPos = function (o) {
-        var left = 0, top = 0;
 
-        if (o.offsetParent) {
-            do {
-                left += o.offsetLeft;
-                top += o.offsetTop;
-            } while (o = o.offsetParent);
-        }
-        return [left, top];
-    };
 
-    var getEventElement = function (e) {
-        var o = null;
 
-        if (!e) {
-            e = window.event;
-        }
 
-        if (e.target) {
-            o = e.target;
-        } else if (e.srcElement) {
-            o = e.srcElement;
-        }
 
-        if (o.nodeType == 3) { // defeat Safari bug
-            o = o.parentNode;
-        }
-
-        return o;
-    };
-
-    var getMousePos = function (e, rel) {
-        // Get the mouse document position
-        var p = [0, 0];
-
-        if (e.pageX && e.pageY) {
-            p = [e.pageX, e.pageY];
-        } else if (e.clientX && e.clientY) {
-            p = [
-                e.clientX + document.body.scrollLeft +
-                document.documentElement.scrollLeft,
-                e.clientY + document.body.scrollTop +
-                document.documentElement.scrollTop
-            ];
-        } else { //noinspection JSUnresolvedVariable
-            if (e.touches && e.touches.length > 0) {
-                //noinspection JSUnresolvedVariable
-                p = [
-                    e.touches[0].clientX + document.body.scrollLeft +
-                    document.documentElement.scrollLeft,
-                    e.touches[0].clientY + document.body.scrollTop +
-                    document.documentElement.scrollTop
-                ];
-            }
-        }
-
-        if (!rel) {
-            return p;
-        }
-
-        // Get the element document position
-        var pElem = getElementPos(getEventElement(e));
-        return [p[0] - pElem[0], p[1] - pElem[1]];
-    };
 
     var unfocusHTMLInputElements = function () {
         document.getElementById("instrPreset").blur();
@@ -7617,7 +7626,7 @@ var CGUI = function () {
         e.preventDefault();
 
         if (mSeqCol == mSeqCol2) {
-            var o = getEventElement(e);
+            var o = CUtil.getEventElement(e);
 
             // Check which instrument parameter was changed
             var fxCmd = -1;
@@ -7780,7 +7789,7 @@ var CGUI = function () {
         e.preventDefault();
 
         if (mSeqCol == mSeqCol2) {
-            var o   = getEventElement(e),
+            var o   = CUtil.getEventElement(e),
                 val = o.options[o.selectedIndex].value;
 
             if (val !== "") {
@@ -7803,7 +7812,7 @@ var CGUI = function () {
     var onKeyboardClick = function (e) {
         e = e || window.event;
 
-        var p = getMousePos(e, true);
+        var p = CUtil.getMousePos(e, true);
 
         // Calculate keyboard position
         var n = 0;
@@ -7851,7 +7860,7 @@ var CGUI = function () {
         e.preventDefault();
 
         if (!mFollowerActive) {
-            var o   = getEventElement(e),
+            var o   = CUtil.getEventElement(e),
                 row = parseInt(o.id.slice(3));
 
             setSelectedFxTrackRow(row);
@@ -7866,7 +7875,7 @@ var CGUI = function () {
             e = e || window.event;
             e.preventDefault();
 
-            var o   = getEventElement(e),
+            var o   = CUtil.getEventElement(e),
                 row = parseInt(o.id.slice(3));
 
             setSelectedFxTrackRow2(row);
@@ -7878,7 +7887,7 @@ var CGUI = function () {
             e = e || window.event;
             e.preventDefault();
 
-            var o   = getEventElement(e),
+            var o   = CUtil.getEventElement(e),
                 row = parseInt(o.id.slice(3));
 
             setSelectedFxTrackRow2(row);
@@ -7891,7 +7900,7 @@ var CGUI = function () {
         e.preventDefault();
 
         if (!mFollowerActive) {
-            var o   = getEventElement(e),
+            var o   = CUtil.getEventElement(e),
                 col = parseInt(o.id.slice(2, 3)),
                 row = parseInt(o.id.slice(4));
 
@@ -7907,7 +7916,7 @@ var CGUI = function () {
             e = e || window.event;
             e.preventDefault();
 
-            var o   = getEventElement(e),
+            var o   = CUtil.getEventElement(e),
                 col = parseInt(o.id.slice(2, 3)),
                 row = parseInt(o.id.slice(4));
 
@@ -7920,7 +7929,7 @@ var CGUI = function () {
             e = e || window.event;
             e.preventDefault();
 
-            var o   = getEventElement(e),
+            var o   = CUtil.getEventElement(e),
                 col = parseInt(o.id.slice(2, 3)),
                 row = parseInt(o.id.slice(4));
 
@@ -7933,7 +7942,7 @@ var CGUI = function () {
         e = e || window.event;
         e.preventDefault();
 
-        var o   = getEventElement(e),
+        var o   = CUtil.getEventElement(e),
             col = parseInt(o.id.slice(2, 3)),
             row;
 
@@ -7962,7 +7971,7 @@ var CGUI = function () {
             e = e || window.event;
             e.preventDefault();
 
-            var o   = getEventElement(e),
+            var o   = CUtil.getEventElement(e),
                 col = parseInt(o.id.slice(2, 3)),
                 row = parseInt(o.id.slice(4));
 
@@ -7978,7 +7987,7 @@ var CGUI = function () {
             e = e || window.event;
             e.preventDefault();
 
-            var o          = getEventElement(e),
+            var o          = CUtil.getEventElement(e),
                 col        = parseInt(o.id.slice(2, 3)),
                 row        = parseInt(o.id.slice(4)),
                 newChannel = col != mSeqCol2 || mSeqCol != mSeqCol2;
