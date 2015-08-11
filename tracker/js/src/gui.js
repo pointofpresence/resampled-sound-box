@@ -2750,9 +2750,10 @@ var CGUI = function () {
         document.getElementById("keyboard").addEventListener("touchstart", onKeyboardClick, false);
 
         // Instrument menu
-        document.getElementById("instrCopy").onmousedown = instrCopyMouseDown;
-        document.getElementById("instrPaste").onmousedown = instrPasteMouseDown;
+        $("#instrCopy").on("click", instrCopyMouseDown);
+        $("#instrPaste").on("click", instrPasteMouseDown);
 
+        // Open song modal
         $("#open-song-button").on("click", onOpenSongClick);
 
         // Initialize the MIDI handler
@@ -2762,7 +2763,7 @@ var CGUI = function () {
         activateMasterEvents();
 
         // Show the about dialog (if no song was loaded)
-        if (!songData) {
+        if (!songData) { //TODO: localStorage
             showAboutDialog();
         }
 

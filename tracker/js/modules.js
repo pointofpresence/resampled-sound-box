@@ -6,7 +6,7 @@
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
  *
  * @version v0.0.1
- * @build Tue Aug 11 2015 00:30:27
+ * @build Tue Aug 11 2015 09:21:53
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *
@@ -5203,6 +5203,12 @@ var CSong = {
         FX_DELAY_TIME: 25
     },
 
+    compression: {
+        NONE:    0,
+        RLE:     1,
+        DEFLATE: 2
+    },
+
     MAX_SONG_ROWS: 128,
     MAX_PATTERNS:  36,
 
@@ -5469,24 +5475,27 @@ var CSong = {
         // Pack the song data
         // FIXME: To avoid bugs, we try different compression methods here until we
         // find something that works (this should not be necessary).
-        var unpackedData = bin.getData(), packedData, testData, compressionMethod = 0;
+        var unpackedData = bin.getData(),
+            packedData,
+            testData,
+            compressionMethod = this.compression.NONE;
 
         for (i = 9; i > 0; i--) {
             packedData = RawDeflate.deflate(unpackedData, i);
             testData = RawDeflate.inflate(packedData);
 
             if (unpackedData === testData) {
-                compressionMethod = 2;
+                compressionMethod = this.compression.DEFLATE;
                 break;
             }
         }
 
-        if (compressionMethod == 0) {
+        if (compressionMethod == this.compression.NONE) {
             packedData = rle_encode(bin.getData());
             testData = rle_decode(packedData);
 
             if (unpackedData === testData) {
-                compressionMethod = 1;
+                compressionMethod = this.compression.RLE;
             } else {
                 packedData = unpackedData;
             }
@@ -5496,15 +5505,12 @@ var CSong = {
         bin = new CBinWriter();
 
         // Signature ("SBox")
-        bin.putULONG(2020557395);
+        bin.putULONG(2020557395); //TODO: Const
 
         // Format version
         bin.putUBYTE(10);
 
         // Compression method
-        //  0: none
-        //  1: RLE
-        //  2: DEFLATE
         bin.putUBYTE(compressionMethod);
 
         // Append packed data
@@ -5707,16 +5713,13 @@ var CSong = {
         var version = bin.getUBYTE();
 
         // Check if this is a SoundBox song
-        if (signature != 2020557395 || (version < 1 || version > 10)) {
+        if (signature != 2020557395 || (version < 1 || version > 10)) { //TODO: Const
             return undefined;
         }
 
         if (version >= 8) {
             //TODO: CONST
             // Get compression method
-            //  0: none
-            //  1: RLE
-            //  2: DEFLATE
             var compressionMethod = bin.getUBYTE();
 
             // Unpack song data
@@ -5724,13 +5727,13 @@ var CSong = {
 
             switch (compressionMethod) {
                 default:
-                case 0:
+                case this.compression.NONE:
                     unpackedData = packedData;
                     break;
-                case 1:
+                case this.compression.RLE:
                     unpackedData = rle_decode(packedData);
                     break;
-                case 2:
+                case this.compression.DEFLATE:
                     unpackedData = RawDeflate.inflate(packedData);
                     break;
             }
@@ -8731,9 +8734,10 @@ var CGUI = function () {
         document.getElementById("keyboard").addEventListener("touchstart", onKeyboardClick, false);
 
         // Instrument menu
-        document.getElementById("instrCopy").onmousedown = instrCopyMouseDown;
-        document.getElementById("instrPaste").onmousedown = instrPasteMouseDown;
+        $("#instrCopy").on("click", instrCopyMouseDown);
+        $("#instrPaste").on("click", instrPasteMouseDown);
 
+        // Open song modal
         $("#open-song-button").on("click", onOpenSongClick);
 
         // Initialize the MIDI handler
@@ -8743,7 +8747,7 @@ var CGUI = function () {
         activateMasterEvents();
 
         // Show the about dialog (if no song was loaded)
-        if (!songData) {
+        if (!songData) { //TODO: localStorage
             showAboutDialog();
         }
 
