@@ -6,7 +6,7 @@
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
  *
  * @version v0.0.1
- * @build Tue Aug 11 2015 09:21:53
+ * @build Wed Aug 12 2015 09:12:14
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *
@@ -5212,6 +5212,8 @@ var CSong = {
     MAX_SONG_ROWS: 128,
     MAX_PATTERNS:  36,
 
+    SIGNATURE: 2020557395, // Signature ("SBox")
+
     makeURLSongData: function (baseURL, data) {
         var str = btoa(data), str2 = "";
 
@@ -5504,8 +5506,7 @@ var CSong = {
         // Create a new binary stream - this is the actual file
         bin = new CBinWriter();
 
-        // Signature ("SBox")
-        bin.putULONG(2020557395); //TODO: Const
+        bin.putULONG(this.SIGNATURE);
 
         // Format version
         bin.putUBYTE(10);
@@ -5713,12 +5714,11 @@ var CSong = {
         var version = bin.getUBYTE();
 
         // Check if this is a SoundBox song
-        if (signature != 2020557395 || (version < 1 || version > 10)) { //TODO: Const
+        if (signature != this.SIGNATURE || (version < 1 || version > 10)) {
             return undefined;
         }
 
         if (version >= 8) {
-            //TODO: CONST
             // Get compression method
             var compressionMethod = bin.getUBYTE();
 
