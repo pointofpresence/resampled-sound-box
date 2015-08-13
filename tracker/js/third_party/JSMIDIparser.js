@@ -62,8 +62,9 @@ JSMIDIParser = {
     // the structured data to the provided callback function.
     IO: function (_fileElement, _callback) {
         if (!window.File || !window.FileReader) { // check browser compatibillity
-            if (this.debug)
-                console.log('The File APIs are not fully supported in this browser.');
+            if (this.debug) {
+                console.log("The File APIs are not fully supported in this browser.");
+            }
 
             //noinspection JSConstructorReturnsPrimitive
             return false;
@@ -71,8 +72,9 @@ JSMIDIParser = {
 
         document.getElementById(_fileElement).onchange = (function (_t) { // set the file open event handler
             return function (InputEvt) {
-                if (!InputEvt.target.files.length)
+                if (!InputEvt.target.files.length) {
                     return false;
+                }
 
                 var reader = new FileReader(); // prepare the file Reader
 
@@ -129,6 +131,7 @@ JSMIDIParser = {
 
             readIntVLV: function () { // read a variable length value
                 var value = 0;
+
                 if (parseInt(this.data[this.pointer]) < 128) { // ...value in a single byte
                     value = this.readInt(1);
                 } else { // ...value in multiple bytes
@@ -160,6 +163,7 @@ JSMIDIParser = {
         }
 
         // header size (unused var), getted just for read pointer movement
+        //noinspection JSUnusedLocalSymbols
         var headerSize = file.readInt(4);
 
         var MIDI = {}; // create new midi object
@@ -193,10 +197,12 @@ JSMIDIParser = {
             }
 
             // var NOT USED, just for pointer move. get chunk size (bytes length)
+            //noinspection JSUnusedLocalSymbols
             var chunkLength = file.readInt(4);
 
-            var e = 0; // init event counter
-            var endOfTrack = false; // FLAG for track reading secuence breaking
+            var e              = 0,     // init event counter
+                endOfTrack     = false, // FLAG for track reading secuence breaking
+                laststatusByte = null;
 
             // ** read EVENT CHUNK
             while (!endOfTrack) {
@@ -270,8 +276,9 @@ JSMIDIParser = {
                     // split the status byte HEX representation, to obtain 4 bits values
                     statusByte = statusByte.toString(16).split('');
 
-                    if (!statusByte[1])
-                        statusByte.unshift('0'); // force 2 digits
+                    if (!statusByte[1]) {
+                        statusByte.unshift("0"); // force 2 digits
+                    }
 
                     // first byte is EVENT TYPE ID
                     MIDI.track[t - 1].event[e - 1].type = parseInt(statusByte[0], 16);
@@ -284,8 +291,9 @@ JSMIDIParser = {
                             var event_length = file.readIntVLV();
                             MIDI.track[t - 1].event[e - 1].data = file.readInt(event_length);
 
-                            if (this.debug)
+                            if (this.debug) {
                                 console.log("Unimplemented 0xF exclusive events! data block readed as Integer");
+                            }
 
                             break;
 
@@ -305,8 +313,9 @@ JSMIDIParser = {
                             break;
 
                         default:
-                            if (this.debug)
+                            if (this.debug) {
                                 console.log("Unknown EVENT detected.... reading cancelled!");
+                            }
 
                             return false;
                     }
