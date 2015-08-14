@@ -6,9 +6,11 @@
  Description: JSMIDIparser library reads .MID binary files, and outputs binary
  data as a readable JS object.
 
- Usage: call JSMIDIParser.IO(fileInputElement,callbacFunction) function, setting the
+ Improved by pointofpresence
+
+ Usage: call JSMIDIParser.IO(fileInputElement,callbackFunction) function, setting the
  Input File HTML element that will handle the file.mid opening, and callback function
- that will recieve the resulting Object.
+ that will receive the resulting Object.
 
  Output Object Specs:
  MIDIObject{
@@ -35,7 +37,7 @@
  ]
  }
 
- Data from Event 12 of Track 2 could be easilly readed with:
+ Data from Event 12 of Track 2 could be easily readed with:
  MIDIObject.track[2].event[12].data;
 
  MIDI Binary Encoding Specifications in http://www.sonicspot.com/guide/midifiles.html
@@ -61,7 +63,7 @@ JSMIDIParser = {
     // that will provide the binary data automating the conversion, and returning
     // the structured data to the provided callback function.
     IO: function (_fileElement, _callback) {
-        if (!window.File || !window.FileReader) { // check browser compatibillity
+        if (!window.File || !window.FileReader) { // check browser compatibility
             if (this.debug) {
                 console.log("The File APIs are not fully supported in this browser.");
             }
@@ -70,7 +72,8 @@ JSMIDIParser = {
             return false;
         }
 
-        document.getElementById(_fileElement).onchange = (function (_t) { // set the file open event handler
+        // set the file open event handler
+        document.getElementById(_fileElement).onchange = (function (_t) {
             return function (InputEvt) {
                 if (!InputEvt.target.files.length) {
                     return false;
@@ -91,15 +94,16 @@ JSMIDIParser = {
         })(this);
     },
 
-    // parse() function reads the binary data, interpreting and spliting each chuck
-    // and parsing it to a structured Object. When job is finised returns the object
+    // parse() function reads the binary data, interpreting and splitting each chuck
+    // and parsing it to a structured Object. When job is finished returns the object
     // or 'false' if any error was generated.
     parse: function (FileAsUint8Array) {
         var file = {
             data:    null,
             pointer: 0,
 
-            movePointer: function (_bytes) { // move the pointer negative and positive direction
+            // move the pointer negative and positive direction
+            movePointer: function (_bytes) {
                 this.pointer += _bytes;
                 return this.pointer;
             },
@@ -119,7 +123,7 @@ JSMIDIParser = {
                 return value;
             },
 
-            readStr: function (_bytes) { // read as ASCII chars, the followoing _bytes
+            readStr: function (_bytes) { // read as ASCII chars, the following bytes
                 var text = '';
 
                 for (var char = 1; char <= _bytes; char++) {
@@ -130,34 +134,27 @@ JSMIDIParser = {
             },
 
             readIntVLV: function () { // read a variable length value
-                var value = 0;
+                var result = 0;
 
-                if (parseInt(this.data[this.pointer]) < 128) { // ...value in a single byte
-                    value = this.readInt(1);
-                } else { // ...value in multiple bytes
-                    var FirstBytes = [];
+                while (true) {
+                    var b = this.readInt(1);
 
-                    while (parseInt(this.data[this.pointer]) >= 128) {
-                        FirstBytes.push(this.readInt(1) - 128);
+                    //noinspection JSBitwiseOperatorUsage
+                    if (b & 0x80) {
+                        result += (b & 0x7f);
+                        result <<= 7;
+                    } else {
+                        /* b is the last byte */
+                        return result + b;
                     }
-
-                    var lastByte = this.readInt(1);
-
-                    for (var dt = 1; dt <= FirstBytes.length; dt++) {
-                        value = FirstBytes[FirstBytes.length - dt] * Math.pow(128, dt);
-                    }
-
-                    value += lastByte;
                 }
-
-                return value;
             }
         };
 
         file.data = FileAsUint8Array; // 8 bits bytes file data array
         //  ** read FILE HEADER
 
-        // Header validation
+        // Header validation ("MThd")
         if (file.readInt(4) != 0x4D546864) {
             return false; // failed (not MIDI standard or file corrupt.)
         }
@@ -169,7 +166,7 @@ JSMIDIParser = {
         var MIDI = {}; // create new midi object
 
         MIDI.formatType = file.readInt(2); // get MIDI Format Type
-        MIDI.tracks = file.readInt(2);     // get ammount of track chunks
+        MIDI.tracks = file.readInt(2);     // get amount of track chunks
         MIDI.track = [];                   // create array key for track data storing
 
         var timeDivisionByte1 = file.readInt(1), // get Time Division first byte
@@ -191,7 +188,7 @@ JSMIDIParser = {
         for (var t = 1; t <= MIDI.tracks; t++) {
             MIDI.track[t - 1] = {event: []}; // create new Track entry in Array
 
-            // Track chunk header
+            // Track chunk header ("MTrk")
             if (file.readInt(4) != 0x4D54726B) {
                 return false; // validation failed.
             }
@@ -201,7 +198,7 @@ JSMIDIParser = {
             var chunkLength = file.readInt(4);
 
             var e              = 0,     // init event counter
-                endOfTrack     = false, // FLAG for track reading secuence breaking
+                endOfTrack     = false, // FLAG for track reading sequence breaking
                 laststatusByte = null;
 
             // ** read EVENT CHUNK
@@ -209,10 +206,10 @@ JSMIDIParser = {
                 e++; // increase by 1 event counter
 
                 // create new event object, in events array
-                MIDI.track[t - 1].event[e - 1] = {};
+                var event = {};
 
                 // get DELTA TIME OF MIDI event (Variable Length Value)
-                MIDI.track[t - 1].event[e - 1].deltaTime = file.readIntVLV();
+                event.deltaTime = file.readIntVLV();
 
                 var statusByte = file.readInt(1); // read EVENT TYPE (STATUS BYTE)
 
@@ -226,70 +223,182 @@ JSMIDIParser = {
                 }
 
                 // ** Identify EVENT
-                if (statusByte == 0xFF) { // Meta Event type
+                if (statusByte == 0xFF) { // System / Meta Event type
                     // assign metaEvent code to array
-                    MIDI.track[t - 1].event[e - 1].type = 0xFF;
+                    event.type = 0xFF;
 
                     // assign metaEvent subtype
-                    MIDI.track[t - 1].event[e - 1].metaType = file.readInt(1);
+                    event.metaType = file.readInt(1);
 
                     var metaEventLength = file.readIntVLV(); // get the metaEvent length
 
-                    switch (MIDI.track[t - 1].event[e - 1].metaType) {
+                    switch (event.metaType) {
                         case 0x2F: // end of track, has no data byte
                             // change FLAG to force track reading loop breaking
                             endOfTrack = true;
 
                             break;
 
+                        case 0x00: // sequenceNumber
+                            event.subtype = "sequenceNumber";
+                            event.data = file.readInt(2);
+                            event.number = event.data;
+
+                            break;
+
                         case 0x01: // Text Event
+                            event.subtype = "text";
+                            event.data = file.readStr(metaEventLength);
+                            event.text = event.data;
+
+                            break;
+
                         case 0x02: // Copyright Notice
+                            event.subtype = "copyrightNotice";
+                            event.data = file.readStr(metaEventLength);
+                            event.text = event.data;
+
+                            break;
 
                         case 0x03: // Sequence/Track Name (documentation:
-                                   // http://www.ta7.de/txt/musik/musi0006.htm)
+                            // http://www.ta7.de/txt/musik/musi0006.htm)
+                            event.subtype = "trackName";
+                            event.data = file.readStr(metaEventLength);
+                            event.text = event.data;
+
+                            break;
+
+                        case 0x04:
+                            event.subtype = "instrumentName";
+                            event.data = file.readStr(metaEventLength);
+                            event.text = event.data;
+
+                            break;
+
+                        case 0x05:
+                            event.subtype = "lyrics";
+                            event.data = file.readStr(metaEventLength);
+                            event.text = event.data;
+
+                            break;
 
                         case 0x06: // Marker
-                            MIDI.track[t - 1].event[e - 1].data = file.readStr(metaEventLength);
+                            event.subtype = "marker";
+                            event.data = file.readStr(metaEventLength);
+                            event.text = event.data;
+
+                            break;
+
+                        case 0x07:
+                            event.subtype = "cuePoint";
+                            event.data = file.readStr(metaEventLength);
+                            event.text = event.data;
+
+                            break;
+
+                        case 0x20:
+                            event.subtype = "midiChannelPrefix";
+
+                            if (metaEventLength != 1) {
+                                throw "Expected length for midiChannelPrefix event is 1, got " + metaEventLength;
+                            }
+
+                            event.data = file.readInt(1);
+                            event.channel = event.data;
+
                             break;
 
                         case 0x21: // MIDI PORT
+                            event.subtype = "midiPort";
+                            event.data = file.readInt(metaEventLength);
+
+                            break;
+
                         case 0x59: // Key Signature
+                            event.subtype = "keySignature";
+                            event.data = file.readInt(metaEventLength);
+
+                            break;
+
                         case 0x51: // Set Tempo
-                            MIDI.track[t - 1].event[e - 1].data = file.readInt(metaEventLength);
+                            event.subtype = "setTempo";
+                            event.data = [file.readInt(1), file.readInt(1), file.readInt(1)];
+
+                            event.microsecondsPerBeat = (
+                                (event.data[0] << 16)
+                                + (event.data[1] << 8)
+                                + event.data[2]
+                            );
+
+                            event.bmp = 60000000 / event.microsecondsPerBeat;
+
                             break;
 
                         case 0x54: // SMPTE Offset
+                            event.subtype = "smpteOffset";
+
+                            event.data = [
+                                file.readInt(1), file.readInt(1), file.readInt(1),
+                                file.readInt(1), file.readInt(1)
+                            ];
+
+                            var hourByte = event.data[0];
+
+                            event.frameRate = {
+                                0x00: 24, 0x20: 25, 0x40: 29, 0x60: 30
+                            }[hourByte & 0x60];
+
+                            event.hour = hourByte & 0x1f;
+                            event.min = event.data[1];
+                            event.sec = event.data[2];
+                            event.frame = event.data[3];
+                            event.subframe = event.data[4];
+
+                            break;
+
                         case 0x58: // Time Signature
-                            MIDI.track[t - 1].event[e - 1].data = [];
-                            MIDI.track[t - 1].event[e - 1].data[0] = file.readInt(1);
-                            MIDI.track[t - 1].event[e - 1].data[1] = file.readInt(1);
-                            MIDI.track[t - 1].event[e - 1].data[2] = file.readInt(1);
-                            MIDI.track[t - 1].event[e - 1].data[3] = file.readInt(1);
+                            event.subtype = "timeSignature";
+
+                            event.data = [
+                                file.readInt(1), file.readInt(1), file.readInt(1),
+                                file.readInt(1)
+                            ];
+
+                            event.numerator = event.data[0];
+                            event.denominator = Math.pow(2, event.data[1]);
+                            event.metronome = event.data[2];
+                            event.thirtyseconds = event.data[3];
+
                             break;
 
                         default :
                             file.readInt(metaEventLength);
-                            MIDI.track[t - 1].event[e - 1].data = file.readInt(metaEventLength);
-                            if (this.debug) console.log("Unimplemented 0xFF event! data block readed as Integer");
+                            event.data = file.readInt(metaEventLength);
+
+                            if (this.debug) {
+                                console.log("Unimplemented 0xFF event! data block readed as Integer");
+                            }
                     }
                 } else { // MIDI Control Events OR System Exclusive Events
                     // split the status byte HEX representation, to obtain 4 bits values
-                    statusByte = statusByte.toString(16).split('');
+                    statusByte = statusByte.toString(16).split("");
 
                     if (!statusByte[1]) {
                         statusByte.unshift("0"); // force 2 digits
                     }
 
                     // first byte is EVENT TYPE ID
-                    MIDI.track[t - 1].event[e - 1].type = parseInt(statusByte[0], 16);
+                    event.type = parseInt(statusByte[0], 16);
 
                     // second byte is channel
-                    MIDI.track[t - 1].event[e - 1].channel = parseInt(statusByte[1], 16);
+                    event.channel = parseInt(statusByte[1], 16);
 
-                    switch (MIDI.track[t - 1].event[e - 1].type) {
+                    switch (event.type) {
                         case 0xF: // System Exclusive Events
+                            event.subtype = "sysEx / dividedSysEx";
+
                             var event_length = file.readIntVLV();
-                            MIDI.track[t - 1].event[e - 1].data = file.readInt(event_length);
+                            event.data = file.readInt(event_length);
 
                             if (this.debug) {
                                 console.log("Unimplemented 0xF exclusive events! data block readed as Integer");
@@ -298,18 +407,56 @@ JSMIDIParser = {
                             break;
 
                         case 0xA: // Note Aftertouch
+                            event.subtype = "noteAftertouch";
+                            event.data = [file.readInt(1), file.readInt(1)];
+                            event.noteNumber = event.data[0];
+                            event.amount = event.data[1];
+
+                            break;
+
                         case 0xB: // Controller
+                            event.subtype = "controller";
+                            event.data = [file.readInt(1), file.readInt(1)];
+                            event.controllerType = event.data[0];
+                            event.value = event.data[1];
+
+                            break;
+
                         case 0xE: // Pitch Bend Event
+                            event.subtype = "pitchBend";
+                            event.data = [file.readInt(1), file.readInt(1)];
+                            event.value = event.data[0] + (event.data[1] << 7);
+
+                            break;
+
                         case 0x8: // Note off
+                            event.subtype = "noteOff";
+                            event.data = [file.readInt(1), file.readInt(1)];
+                            event.noteNumber = event.data[0];
+                            event.velocity = event.data[1];
+
+                            break;
+
                         case 0x9: // Note On
-                            MIDI.track[t - 1].event[e - 1].data = [];
-                            MIDI.track[t - 1].event[e - 1].data[0] = file.readInt(1);
-                            MIDI.track[t - 1].event[e - 1].data[1] = file.readInt(1);
+                            event.data = [file.readInt(1), file.readInt(1)];
+                            event.noteNumber = event.data[0];
+                            event.velocity = event.data[1];
+                            event.subtype = event.velocity ? "noteOn" : "noteOff";
+
                             break;
 
                         case 0xC: // Program Change
+                            event.subtype = "programChange";
+                            event.data = file.readInt(1);
+                            event.programNumber = event.data;
+
+                            break;
+
                         case 0xD: // Channel Aftertouch
-                            MIDI.track[t - 1].event[e - 1].data = file.readInt(1);
+                            event.subtype = "channelAftertouch";
+                            event.data = file.readInt(1);
+                            event.amount = event.data;
+
                             break;
 
                         default:
@@ -320,6 +467,9 @@ JSMIDIParser = {
                             return false;
                     }
                 }
+
+                // set event
+                MIDI.track[t - 1].event[e - 1] = event;
             }
         }
 
