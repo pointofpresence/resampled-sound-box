@@ -330,7 +330,11 @@ JSMIDIParser = {
                                 + event.data[2]
                             );
 
-                            event.bmp = 60000000 / event.microsecondsPerBeat;
+                            event.bpm = 60000000 / event.microsecondsPerBeat;
+
+                            if (!MIDI.bpm) {
+                                MIDI.bpm = event.bpm; // start BPM
+                            }
 
                             break;
 
@@ -474,5 +478,63 @@ JSMIDIParser = {
         }
 
         return MIDI;
+    },
+
+    getStructure: function (MIDI) {
+        var ctTime   = 0,
+            notes    = [],
+            programs = [],
+
+            song     = {
+                ppq: MIDI.timeDivision,
+                bpm: MIDI.bpm
+            };
+
+        for (var t = 0; t < MIDI.track.length; t++) {
+            var track = MIDI.track[t];
+
+            for (var e = 0; e < track.event.length; e++) {
+                var event = track.event[e];
+
+                ctTime += event.deltaTime;
+
+                switch (event.subtype) {
+                    case "trackName":
+                        ctTime = 0;
+                        break;
+
+                    case "programChange":
+                        programs[event.channel] = event.programNumber;
+
+                        break;
+                    case "noteOn":
+                        notes.push({
+                            startTime: ctTime * 3,
+                            note:      event.noteNumber,
+                            velocity:  event.velocity,
+                            channel:   event.channel,
+                            program:   programs[event.channel] || 0
+                        });
+
+                        break;
+
+                    case "noteOff":
+                        for (var n = 0; n < notes.length; n++) {
+                            if (notes[n].note == event.noteNumber && !notes[n].endTime) {
+                                notes[n].endTime = ctTime * 3;
+                                notes[n].duration = notes[n].endTime - notes[n].startTime;
+
+                                break;
+                            }
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        song.notes = notes;
+
+        return song;
     }
 };
