@@ -41,6 +41,14 @@
             &.playpos {
                 background: @color-default;
             }
+
+            &.playlist-row-num {
+                cursor: pointer;
+
+                &:hover, &:active {
+                    background: lighten(@color-default, 25%);
+                }
+            }
         }
 
         td {
