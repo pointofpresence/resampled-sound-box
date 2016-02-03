@@ -49,37 +49,37 @@ var CPlayerWorker = function () {
     this.init = function (song, opts) {
         // Handle optional arguments
         this.firstRow = 0;
-        this.lastRow = song.endPattern - 2;
+        this.lastRow  = song.endPattern - 2;
         this.firstCol = 0;
-        this.lastCol = 7;
+        this.lastCol  = 7;
 
         if (opts) {
             this.firstRow = opts.firstRow;
-            this.lastRow = opts.lastRow;
+            this.lastRow  = opts.lastRow;
             this.firstCol = opts.firstCol;
-            this.lastCol = opts.lastCol;
+            this.lastCol  = opts.lastCol;
         }
 
         // Prepare song info
-        this.song = song;
+        this.song       = song;
         this.numSamples = song.rowLen * song.patternLen * (this.lastRow - this.firstRow + 1);
-        this.numWords = this.numSamples * 2;
+        this.numWords   = this.numSamples * 2;
 
         // Create work buffers (initially cleared)
         this.mixBufWork = new Int32Array(this.numWords);
     };
 
     var createNote = function (instr, n) {
-        var osc1 = mOscillators[instr.i[0]],
-            o1vol = instr.i[1],
-            o1xenv = instr.i[3],
-            osc2 = mOscillators[instr.i[4]],
-            o2vol = instr.i[5],
-            o2xenv = instr.i[8],
-            noiseVol = instr.i[9],
-            attack = instr.i[10] * instr.i[10] * 4,
-            sustain = instr.i[11] * instr.i[11] * 4,
-            release = instr.i[12] * instr.i[12] * 4,
+        var osc1       = mOscillators[instr.i[0]],
+            o1vol      = instr.i[1],
+            o1xenv     = instr.i[3],
+            osc2       = mOscillators[instr.i[4]],
+            o2vol      = instr.i[5],
+            o2xenv     = instr.i[8],
+            noiseVol   = instr.i[9],
+            attack     = instr.i[10] * instr.i[10] * 4,
+            sustain    = instr.i[11] * instr.i[11] * 4,
+            release    = instr.i[12] * instr.i[12] * 4,
             releaseInv = 1 / release;
 
         var noteBuf = new Int32Array(attack + sustain + release);
@@ -145,16 +145,16 @@ var CPlayerWorker = function () {
 
         for (currentCol = this.firstCol; currentCol <= this.lastCol; currentCol++) {
             // Put performance critical items in local variables
-            var chnBuf = new Int32Array(this.numWords),
-                mixBuf = this.mixBufWork,
+            var chnBuf     = new Int32Array(this.numWords),
+                mixBuf     = this.mixBufWork,
                 // waveSamples = this.numSamples,
                 // waveWords = this.numWords,
-                instr = this.song.songData[currentCol],
-                rowLen = this.song.rowLen,
+                instr      = this.song.songData[currentCol],
+                rowLen     = this.song.rowLen,
                 patternLen = this.song.patternLen;
 
             // Clear effect state
-            var low = 0, band = 0, high;
+            var low                   = 0, band = 0, high;
             var lsample, filterActive = false;
 
             // Clear note cache.
@@ -179,19 +179,19 @@ var CPlayerWorker = function () {
                     }
 
                     // Put performance critical instrument properties in local variables
-                    var oscLFO = mOscillators[instr.i[13]],
-                        lfoAmt = instr.i[14] / 512,
-                        lfoFreq = Math.pow(2, instr.i[15] - 9) / rowLen,
-                        fxLFO = instr.i[16],
+                    var oscLFO   = mOscillators[instr.i[13]],
+                        lfoAmt   = instr.i[14] / 512,
+                        lfoFreq  = Math.pow(2, instr.i[15] - 9) / rowLen,
+                        fxLFO    = instr.i[16],
                         fxFilter = instr.i[17],
-                        fxFreq = instr.i[18] * 43.23529 * 3.141592 / 44100,
-                        q = 1 - instr.i[19] / 255,
-                        dist = instr.i[20] * 1e-5,
-                        drive = instr.i[21] / 32,
-                        panAmt = instr.i[22] / 512,
-                        panFreq = 6.283184 * Math.pow(2, instr.i[23] - 9) / rowLen,
-                        dlyAmt = instr.i[24] / 255,
-                        dly = instr.i[25] * rowLen;
+                        fxFreq   = instr.i[18] * 43.23529 * 3.141592 / 44100,
+                        q        = 1 - instr.i[19] / 255,
+                        dist     = instr.i[20] * 1e-5,
+                        drive    = instr.i[21] / 32,
+                        panAmt   = instr.i[22] / 512,
+                        panFreq  = 6.283184 * Math.pow(2, instr.i[23] - 9) / rowLen,
+                        dlyAmt   = instr.i[24] / 255,
+                        dly      = instr.i[25] * rowLen;
 
                     // Calculate start sample number for this row in the pattern
                     rowStartSample = ((p - this.firstRow) * patternLen + row) * rowLen;
@@ -216,7 +216,7 @@ var CPlayerWorker = function () {
                     // Perform effects for this pattern row
                     for (j = 0; j < rowLen; j++) {
                         // Dry mono-sample
-                        k = (rowStartSample + j) * 2;
+                        k       = (rowStartSample + j) * 2;
                         rsample = chnBuf[k];
 
                         // We only do effects if we have some sound input
@@ -228,9 +228,9 @@ var CPlayerWorker = function () {
                                 f *= oscLFO(lfoFreq * k) * lfoAmt + 0.5;
                             }
 
-                            f = 1.5 * Math.sin(f);
+                            f       = 1.5 * Math.sin(f);
                             low += f * band;
-                            high = q * (rsample - band) - low;
+                            high    = q * (rsample - band) - low;
                             band += f * high;
                             rsample = fxFilter == 3 ? band : fxFilter == 1 ? high : low;
 
@@ -248,7 +248,7 @@ var CPlayerWorker = function () {
                             filterActive = rsample * rsample > 1e-5;
 
                             // Panning
-                            t = Math.sin(panFreq * k) * panAmt + 0.5;
+                            t       = Math.sin(panFreq * k) * panAmt + 0.5;
                             lsample = rsample * (1 - t);
                             rsample *= t;
                         } else {
@@ -265,7 +265,7 @@ var CPlayerWorker = function () {
                         }
 
                         // Store in stereo channel buffer (needed for the delay effect)
-                        chnBuf[k] = lsample | 0;
+                        chnBuf[k]     = lsample | 0;
                         chnBuf[k + 1] = rsample | 0;
 
                         // ...and add to stereo mix buffer

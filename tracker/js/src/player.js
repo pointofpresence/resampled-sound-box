@@ -39,14 +39,14 @@ var CPlayer = function () {
     // Create a WAVE formatted Uint8Array from the generated audio data.
     this.createWave = function () {
         // Turn critical object properties into local variables (performance)
-        var mixBuf = mGeneratedBuffer,
+        var mixBuf    = mGeneratedBuffer,
             waveWords = mixBuf.length;
 
         // Create WAVE header
-        var l1 = waveWords * 2 - 8,
-            l2 = l1 - 36,
+        var l1        = waveWords * 2 - 8,
+            l2        = l1 - 36,
             headerLen = 44,
-            wave = new Uint8Array(headerLen + waveWords * 2);
+            wave      = new Uint8Array(headerLen + waveWords * 2);
 
         //noinspection JSCheckFunctionSignatures
         wave.set(
@@ -62,8 +62,8 @@ var CPlayer = function () {
         // Append actual wave data
         for (var i = 0, idx = headerLen; i < waveWords; ++i) {
             // Note: We clamp here
-            var y = mixBuf[i];
-            y = y < -32767 ? -32767 : (y > 32767 ? 32767 : y);
+            var y       = mixBuf[i];
+            y           = y < -32767 ? -32767 : (y > 32767 ? 32767 : y);
             wave[idx++] = y & 255;
             wave[idx++] = (y >> 8) & 255;
         }
@@ -80,7 +80,7 @@ var CPlayer = function () {
 
         for (var j = 0; j < 2 * n; j += 1) {
             var k = i + j;
-            d[j] = t > 0 && k < b.length ? b[k] / 32768 : 0;
+            d[j]  = t > 0 && k < b.length ? b[k] / 32768 : 0;
         }
 
         return d;

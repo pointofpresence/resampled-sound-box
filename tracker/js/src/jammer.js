@@ -73,7 +73,7 @@ var CJammer = function () {
 
         // Clear buffers
         for (k = 0; k < numSamples; ++k) {
-            leftBuf[k] = 0;
+            leftBuf[k]  = 0;
             rightBuf[k] = 0;
         }
 
@@ -82,16 +82,16 @@ var CJammer = function () {
             var note = mPlayingNotes[i];
 
             if (note != undefined) {
-                var osc1 = mOscillators[note.instr[0]],
-                    o1vol = note.instr[1],
-                    o1xenv = note.instr[3],
-                    osc2 = mOscillators[note.instr[4]],
-                    o2vol = note.instr[5],
-                    o2xenv = note.instr[8],
-                    noiseVol = note.instr[9],
-                    attack = Math.round(note.instr[10] * note.instr[10] * 4 * mRateScale),
-                    sustain = Math.round(note.instr[11] * note.instr[11] * 4 * mRateScale),
-                    release = Math.round(note.instr[12] * note.instr[12] * 4 * mRateScale),
+                var osc1       = mOscillators[note.instr[0]],
+                    o1vol      = note.instr[1],
+                    o1xenv     = note.instr[3],
+                    osc2       = mOscillators[note.instr[4]],
+                    o2vol      = note.instr[5],
+                    o2xenv     = note.instr[8],
+                    noiseVol   = note.instr[9],
+                    attack     = Math.round(note.instr[10] * note.instr[10] * 4 * mRateScale),
+                    sustain    = Math.round(note.instr[11] * note.instr[11] * 4 * mRateScale),
+                    release    = Math.round(note.instr[12] * note.instr[12] * 4 * mRateScale),
                     releaseInv = 1 / release;
 
                 // Note frequencies for the oscillators.
@@ -156,28 +156,28 @@ var CJammer = function () {
         }
 
         // And the effects...
-        var pos = mFXState.pos,
-            low = mFXState.low,
-            band = mFXState.band,
+        var pos          = mFXState.pos,
+            low          = mFXState.low,
+            band         = mFXState.band,
             filterActive = mFXState.filterActive,
-            dlyPos = mFXState.dlyPos;
+            dlyPos       = mFXState.dlyPos;
 
         var lsample, high, dlyRead, dlyMask = MAX_DELAY - 1;
 
         // Put performance critical instrument properties in local variables
-        var oscLFO = mOscillators[mInstr[13]],
-            lfoAmt = mInstr[14] / 512,
-            lfoFreq = Math.pow(2, mInstr[15] - 9) / mRowLen,
-            fxLFO = mInstr[16],
+        var oscLFO   = mOscillators[mInstr[13]],
+            lfoAmt   = mInstr[14] / 512,
+            lfoFreq  = Math.pow(2, mInstr[15] - 9) / mRowLen,
+            fxLFO    = mInstr[16],
             fxFilter = mInstr[17],
-            fxFreq = mInstr[18] * 43.23529 * 3.141592 / mSampleRate,
-            q = 1 - mInstr[19] / 255,
-            dist = mInstr[20] * 1e-5 * 32767,
-            drive = mInstr[21] / 32,
-            panAmt = mInstr[22] / 512,
-            panFreq = 6.283184 * Math.pow(2, mInstr[23] - 9) / mRowLen,
-            dlyAmt = mInstr[24] / 255,
-            dly = (mInstr[25] * mRowLen) >> 1;
+            fxFreq   = mInstr[18] * 43.23529 * 3.141592 / mSampleRate,
+            q        = 1 - mInstr[19] / 255,
+            dist     = mInstr[20] * 1e-5 * 32767,
+            drive    = mInstr[21] / 32,
+            panAmt   = mInstr[22] / 512,
+            panFreq  = 6.283184 * Math.pow(2, mInstr[23] - 9) / mRowLen,
+            dlyAmt   = mInstr[24] / 255,
+            dly      = (mInstr[25] * mRowLen) >> 1;
 
         // Limit the delay to the delay buffer size.
         if (dly >= MAX_DELAY) {
@@ -200,9 +200,9 @@ var CJammer = function () {
                     f *= oscLFO(lfoFreq * k) * lfoAmt + 0.5;
                 }
 
-                f = 1.5 * Math.sin(f);
+                f       = 1.5 * Math.sin(f);
                 low += f * band;
-                high = q * (rsample - band) - low;
+                high    = q * (rsample - band) - low;
                 band += f * high;
                 rsample = fxFilter == 3 ? band : fxFilter == 1 ? high : low;
 
@@ -220,7 +220,7 @@ var CJammer = function () {
                 filterActive = rsample * rsample > 1e-5;
 
                 // Panning.
-                t = Math.sin(panFreq * k) * panAmt + 0.5;
+                t       = Math.sin(panFreq * k) * panAmt + 0.5;
                 lsample = rsample * (1 - t);
                 rsample *= t;
             } else {
@@ -228,15 +228,15 @@ var CJammer = function () {
             }
 
             // Delay is always done, since it does not need sound input.
-            dlyRead = (dlyPos - dly) & dlyMask;
+            dlyRead           = (dlyPos - dly) & dlyMask;
             lsample += mDlyRight[dlyRead] * dlyAmt;
             rsample += mDlyLeft[dlyRead] * dlyAmt;
-            mDlyLeft[dlyPos] = lsample;
+            mDlyLeft[dlyPos]  = lsample;
             mDlyRight[dlyPos] = rsample;
-            dlyPos = (dlyPos + 1) & dlyMask;
+            dlyPos            = (dlyPos + 1) & dlyMask;
 
             // Store wet stereo sample.
-            leftBuf[j] = lsample;
+            leftBuf[j]  = lsample;
             rightBuf[j] = rsample;
         }
 
@@ -249,11 +249,11 @@ var CJammer = function () {
         }
 
         // Store filter state.
-        mFXState.pos = pos;
-        mFXState.low = low;
-        mFXState.band = band;
+        mFXState.pos          = pos;
+        mFXState.low          = low;
+        mFXState.band         = band;
         mFXState.filterActive = filterActive;
-        mFXState.dlyPos = dlyPos;
+        mFXState.dlyPos       = dlyPos;
     };
 
     //--------------------------------------------------------------------------
@@ -279,7 +279,7 @@ var CJammer = function () {
         // Get actual sample rate (SoundBox is hard-coded to 44100 samples/s).
         //noinspection JSUnresolvedVariable
         mSampleRate = mAudioContext.sampleRate;
-        mRateScale = mSampleRate / 44100;
+        mRateScale  = mSampleRate / 44100;
 
         // Clear state.
         mFXState = {
@@ -291,7 +291,7 @@ var CJammer = function () {
         };
 
         // Create delay buffers (lengths must be equal and a power of 2).
-        mDlyLeft = new Float32Array(MAX_DELAY);
+        mDlyLeft  = new Float32Array(MAX_DELAY);
         mDlyRight = new Float32Array(MAX_DELAY);
 
         // Create a script processor node with no inputs and one stereo output.
@@ -351,7 +351,7 @@ var CJammer = function () {
 
         // Find an empty channel, or replace the oldest note.
         var oldestIdx = 0;
-        var oldestDt = -100;
+        var oldestDt  = -100;
 
         for (i = 0; i < MAX_POLYPHONY; ++i) {
             // If the channel is currently free - use it.
@@ -365,7 +365,7 @@ var CJammer = function () {
 
             if (dt > oldestDt) {
                 oldestIdx = i;
-                oldestDt = dt;
+                oldestDt  = dt;
             }
         }
 

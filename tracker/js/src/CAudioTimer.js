@@ -34,7 +34,7 @@ var CAudioTimer = function () {
 
         if (audioCurrentTime < 0.01 || err > 0.2 || err < -0.2) {
             currentTime = audioCurrentTime;
-            mStartT = t - currentTime;
+            mStartT     = t - currentTime;
 
             for (i = 0; i < mErrHist.length; i++) {
                 mErrHist[i] = 0;
@@ -51,7 +51,7 @@ var CAudioTimer = function () {
 
         comp /= mErrHist.length;
         mErrHist[mErrHistPos] = err;
-        mErrHistPos = (mErrHistPos + 1) % mErrHist.length;
+        mErrHistPos           = (mErrHistPos + 1) % mErrHist.length;
 
         return currentTime + comp;
     };

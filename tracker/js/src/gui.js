@@ -1196,7 +1196,7 @@ var CGUI = function () {
             }
 
             for (i = 0; i < MAX_SONG_ROWS; ++i) {
-                o           = document.getElementById("spr" + i);
+                o = document.getElementById("spr" + i);
 
                 o.className = (i == seqPos
                     ? "playpos " + SEQUENCER_TH_CLASSNAME

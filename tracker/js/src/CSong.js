@@ -318,7 +318,7 @@ var CSong = {
 
         for (i = 9; i > 0; i--) {
             packedData = RawDeflate.deflate(unpackedData, i);
-            testData = RawDeflate.inflate(packedData);
+            testData   = RawDeflate.inflate(packedData);
 
             if (unpackedData === testData) {
                 compressionMethod = this.compression.DEFLATE;
@@ -328,7 +328,7 @@ var CSong = {
 
         if (compressionMethod == this.compression.NONE) {
             packedData = rle_encode(bin.getData());
-            testData = rle_decode(packedData);
+            testData   = rle_decode(packedData);
 
             if (unpackedData === testData) {
                 compressionMethod = this.compression.RLE;
@@ -396,23 +396,23 @@ var CSong = {
         var i, j, k, instr, col, master;
 
         for (i = 0; i < 8; i++) {
-            instr = {};
+            instr   = {};
             instr.i = [];
 
             // Oscillator 1
             instr.i[this.instProps.OSC1_SEMI] = 12 * (bin.getUBYTE() - 8) + 128;
             instr.i[this.instProps.OSC1_SEMI] += bin.getUBYTE();
             bin.getUBYTE(); // Skip (detune)
-            instr.i[this.instProps.OSC1_XENV] = bin.getUBYTE();
-            instr.i[this.instProps.OSC1_VOL] = bin.getUBYTE();
+            instr.i[this.instProps.OSC1_XENV]     = bin.getUBYTE();
+            instr.i[this.instProps.OSC1_VOL]      = bin.getUBYTE();
             instr.i[this.instProps.OSC1_WAVEFORM] = bin.getUBYTE();
 
             // Oscillator 2
-            instr.i[this.instProps.OSC2_SEMI] = 12 * (bin.getUBYTE() - 8) + 128;
+            instr.i[this.instProps.OSC2_SEMI]     = 12 * (bin.getUBYTE() - 8) + 128;
             instr.i[this.instProps.OSC2_SEMI] += bin.getUBYTE();
-            instr.i[this.instProps.OSC2_DETUNE] = bin.getUBYTE();
-            instr.i[this.instProps.OSC2_XENV] = bin.getUBYTE();
-            instr.i[this.instProps.OSC2_VOL] = bin.getUBYTE();
+            instr.i[this.instProps.OSC2_DETUNE]   = bin.getUBYTE();
+            instr.i[this.instProps.OSC2_XENV]     = bin.getUBYTE();
+            instr.i[this.instProps.OSC2_VOL]      = bin.getUBYTE();
             instr.i[this.instProps.OSC2_WAVEFORM] = bin.getUBYTE();
 
             // Noise oscillator
@@ -422,29 +422,29 @@ var CSong = {
             bin.getUBYTE(); // Pad!
 
             // Envelope
-            instr.i[this.instProps.ENV_ATTACK] = Math.round(Math.sqrt(bin.getULONG()) / 2);
+            instr.i[this.instProps.ENV_ATTACK]  = Math.round(Math.sqrt(bin.getULONG()) / 2);
             instr.i[this.instProps.ENV_SUSTAIN] = Math.round(Math.sqrt(bin.getULONG()) / 2);
             instr.i[this.instProps.ENV_RELEASE] = Math.round(Math.sqrt(bin.getULONG()) / 2);
-            master = bin.getUBYTE(); // env_master
+            master                              = bin.getUBYTE(); // env_master
 
             // Effects
             instr.i[this.instProps.FX_FILTER] = bin.getUBYTE();
             bin.getUBYTE(); // Pad!
             bin.getUBYTE(); // Pad!
-            instr.i[this.instProps.FX_FREQ] = Math.round(bin.getFLOAT() / 43.23529);
-            instr.i[this.instProps.FX_RESONANCE] = 255 - bin.getUBYTE();
+            instr.i[this.instProps.FX_FREQ]       = Math.round(bin.getFLOAT() / 43.23529);
+            instr.i[this.instProps.FX_RESONANCE]  = 255 - bin.getUBYTE();
             instr.i[this.instProps.FX_DELAY_TIME] = bin.getUBYTE();
-            instr.i[this.instProps.FX_DELAY_AMT] = bin.getUBYTE();
-            instr.i[this.instProps.FX_PAN_FREQ] = bin.getUBYTE();
-            instr.i[this.instProps.FX_PAN_AMT] = bin.getUBYTE();
-            instr.i[this.instProps.FX_DIST] = 0;
-            instr.i[this.instProps.FX_DRIVE] = 32;
+            instr.i[this.instProps.FX_DELAY_AMT]  = bin.getUBYTE();
+            instr.i[this.instProps.FX_PAN_FREQ]   = bin.getUBYTE();
+            instr.i[this.instProps.FX_PAN_AMT]    = bin.getUBYTE();
+            instr.i[this.instProps.FX_DIST]       = 0;
+            instr.i[this.instProps.FX_DRIVE]      = 32;
 
             // LFO
             bin.getUBYTE(); // Skip! (lfo_osc1_freq)
-            instr.i[this.instProps.LFO_FX_FREQ] = bin.getUBYTE();
-            instr.i[this.instProps.LFO_FREQ] = bin.getUBYTE();
-            instr.i[this.instProps.LFO_AMT] = bin.getUBYTE();
+            instr.i[this.instProps.LFO_FX_FREQ]  = bin.getUBYTE();
+            instr.i[this.instProps.LFO_FREQ]     = bin.getUBYTE();
+            instr.i[this.instProps.LFO_AMT]      = bin.getUBYTE();
             instr.i[this.instProps.LFO_WAVEFORM] = bin.getUBYTE();
 
             // Patterns
@@ -462,11 +462,11 @@ var CSong = {
             instr.c = [];
 
             for (j = 0; j < 10; j++) {
-                col = {};
+                col   = {};
                 col.n = [];
 
                 for (k = 0; k < 32; k++) {
-                    col.n[k] = bin.getUBYTE();
+                    col.n[k]      = bin.getUBYTE();
                     col.n[k + 32] = 0;
                     col.n[k + 64] = 0;
                     col.n[k + 96] = 0;
@@ -482,7 +482,7 @@ var CSong = {
             }
 
             for (j = 10; j < this.MAX_PATTERNS; j++) {
-                col = {};
+                col   = {};
                 col.n = [];
 
                 for (k = 0; k < 32 * 4; k++) {
@@ -504,7 +504,7 @@ var CSong = {
             // Fixup conversions
             if (instr.i[this.instProps.FX_FILTER] < 1 || instr.i[this.instProps.FX_FILTER] > 3) {
                 instr.i[this.instProps.FX_FILTER] = 2;
-                instr.i[this.instProps.FX_FREQ] = 255; // 11025;
+                instr.i[this.instProps.FX_FREQ]   = 255; // 11025;
             }
 
             instr.i[this.instProps.OSC1_VOL] *= master / 255;
@@ -523,10 +523,10 @@ var CSong = {
                 instr.i[this.instProps.LFO_AMT] /= 2;
             }
 
-            instr.i[this.instProps.OSC1_VOL] = Math.round(instr.i[this.instProps.OSC1_VOL]);
-            instr.i[this.instProps.OSC2_VOL] = Math.round(instr.i[this.instProps.OSC2_VOL]);
+            instr.i[this.instProps.OSC1_VOL]  = Math.round(instr.i[this.instProps.OSC1_VOL]);
+            instr.i[this.instProps.OSC2_VOL]  = Math.round(instr.i[this.instProps.OSC2_VOL]);
             instr.i[this.instProps.NOISE_VOL] = Math.round(instr.i[this.instProps.NOISE_VOL]);
-            instr.i[this.instProps.LFO_AMT] = Math.round(instr.i[this.instProps.LFO_AMT]);
+            instr.i[this.instProps.LFO_AMT]   = Math.round(instr.i[this.instProps.LFO_AMT]);
 
             song.songData[i] = instr;
         }
@@ -594,35 +594,35 @@ var CSong = {
         var i, j, k, instr, col;
 
         for (i = 0; i < 8; i++) {
-            instr = {};
+            instr   = {};
             instr.i = [];
 
             // Oscillator 1
             if (version < 6) {
-                instr.i[this.instProps.OSC1_SEMI] = bin.getUBYTE();
-                instr.i[this.instProps.OSC1_XENV] = bin.getUBYTE();
-                instr.i[this.instProps.OSC1_VOL] = bin.getUBYTE();
+                instr.i[this.instProps.OSC1_SEMI]     = bin.getUBYTE();
+                instr.i[this.instProps.OSC1_XENV]     = bin.getUBYTE();
+                instr.i[this.instProps.OSC1_VOL]      = bin.getUBYTE();
                 instr.i[this.instProps.OSC1_WAVEFORM] = bin.getUBYTE();
             } else {
                 instr.i[this.instProps.OSC1_WAVEFORM] = bin.getUBYTE();
-                instr.i[this.instProps.OSC1_VOL] = bin.getUBYTE();
-                instr.i[this.instProps.OSC1_SEMI] = bin.getUBYTE();
-                instr.i[this.instProps.OSC1_XENV] = bin.getUBYTE();
+                instr.i[this.instProps.OSC1_VOL]      = bin.getUBYTE();
+                instr.i[this.instProps.OSC1_SEMI]     = bin.getUBYTE();
+                instr.i[this.instProps.OSC1_XENV]     = bin.getUBYTE();
             }
 
             // Oscillator 2
             if (version < 6) {
-                instr.i[this.instProps.OSC2_SEMI] = bin.getUBYTE();
-                instr.i[this.instProps.OSC2_DETUNE] = bin.getUBYTE();
-                instr.i[this.instProps.OSC2_XENV] = bin.getUBYTE();
-                instr.i[this.instProps.OSC2_VOL] = bin.getUBYTE();
+                instr.i[this.instProps.OSC2_SEMI]     = bin.getUBYTE();
+                instr.i[this.instProps.OSC2_DETUNE]   = bin.getUBYTE();
+                instr.i[this.instProps.OSC2_XENV]     = bin.getUBYTE();
+                instr.i[this.instProps.OSC2_VOL]      = bin.getUBYTE();
                 instr.i[this.instProps.OSC2_WAVEFORM] = bin.getUBYTE();
             } else {
                 instr.i[this.instProps.OSC2_WAVEFORM] = bin.getUBYTE();
-                instr.i[this.instProps.OSC2_VOL] = bin.getUBYTE();
-                instr.i[this.instProps.OSC2_SEMI] = bin.getUBYTE();
-                instr.i[this.instProps.OSC2_DETUNE] = bin.getUBYTE();
-                instr.i[this.instProps.OSC2_XENV] = bin.getUBYTE();
+                instr.i[this.instProps.OSC2_VOL]      = bin.getUBYTE();
+                instr.i[this.instProps.OSC2_SEMI]     = bin.getUBYTE();
+                instr.i[this.instProps.OSC2_DETUNE]   = bin.getUBYTE();
+                instr.i[this.instProps.OSC2_XENV]     = bin.getUBYTE();
             }
 
             // Noise oscillator
@@ -630,11 +630,11 @@ var CSong = {
 
             // Envelope
             if (version < 5) {
-                instr.i[this.instProps.ENV_ATTACK] = Math.round(Math.sqrt(bin.getULONG()) / 2);
+                instr.i[this.instProps.ENV_ATTACK]  = Math.round(Math.sqrt(bin.getULONG()) / 2);
                 instr.i[this.instProps.ENV_SUSTAIN] = Math.round(Math.sqrt(bin.getULONG()) / 2);
                 instr.i[this.instProps.ENV_RELEASE] = Math.round(Math.sqrt(bin.getULONG()) / 2);
             } else {
-                instr.i[this.instProps.ENV_ATTACK] = bin.getUBYTE();
+                instr.i[this.instProps.ENV_ATTACK]  = bin.getUBYTE();
                 instr.i[this.instProps.ENV_SUSTAIN] = bin.getUBYTE();
                 instr.i[this.instProps.ENV_RELEASE] = bin.getUBYTE();
             }
@@ -652,40 +652,40 @@ var CSong = {
                 instr.i[this.instProps.FX_RESONANCE] = bin.getUBYTE();
 
                 instr.i[this.instProps.FX_DELAY_TIME] = bin.getUBYTE();
-                instr.i[this.instProps.FX_DELAY_AMT] = bin.getUBYTE();
-                instr.i[this.instProps.FX_PAN_FREQ] = bin.getUBYTE();
-                instr.i[this.instProps.FX_PAN_AMT] = bin.getUBYTE();
-                instr.i[this.instProps.FX_DIST] = bin.getUBYTE();
-                instr.i[this.instProps.FX_DRIVE] = bin.getUBYTE();
+                instr.i[this.instProps.FX_DELAY_AMT]  = bin.getUBYTE();
+                instr.i[this.instProps.FX_PAN_FREQ]   = bin.getUBYTE();
+                instr.i[this.instProps.FX_PAN_AMT]    = bin.getUBYTE();
+                instr.i[this.instProps.FX_DIST]       = bin.getUBYTE();
+                instr.i[this.instProps.FX_DRIVE]      = bin.getUBYTE();
 
                 // LFO
-                instr.i[this.instProps.LFO_FX_FREQ] = bin.getUBYTE();
-                instr.i[this.instProps.LFO_FREQ] = bin.getUBYTE();
-                instr.i[this.instProps.LFO_AMT] = bin.getUBYTE();
+                instr.i[this.instProps.LFO_FX_FREQ]  = bin.getUBYTE();
+                instr.i[this.instProps.LFO_FREQ]     = bin.getUBYTE();
+                instr.i[this.instProps.LFO_AMT]      = bin.getUBYTE();
                 instr.i[this.instProps.LFO_WAVEFORM] = bin.getUBYTE();
             }
             else {
                 // LFO
                 instr.i[this.instProps.LFO_WAVEFORM] = bin.getUBYTE();
-                instr.i[this.instProps.LFO_AMT] = bin.getUBYTE();
-                instr.i[this.instProps.LFO_FREQ] = bin.getUBYTE();
-                instr.i[this.instProps.LFO_FX_FREQ] = bin.getUBYTE();
+                instr.i[this.instProps.LFO_AMT]      = bin.getUBYTE();
+                instr.i[this.instProps.LFO_FREQ]     = bin.getUBYTE();
+                instr.i[this.instProps.LFO_FX_FREQ]  = bin.getUBYTE();
 
                 // Effects
-                instr.i[this.instProps.FX_FILTER] = bin.getUBYTE();
-                instr.i[this.instProps.FX_FREQ] = bin.getUBYTE();
-                instr.i[this.instProps.FX_RESONANCE] = bin.getUBYTE();
-                instr.i[this.instProps.FX_DIST] = bin.getUBYTE();
-                instr.i[this.instProps.FX_DRIVE] = bin.getUBYTE();
-                instr.i[this.instProps.FX_PAN_AMT] = bin.getUBYTE();
-                instr.i[this.instProps.FX_PAN_FREQ] = bin.getUBYTE();
-                instr.i[this.instProps.FX_DELAY_AMT] = bin.getUBYTE();
+                instr.i[this.instProps.FX_FILTER]     = bin.getUBYTE();
+                instr.i[this.instProps.FX_FREQ]       = bin.getUBYTE();
+                instr.i[this.instProps.FX_RESONANCE]  = bin.getUBYTE();
+                instr.i[this.instProps.FX_DIST]       = bin.getUBYTE();
+                instr.i[this.instProps.FX_DRIVE]      = bin.getUBYTE();
+                instr.i[this.instProps.FX_PAN_AMT]    = bin.getUBYTE();
+                instr.i[this.instProps.FX_PAN_FREQ]   = bin.getUBYTE();
+                instr.i[this.instProps.FX_DELAY_AMT]  = bin.getUBYTE();
                 instr.i[this.instProps.FX_DELAY_TIME] = bin.getUBYTE();
             }
 
             // Patterns
             var song_rows = version < 9 ? 48 : this.MAX_SONG_ROWS;
-            instr.p = [];
+            instr.p       = [];
 
             for (j = 0; j < song_rows; j++) {
                 instr.p[j] = bin.getUBYTE();
@@ -701,13 +701,13 @@ var CSong = {
             instr.c = [];
 
             for (j = 0; j < num_patterns; j++) {
-                col = {};
+                col   = {};
                 col.n = [];
 
                 if (version == 1) {
                     for (k = 0; k < song.patternLen; k++) {
-                        col.n[k] = bin.getUBYTE();
-                        col.n[k + song.patternLen] = 0;
+                        col.n[k]                       = bin.getUBYTE();
+                        col.n[k + song.patternLen]     = 0;
                         col.n[k + 2 * song.patternLen] = 0;
                         col.n[k + 3 * song.patternLen] = 0;
                     }
@@ -733,7 +733,7 @@ var CSong = {
             }
 
             for (j = num_patterns; j < this.MAX_PATTERNS; j++) {
-                col = {};
+                col   = {};
                 col.n = [];
 
                 for (k = 0; k < song.patternLen * 4; k++) {
@@ -867,7 +867,7 @@ var CSong = {
             }
 
             song.songData[channel].c[pos.pattern].n[pos.row] = note.note + 87;
-            song.songData[channel].p[pos.pattern] = pos.pattern + 1;
+            song.songData[channel].p[pos.pattern]            = pos.pattern + 1;
         }
 
         console.log(song);
@@ -877,12 +877,12 @@ var CSong = {
         var i, j, k, instr, col;
 
         for (i = 0; i < 8; i++) {
-            instr = {};
+            instr   = {};
             instr.i = [];
 
             // Patterns
             var song_rows = this.MAX_SONG_ROWS;
-            instr.p = [];
+            instr.p       = [];
 
             for (j = 0; j < song_rows; j++) {
                 instr.p[j] = bin.getUBYTE();
@@ -898,7 +898,7 @@ var CSong = {
             instr.c = [];
 
             for (j = 0; j < num_patterns; j++) {
-                col = {};
+                col   = {};
                 col.n = [];
 
                 for (k = 0; k < song.patternLen * 4; k++) {
@@ -915,7 +915,7 @@ var CSong = {
             }
 
             for (j = num_patterns; j < this.MAX_PATTERNS; j++) {
-                col = {};
+                col   = {};
                 col.n = [];
 
                 for (k = 0; k < song.patternLen * 4; k++) {

@@ -2,7 +2,7 @@
 
 var CBinParser = function (d) {
     var mData = d;
-    var mPos = 0;
+    var mPos  = 0;
 
     this.getUBYTE = function () {
         return mData.charCodeAt(mPos++) & 255;
@@ -41,7 +41,7 @@ var CBinParser = function (d) {
 
     this.getTail = function () {
         var str = mData.slice(mPos);
-        mPos = mData.length;
+        mPos    = mData.length;
         return str;
     };
 };
