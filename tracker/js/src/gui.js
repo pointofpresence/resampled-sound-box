@@ -1633,6 +1633,7 @@ var CGUI = function () {
 
             if (pat >= 0) {
                 mFxCopyBuffer = [];
+
                 for (var row = mFxTrackRow; row <= mFxTrackRow2; ++row) {
                     var arr = [];
 
@@ -1640,6 +1641,44 @@ var CGUI = function () {
                     arr.push(mSong.songData[mSeqCol].c[pat].f[row + mSong.patternLen]);
                     mFxCopyBuffer.push(arr);
                 }
+            }
+        }
+    };
+
+    function linearInterpolation(min, max, k) {
+        if (max > min) {
+            return parseInt(min + (max - min) * k);
+        } else {
+            return parseInt(min - (min - max) * k);
+        }
+    }
+
+    var fxInterpolateMouseDown = function (e) {
+        e = e || window.event;
+        e.preventDefault();
+
+        if (mSeqRow == mSeqRow2 && mSeqCol == mSeqCol2) {
+            var pat = mSong.songData[mSeqCol].p[mSeqRow] - 1;
+
+            if (pat >= 0) {
+                var fx     = mSong.songData[mSeqCol].c[pat].f[mFxTrackRow],
+                    start  = parseInt(mSong.songData[mSeqCol].c[pat].f[mFxTrackRow + mSong.patternLen]),
+                    end    = parseInt(mSong.songData[mSeqCol].c[pat].f[mFxTrackRow2 + mSong.patternLen]),
+                    length = mFxTrackRow2 - mFxTrackRow;
+
+                if (!end) {
+                    end = 0;
+                }
+
+                for (var row = mFxTrackRow; row <= mFxTrackRow2; ++row) {
+                    var current = row - mFxTrackRow,
+                        step    = current / length;
+
+                    mSong.songData[mSeqCol].c[pat].f[row]                    = fx;
+                    mSong.songData[mSeqCol].c[pat].f[row + mSong.patternLen] = linearInterpolation(start, end, step);
+                }
+
+                updateFxTrack();
             }
         }
     };
@@ -2763,8 +2802,9 @@ var CGUI = function () {
         document.getElementById("patternOctaveUp").onmousedown   = patternOctaveUpMouseDown;
         document.getElementById("patternOctaveDown").onmousedown = patternOctaveDownMouseDown;
 
-        document.getElementById("fxCopy").onmousedown  = fxCopyMouseDown;
-        document.getElementById("fxPaste").onmousedown = fxPasteMouseDown;
+        document.getElementById("fxCopy").onmousedown        = fxCopyMouseDown;
+        document.getElementById("fxPaste").onmousedown       = fxPasteMouseDown;
+        document.getElementById("fxInterpolate").onmousedown = fxInterpolateMouseDown;
 
         document.getElementById("instrPreset").onfocus  = instrPresetFocus;
         document.getElementById("instrPreset").onchange = selectPreset;
