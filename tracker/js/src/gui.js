@@ -379,7 +379,7 @@ var CGUI = function () {
 
                     if (fxCmd) {
                         var fxVal = mSong.songData[mSeqCol].c[pat].f[i + mSong.patternLen];
-                        fxTxt     = CUtil.toHex(fxCmd, 2) + ":" + CUtil.toHex(fxVal, 2);
+                        fxTxt     = CUtil.toHex(fxCmd, 2) + ":" + CUtil.toHex(parseInt(fxVal), 2);
                     }
                 }
 
@@ -2105,7 +2105,7 @@ var CGUI = function () {
         lfo_amt:     {min: 0, max: 255, cmd: CSong.instProps.LFO_AMT},
         lfo_freq:    {min: 0, max: 16, cmd: CSong.instProps.LFO_FREQ},
         fx_freq:     {min: 0, max: 255, cmd: CSong.instProps.FX_FREQ, nonLinear: true},
-        fx_res:      {min: 0, max: 254, cmd: CSong.instProps.FX_RESONANCE},
+        fx_res:      {min: 0, max: 255, cmd: CSong.instProps.FX_RESONANCE},
         fx_dist:     {min: 0, max: 255, cmd: CSong.instProps.FX_DIST, nonLinear: true},
         fx_drive:    {min: 0, max: 255, cmd: CSong.instProps.FX_DRIVE},
         fx_pan_amt:  {min: 0, max: 255, cmd: CSong.instProps.FX_PAN_AMT},
@@ -2125,7 +2125,7 @@ var CGUI = function () {
 
         // Adapt to the range of the slider
         if (props.nonLinear) {
-            x *= x;
+            //x *= x;
         }
 
         // Check which instrument property to update
