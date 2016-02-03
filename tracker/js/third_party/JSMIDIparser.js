@@ -54,7 +54,9 @@
  GNU General Public License for more details.
  */
 
-JSMIDIParser = {
+;"use strict";
+
+var JSMIDIParser = {
     // debug (bool), when enabled will log in console unimplemented events warnings and
     // general and errors.
     debug: false,

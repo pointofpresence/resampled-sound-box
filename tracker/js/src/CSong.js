@@ -41,8 +41,10 @@ var CSong = {
         DEFLATE: 2
     },
 
-    MAX_SONG_ROWS: 128,
-    MAX_PATTERNS:  36,
+    MAX_SONG_ROWS:   128,
+    MAX_PATTERNS:    36,
+    MAX_INSTRUMENTS: 8,
+    MAX_CHORD:       4,
 
     SIGNATURE: 2020557395, // Signature ("SBox")
 
@@ -309,7 +311,7 @@ var CSong = {
         // Pack the song data
         // FIXME: To avoid bugs, we try different compression methods here until we
         // find something that works (this should not be necessary).
-        var unpackedData = bin.getData(),
+        var unpackedData      = bin.getData(),
             packedData,
             testData,
             compressionMethod = this.compression.NONE;
@@ -766,6 +768,167 @@ var CSong = {
 
             if (version < 7) {
                 instr.i[this.instProps.FX_RESONANCE] = 255 - instr.i[this.instProps.FX_RESONANCE];
+            }
+
+            song.songData[i] = instr;
+        }
+
+        debugger
+
+        return song;
+    },
+
+    getNotePosition: function (start, patternLen, ticks) {
+        var patternTicks = ticks * patternLen,
+            pattern      = Math.floor(start / ticks / patternLen),
+            row          = (start / ticks) - (patternLen * pattern);
+
+        return {
+            pattern: pattern,
+            row:     row
+        }
+    },
+
+    midiToSong: function (d, ticks) {
+        console.log(d)
+
+        ticks = ticks || 72;
+
+        var song = {};
+
+        // Row length
+        song.rowLen = 5513; //TODO
+
+        // Last pattern to play
+        song.endPattern = this.MAX_PATTERNS - 1; //TODO
+
+        // Number of rows per pattern
+        song.patternLen = 32;
+
+        // All 8 instruments
+        song.songData = [];
+
+        for (var n = 0; n < d.notes.length; n++) {
+            var note    = d.notes[n],
+                channel = note.channel;
+
+            if (channel > this.MAX_INSTRUMENTS - 1) {
+                continue;
+            }
+
+            var pos = this.getNotePosition(note.startTime, song.patternLen, ticks);
+
+            if (pos.pattern > this.MAX_PATTERNS - 1) {
+                continue;
+            }
+
+            if (!song.songData[channel]) {
+                for (var p = 0; p < this.MAX_INSTRUMENTS; ++p) {
+                    song.songData[p] = {
+                        c: [],
+                        i: [
+                            2, // OSC1_WAVEFORM
+                            100, // OSC1_VOL
+                            128, // OSC1_SEMI
+                            0, // OSC1_XENV
+                            3, // OSC2_WAVEFORM
+                            201, // OSC2_VOL
+                            128, // OSC2_SEMI
+                            0, // OSC2_DETUNE
+                            0, // OSC2_XENV
+                            0, // NOISE_VOL
+                            0, // ENV_ATTACK
+                            6, // ENV_SUSTAIN
+                            29, // ENV_RELEASE
+                            0, // LFO_WAVEFORM
+                            194, // LFO_AMT
+                            4, // LFO_FREQ
+                            1, // LFO_FX_FREQ
+                            3, // FX_FILTER
+                            25, // FX_FREQ
+                            191, // FX_RESONANCE
+                            115, // FX_DIST
+                            244, // FX_DRIVE
+                            147, // FX_PAN_AMT
+                            6, // FX_PAN_FREQ
+                            84, // FX_DELAY_AMT
+                            6 // FX_DELAY_TIME
+                        ],
+                        p: new Array(this.MAX_SONG_ROWS)
+                    };
+                }
+            }
+
+            if (!song.songData[channel].c[pos.pattern]) {
+                song.songData[channel].c[pos.pattern] = {
+                    f: [],
+                    n: new Array(song.patternLen * this.MAX_CHORD)
+                }
+            }
+
+            song.songData[channel].c[pos.pattern].n[pos.row] = note.note + 87;
+            song.songData[channel].p[pos.pattern] = pos.pattern + 1;
+        }
+
+        console.log(song);
+
+        return song;
+
+        var i, j, k, instr, col;
+
+        for (i = 0; i < 8; i++) {
+            instr = {};
+            instr.i = [];
+
+            // Patterns
+            var song_rows = this.MAX_SONG_ROWS;
+            instr.p = [];
+
+            for (j = 0; j < song_rows; j++) {
+                instr.p[j] = bin.getUBYTE();
+            }
+
+            for (j = song_rows; j < this.MAX_SONG_ROWS; j++) {
+                instr.p[j] = 0;
+            }
+
+            // Columns
+            var num_patterns = this.MAX_PATTERNS;
+
+            instr.c = [];
+
+            for (j = 0; j < num_patterns; j++) {
+                col = {};
+                col.n = [];
+
+                for (k = 0; k < song.patternLen * 4; k++) {
+                    col.n[k] = bin.getUBYTE();
+                }
+
+                col.f = [];
+
+                for (k = 0; k < song.patternLen * 2; k++) {
+                    col.f[k] = bin.getUBYTE();
+                }
+
+                instr.c[j] = col;
+            }
+
+            for (j = num_patterns; j < this.MAX_PATTERNS; j++) {
+                col = {};
+                col.n = [];
+
+                for (k = 0; k < song.patternLen * 4; k++) {
+                    col.n[k] = 0;
+                }
+
+                col.f = [];
+
+                for (k = 0; k < song.patternLen * 2; k++) {
+                    col.f[k] = 0;
+                }
+
+                instr.c[j] = col;
             }
 
             song.songData[i] = instr;

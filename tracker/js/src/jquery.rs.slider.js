@@ -7,8 +7,6 @@
     };
 
     var modifyOffset = function (target, call) {
-        console.log('modifyOffset');
-
         var el  = $(target),
             val = el.val() || 0;
 
@@ -25,7 +23,6 @@
         },
 
         value: function (v) {
-            console.log('value');
             $(this).val(v || 0);
             modifyOffset(this, false);
         },

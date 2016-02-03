@@ -4,6 +4,8 @@ var dir        = require("require-dir"),
     dateFormat = require("dateformat");        // date helper
 
 // globals
+global.$ = require("gulp-load-plugins")();
+global.isProd = $.util.env.prod;
 global.gulp = require("gulp");
 global.config = require('./config.json');
 global.pkg = require('./package.json');

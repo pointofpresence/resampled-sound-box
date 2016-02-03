@@ -825,6 +825,43 @@ var CGUI = function () {
         $modal.modal("hide");
     };
 
+    var _midi;
+
+    var onOpenMidiClick = function (e) {
+        e.preventDefault();
+        $(this).button("loading");
+
+        var song = CSong.midiToSong(_midi);
+
+        if (song) {
+            stopAudio();
+
+            mSong = song;
+            updateSongInfo();
+            updateSequencer();
+            updatePattern();
+            updateFxTrack();
+            updateInstrument(true);
+        }
+
+        $("#modal-open-midi").modal("hide");
+    };
+
+    var showOpenMidiDialog = function () {
+        var $modal  = $("#modal-open-midi"),
+            $button = $("#open-midi-button");
+
+        $button.button("loading");
+
+        JSMIDIParser.IO("open-midi-file", function (MIDI) {
+            _midi = JSMIDIParser.getStructure(MIDI);
+            $button.button("reset");
+        });
+
+        $button.on("click", onOpenMidiClick);
+        $modal.modal();
+    };
+
     var showSaveDialog = function () {
         var $modal  = $("#modal-save"),
             $link   = $("#save-song-data"),
@@ -2478,6 +2515,7 @@ var CGUI = function () {
             th = document.createElement("th");
             th.id = "spr" + row;
             th.textContent = "" + row;
+            th.className = "bar";
             tr.appendChild(th);
 
             for (var col = 0; col < 8; col++) {
@@ -2601,13 +2639,13 @@ var CGUI = function () {
         }
     };
 
+    function openMidi() {
+        showOpenMidiDialog();
+    }
+
     //--------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------
-
-    function openMidi() {
-
-    }
 
     var mPanLeft = $("#pan-left");
     var mPanRight = $("#pan-right");
