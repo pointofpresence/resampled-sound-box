@@ -1,11 +1,12 @@
-/**
+/*!
  * This file is part of ReSampled SoundBox.
  *
  * Based on SoundBox by Marcus Geelnard (c) 2011-2013
- * 2015 pointofpresence
+ * 2016 pointofpresence
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
+ *
  * @version v0.0.1
- * @build Sun Jul 12 2015 21:32:34
+ * @build Thu Feb 04 2016 00:56:11
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *
