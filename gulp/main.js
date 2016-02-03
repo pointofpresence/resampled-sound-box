@@ -130,4 +130,10 @@ gulp.task("webserver", function () {
 
 gulp.task("build", runSequence("buildJs", "buildWorker", "buildCss", "buildFonts"));
 
-gulp.task("default", runSequence("build", "watch"/*, "webserver"*/));
+gulp.task("default", function () {
+    if (isProd) {
+        return runSequence("build");
+    }
+
+    return runSequence("build", "watch"/*, "webserver"*/);
+});
