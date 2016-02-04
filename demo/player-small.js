@@ -6,7 +6,6 @@
  * ReSampled.SoundBox (resampled-sound-box) - Online music tracker
  *
  * @version v0.0.1
- * @build Thu Feb 04 2016 00:56:11
  * @link https://github.com/pointofpresence/resampled-sound-box
  * @license GPL-3.0
  *
@@ -31,7 +30,7 @@
  */
 "use strict";
 
-var CPlayer = function() {
+var CPlayer = function () {
 
     //--------------------------------------------------------------------------
     // Private methods
@@ -52,7 +51,7 @@ var CPlayer = function() {
 
     var osc_tri = function (value) {
         var v2 = (value % 1) * 4;
-        if(v2 < 2) return v2 - 1;
+        if (v2 < 2) return v2 - 1;
         return 3 - v2;
     };
 
@@ -61,33 +60,41 @@ var CPlayer = function() {
         return 0.003959503758 * Math.pow(2, (n - 128) / 12);
     };
 
-    var createNote = function (instr, n) {
-        var osc1 = mOscillators[instr.i[0]],
-            o1vol = instr.i[1],
-            o1xenv = instr.i[3],
-            osc2 = mOscillators[instr.i[4]],
-            o2vol = instr.i[5],
-            o2xenv = instr.i[8],
-            noiseVol = instr.i[9],
-            attack = instr.i[10] * instr.i[10] * 4,
-            sustain = instr.i[11] * instr.i[11] * 4,
-            release = instr.i[12] * instr.i[12] * 4,
-            releaseInv = 1 / release;
+    var createNote = function (instr, n, rowLen) {
+        var osc1        = mOscillators[instr.i[0]],
+            o1vol       = instr.i[1],
+            o1xenv      = instr.i[3],
+            osc2        = mOscillators[instr.i[4]],
+            o2vol       = instr.i[5],
+            o2xenv      = instr.i[8],
+            noiseVol    = instr.i[9],
+            attack      = instr.i[10] * instr.i[10] * 4,
+            sustain     = instr.i[11] * instr.i[11] * 4,
+            release     = instr.i[12] * instr.i[12] * 4,
+            releaseInv  = 1 / release,
+            arp         = instr.i[13],
+            arpInterval = rowLen * Math.pow(2, 2 - instr.i[14]);
 
         var noteBuf = new Int32Array(attack + sustain + release);
-
-        // Calculate note frequencies for the oscillators
-        var o1t = getnotefreq(n + instr.i[2] - 128);
-        var o2t = getnotefreq(n + instr.i[6] - 128) * (1 + 0.0008 * instr.i[7]);
 
         // Re-trig oscillators
         var c1 = 0, c2 = 0;
 
         // Local variables.
-        var j, e, t, rsample;
+        var j, j2, e, t, rsample, o1t, o2t;
 
         // Generate one note (attack + sustain + release)
-        for (j = 0; j < attack + sustain + release; j++) {
+        for (j = 0, j2 = 0; j < attack + sustain + release; j++, j2++) {
+            if (j2 >= 0) {
+                // Switch arpeggio note.
+                arp = (arp >> 8) | ((arp & 255) << 4);
+                j2 -= arpInterval;
+
+                // Calculate note frequencies for the oscillators
+                o1t = getnotefreq(n + (arp & 15) + instr.i[2] - 128);
+                o2t = getnotefreq(n + (arp & 15) + instr.i[6] - 128) * (1 + 0.0008 * instr.i[7]);
+            }
+
             // Envelope
             e = 1;
             if (j < attack) {
@@ -124,7 +131,6 @@ var CPlayer = function() {
         return noteBuf;
     };
 
-
     //--------------------------------------------------------------------------
     // Private members
     //--------------------------------------------------------------------------
@@ -140,7 +146,6 @@ var CPlayer = function() {
     // Private variables set up by init()
     var mSong, mLastRow, mCurrentCol, mNumWords, mMixBuf;
 
-
     //--------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------
@@ -150,16 +155,15 @@ var CPlayer = function() {
         mSong = song;
 
         // Init iteration state variables
-        mLastRow = song.endPattern - 2;
+        mLastRow    = song.endPattern - 2;
         mCurrentCol = 0;
 
         // Prepare song info
-        mNumWords =  song.rowLen * song.patternLen * (mLastRow + 1) * 2;
+        mNumWords = song.rowLen * song.patternLen * (mLastRow + 1) * 2;
 
         // Create work buffer (initially cleared)
         mMixBuf = new Int32Array(mNumWords);
     };
-
 
     //--------------------------------------------------------------------------
     // Public methods
@@ -172,20 +176,20 @@ var CPlayer = function() {
             k, t, lfor, e, x, rsample, rowStartSample, f, da;
 
         // Put performance critical items in local variables
-        var chnBuf = new Int32Array(mNumWords),
-            instr = mSong.songData[mCurrentCol],
-            rowLen = mSong.rowLen,
+        var chnBuf     = new Int32Array(mNumWords),
+            instr      = mSong.songData[mCurrentCol],
+            rowLen     = mSong.rowLen,
             patternLen = mSong.patternLen;
 
         // Clear effect state
-        var low = 0, band = 0, high;
+        var low                   = 0, band = 0, high;
         var lsample, filterActive = false;
 
         // Clear note cache.
         var noteCache = [];
 
-         // Patterns
-         for (p = 0; p <= mLastRow; ++p) {
+        // Patterns
+        for (p = 0; p <= mLastRow; ++p) {
             cp = instr.p[p];
 
             // Pattern rows
@@ -196,25 +200,25 @@ var CPlayer = function() {
                     instr.i[cmdNo - 1] = instr.c[cp - 1].f[row + patternLen] || 0;
 
                     // Clear the note cache since the instrument has changed.
-                    if (cmdNo < 14) {
+                    if (cmdNo < 15) {
                         noteCache = [];
                     }
                 }
 
                 // Put performance critical instrument properties in local variables
-                var oscLFO = mOscillators[instr.i[13]],
-                    lfoAmt = instr.i[14] / 512,
-                    lfoFreq = Math.pow(2, instr.i[15] - 9) / rowLen,
-                    fxLFO = instr.i[16],
-                    fxFilter = instr.i[17],
-                    fxFreq = instr.i[18] * 43.23529 * 3.141592 / 44100,
-                    q = 1 - instr.i[19] / 255,
-                    dist = instr.i[20] * 1e-5,
-                    drive = instr.i[21] / 32,
-                    panAmt = instr.i[22] / 512,
-                    panFreq = 6.283184 * Math.pow(2, instr.i[23] - 9) / rowLen,
-                    dlyAmt = instr.i[24] / 255,
-                    dly = instr.i[25] * rowLen;
+                var oscLFO   = mOscillators[instr.i[15]],
+                    lfoAmt   = instr.i[16] / 512,
+                    lfoFreq  = Math.pow(2, instr.i[17] - 9) / rowLen,
+                    fxLFO    = instr.i[18],
+                    fxFilter = instr.i[19],
+                    fxFreq   = instr.i[20] * 43.23529 * 3.141592 / 44100,
+                    q        = 1 - instr.i[21] / 255,
+                    dist     = instr.i[22] * 1e-5,
+                    drive    = instr.i[23] / 32,
+                    panAmt   = instr.i[24] / 512,
+                    panFreq  = 6.283184 * Math.pow(2, instr.i[25] - 9) / rowLen,
+                    dlyAmt   = instr.i[26] / 255,
+                    dly      = instr.i[27] * rowLen;
 
                 // Calculate start sample number for this row in the pattern
                 rowStartSample = (p * patternLen + row) * rowLen;
@@ -222,15 +226,16 @@ var CPlayer = function() {
                 // Generate notes for this pattern row
                 for (col = 0; col < 4; ++col) {
                     n = cp ? instr.c[cp - 1].n[row + col * patternLen] : 0;
+
                     if (n) {
                         if (!noteCache[n]) {
-                            noteCache[n] = createNote(instr, n);
+                            noteCache[n] = createNote(instr, n, rowLen);
                         }
 
                         // Copy note from the note cache
                         var noteBuf = noteCache[n];
                         for (j = 0, i = rowStartSample * 2; j < noteBuf.length; j++, i += 2) {
-                          chnBuf[i] += noteBuf[j];
+                            chnBuf[i] += noteBuf[j];
                         }
                     }
                 }
@@ -238,7 +243,7 @@ var CPlayer = function() {
                 // Perform effects for this pattern row
                 for (j = 0; j < rowLen; j++) {
                     // Dry mono-sample
-                    k = (rowStartSample + j) * 2;
+                    k       = (rowStartSample + j) * 2;
                     rsample = chnBuf[k];
 
                     // We only do effects if we have some sound input
@@ -248,16 +253,16 @@ var CPlayer = function() {
                         if (fxLFO) {
                             f *= oscLFO(lfoFreq * k) * lfoAmt + 0.5;
                         }
-                        f = 1.5 * Math.sin(f);
+                        f       = 1.5 * Math.sin(f);
                         low += f * band;
-                        high = q * (rsample - band) - low;
+                        high    = q * (rsample - band) - low;
                         band += f * high;
                         rsample = fxFilter == 3 ? band : fxFilter == 1 ? high : low;
 
                         // Distortion
                         if (dist) {
                             rsample *= dist;
-                            rsample = rsample < 1 ? rsample > -1 ? osc_sin(rsample*.25) : -1 : 1;
+                            rsample = rsample < 1 ? rsample > -1 ? osc_sin(rsample * .25) : -1 : 1;
                             rsample /= dist;
                         }
 
@@ -268,7 +273,7 @@ var CPlayer = function() {
                         filterActive = rsample * rsample > 1e-5;
 
                         // Panning
-                        t = Math.sin(panFreq * k) * panAmt + 0.5;
+                        t       = Math.sin(panFreq * k) * panAmt + 0.5;
                         lsample = rsample * (1 - t);
                         rsample *= t;
                     } else {
@@ -278,19 +283,19 @@ var CPlayer = function() {
                     // Delay is always done, since it does not need sound input
                     if (k >= dly) {
                         // Left channel = left + right[-p] * t
-                        lsample += chnBuf[k-dly+1] * dlyAmt;
+                        lsample += chnBuf[k - dly + 1] * dlyAmt;
 
                         // Right channel = right + left[-p] * t
-                        rsample += chnBuf[k-dly] * dlyAmt;
+                        rsample += chnBuf[k - dly] * dlyAmt;
                     }
 
                     // Store in stereo channel buffer (needed for the delay effect)
-                    chnBuf[k] = lsample | 0;
-                    chnBuf[k+1] = rsample | 0;
+                    chnBuf[k]     = lsample | 0;
+                    chnBuf[k + 1] = rsample | 0;
 
                     // ...and add to stereo mix buffer
                     mMixBuf[k] += lsample | 0;
-                    mMixBuf[k+1] += rsample | 0;
+                    mMixBuf[k + 1] += rsample | 0;
                 }
             }
         }
@@ -301,25 +306,25 @@ var CPlayer = function() {
     };
 
     // Create a WAVE formatted Uint8Array from the generated audio data
-    this.createWave = function() {
+    this.createWave = function () {
         // Create WAVE header
-        var l1 = mNumWords * 2 - 8;
-        var l2 = l1 - 36;
+        var l1        = mNumWords * 2 - 8;
+        var l2        = l1 - 36;
         var headerLen = 44;
-        var wave = new Uint8Array(headerLen + mNumWords * 2);
+        var wave      = new Uint8Array(headerLen + mNumWords * 2);
         wave.set(
-            [82,73,70,70,
-             l1 & 255,(l1 >> 8) & 255,(l1 >> 16) & 255,(l1 >> 24) & 255,
-             87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,
-             68,172,0,0,16,177,2,0,4,0,16,0,100,97,116,97,
-             l2 & 255,(l2 >> 8) & 255,(l2 >> 16) & 255,(l2 >> 24) & 255]
+            [82, 73, 70, 70,
+                l1 & 255, (l1 >> 8) & 255, (l1 >> 16) & 255, (l1 >> 24) & 255,
+                87, 65, 86, 69, 102, 109, 116, 32, 16, 0, 0, 0, 1, 0, 2, 0,
+                68, 172, 0, 0, 16, 177, 2, 0, 4, 0, 16, 0, 100, 97, 116, 97,
+                l2 & 255, (l2 >> 8) & 255, (l2 >> 16) & 255, (l2 >> 24) & 255]
         );
 
         // Append actual wave data
         for (var i = 0, idx = headerLen; i < mNumWords; ++i) {
             // Note: We clamp here
-            var y = mMixBuf[i];
-            y = y < -32767 ? -32767 : (y > 32767 ? 32767 : y);
+            var y       = mMixBuf[i];
+            y           = y < -32767 ? -32767 : (y > 32767 ? 32767 : y);
             wave[idx++] = y & 255;
             wave[idx++] = (y >> 8) & 255;
         }
@@ -329,12 +334,12 @@ var CPlayer = function() {
     };
 
     // Get n samples of wave data at time t [s]. Wave data in range [-2,2].
-    this.getData = function(t, n) {
+    this.getData = function (t, n) {
         var i = 2 * Math.floor(t * 44100);
         var d = new Array(n);
-        for (var j = 0; j < 2*n; j += 1) {
+        for (var j = 0; j < 2 * n; j += 1) {
             var k = i + j;
-            d[j] = t > 0 && k < mMixBuf.length ? mMixBuf[k] / 32768 : 0;
+            d[j]  = t > 0 && k < mMixBuf.length ? mMixBuf[k] / 32768 : 0;
         }
         return d;
     };

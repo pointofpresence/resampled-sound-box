@@ -82,20 +82,22 @@ var CJammer = function () {
             var note = mPlayingNotes[i];
 
             if (note != undefined) {
-                var osc1       = mOscillators[note.instr[0]],
-                    o1vol      = note.instr[1],
-                    o1xenv     = note.instr[3],
-                    osc2       = mOscillators[note.instr[4]],
-                    o2vol      = note.instr[5],
-                    o2xenv     = note.instr[8],
-                    noiseVol   = note.instr[9],
-                    attack     = Math.round(note.instr[10] * note.instr[10] * 4 * mRateScale),
-                    sustain    = Math.round(note.instr[11] * note.instr[11] * 4 * mRateScale),
-                    release    = Math.round(note.instr[12] * note.instr[12] * 4 * mRateScale),
-                    releaseInv = 1 / release;
+                var osc1        = mOscillators[note.instr[0]],
+                    o1vol       = note.instr[1],
+                    o1xenv      = note.instr[3],
+                    osc2        = mOscillators[note.instr[4]],
+                    o2vol       = note.instr[5],
+                    o2xenv      = note.instr[8],
+                    noiseVol    = note.instr[9],
+                    attack      = Math.round(note.instr[10] * note.instr[10] * 4 * mRateScale),
+                    sustain     = Math.round(note.instr[11] * note.instr[11] * 4 * mRateScale),
+                    release     = Math.round(note.instr[12] * note.instr[12] * 4 * mRateScale),
+                    releaseInv  = 1 / release,
+                    arpInterval = mRowLen * Math.pow(2, 2 - note.instr[14]);
 
-                // Note frequencies for the oscillators.
-                var o1f = note.o1f, o2f = note.o2f;
+                // Note frequencies (defined later) and arpeggio
+                var o1f, o2f;
+                var arp = note.arp, arpSamples = note.arpSamples;
 
                 // Current oscillator state.
                 var o1t = note.o1t, o2t = note.o2t;
@@ -111,6 +113,20 @@ var CJammer = function () {
                 }
 
                 for (j = note.env, k = 0; k < samplesLeft; j++, k++) {
+                    if (arpSamples >= 0 || k == 0) {
+                        if (arpSamples >= 0) {
+                            // Switch arpeggio note
+                            arp = (arp >> 8) | ((arp & 255) << 4);
+                            arpSamples -= arpInterval;
+                        }
+
+                        // Calculate note frequencies for the oscillators
+                        o1f = getnotefreq(note.n + (arp & 15) + note.instr[2] - 128);
+                        o2f = getnotefreq(note.n + (arp & 15) + note.instr[6] - 128) * (1 + 0.0008 * note.instr[7]);
+                    }
+
+                    arpSamples++;
+
                     // Envelope
                     e = 1;
 
@@ -149,9 +165,11 @@ var CJammer = function () {
                 }
 
                 // Save state.
-                note.env = j;
-                note.o1t = o1t;
-                note.o2t = o2t;
+                note.env        = j;
+                note.arp        = arp;
+                note.arpSamples = arpSamples;
+                note.o1t        = o1t;
+                note.o2t        = o2t;
             }
         }
 
@@ -165,19 +183,19 @@ var CJammer = function () {
         var lsample, high, dlyRead, dlyMask = MAX_DELAY - 1;
 
         // Put performance critical instrument properties in local variables
-        var oscLFO   = mOscillators[mInstr[13]],
-            lfoAmt   = mInstr[14] / 512,
-            lfoFreq  = Math.pow(2, mInstr[15] - 9) / mRowLen,
-            fxLFO    = mInstr[16],
-            fxFilter = mInstr[17],
-            fxFreq   = mInstr[18] * 43.23529 * 3.141592 / mSampleRate,
-            q        = 1 - mInstr[19] / 255,
-            dist     = mInstr[20] * 1e-5 * 32767,
-            drive    = mInstr[21] / 32,
-            panAmt   = mInstr[22] / 512,
-            panFreq  = 6.283184 * Math.pow(2, mInstr[23] - 9) / mRowLen,
-            dlyAmt   = mInstr[24] / 255,
-            dly      = (mInstr[25] * mRowLen) >> 1;
+        var oscLFO   = mOscillators[mInstr[15]],
+            lfoAmt   = mInstr[16] / 512,
+            lfoFreq  = Math.pow(2, mInstr[17] - 9) / mRowLen,
+            fxLFO    = mInstr[18],
+            fxFilter = mInstr[19],
+            fxFreq   = mInstr[20] * 43.23529 * 3.141592 / mSampleRate,
+            q        = 1 - mInstr[21] / 255,
+            dist     = mInstr[22] * 1e-5 * 32767,
+            drive    = mInstr[23] / 32,
+            panAmt   = mInstr[24] / 512,
+            panFreq  = 6.283184 * Math.pow(2, mInstr[25] - 9) / mRowLen,
+            dlyAmt   = mInstr[26] / 255,
+            dly      = (mInstr[27] * mRowLen) >> 1;
 
         // Limit the delay to the delay buffer size.
         if (dly >= MAX_DELAY) {
@@ -335,17 +353,18 @@ var CJammer = function () {
 
         // Create a new note object.
         var note = {
-            startT: t,
-            env:    0,
-            o1t:    0,
-            o2t:    0,
-            o1f:    getnotefreq(n + mInstr[2] - 128),
-            o2f:    getnotefreq(n + mInstr[6] - 128) * (1 + 0.0008 * mInstr[7]),
-            instr:  new Array(13)
+            startT:     t,
+            env:        0,
+            arp:        mInstr[13],
+            arpSamples: 0,
+            o1t:        0,
+            o2t:        0,
+            n:          n,
+            instr:      new Array(15)
         };
 
-        // Copy (snapshot) the oscillator/env part of the current instrument.
-        for (i = 0; i < 13; ++i) {
+        // Copy (snapshot) the oscillator/env/arp part of the current instrument.
+        for (var i = 0; i < 15; ++i) {
             note.instr[i] = mInstr[i];
         }
 

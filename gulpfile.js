@@ -1,14 +1,18 @@
 "use strict";
 
-var dir        = require("require-dir"),
-    dateFormat = require("dateformat");        // date helper
+var dir = require("require-dir");
 
 // globals
-global.$ = require("gulp-load-plugins")();
+global.$      = require("gulp-load-plugins")();
 global.isProd = $.util.env.prod;
-global.gulp = require("gulp");
+global.gulp   = require("gulp");
 global.config = require('./config.json');
-global.pkg = require('./package.json');
+global.pkg    = require('./package.json');
+
+$.runSequence = require("run-sequence");
+$.dateFormat  = require("dateformat");
+$.mkdirp      = require("mkdirp");
+$.chalk       = require("chalk");
 
 global.banner = [
     '/*!',
@@ -44,4 +48,12 @@ global.banner = [
     ''
 ].join('\n');
 
-dir("./gulp");
+dir("./gulp", {recurse: true});
+
+gulp.task("default", function () {
+    if (isProd) {
+        return $.runSequence("build", "buildDemo");
+    }
+
+    return $.runSequence("build", "watch"/*, "webserver"*/);
+});
