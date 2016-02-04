@@ -4,8 +4,8 @@ gulp.task("buildDemo", function () {
     return $.runSequence([
         "buildDemoJsMin",
         "buildDemoJs",
-        "buildDemoHtmlMin",
         "buildDemoHtml",
+        "buildArpDemoHtml",
         "buildDemoDependencies"
     ], "compressDemo");
 });
@@ -19,25 +19,14 @@ gulp.task("buildDemoHtml", function () {
         .pipe(gulp.dest(config.demo));
 });
 
-gulp.task("buildDemoHtmlMin", function () {
-        $.util.log("Creating HTML (min) in " + $.chalk.magenta(config.demo) + " ...");
+gulp.task("buildArpDemoHtml", function () {
+    $.util.log("Creating HTML in " + $.chalk.magenta(config.demo) + " ...");
 
-        var opts = {
-            conditionals: true,
-            spare:        true,
-            empty:        true,
-            cdata:        true,
-            quotes:       true,
-            loose:        false
-        };
-
-        return gulp
-            .src(config.demo + "/src/demo.html")
-            .pipe($.minifyHtml(opts))
-            .pipe($.size({title: "HTML (min)"}))
-            .pipe($.out(config.demo + "/index.html"));
-    }
-);
+    return gulp
+        .src(config.demo + "/src/arpeggio-demo.html")
+        .pipe($.size({title: "HTML"}))
+        .pipe(gulp.dest(config.demo));
+});
 
 gulp.task("buildDemoJs", function () {
         $.util.log("Creating JS in " + $.chalk.magenta(config.demo) + " ...");
@@ -79,6 +68,7 @@ gulp.task("compressDemo", function () {
     return gulp.src([
         "./tracker/js/third_party/Blob.js",
         dir + "src/demo.html",
+        dir + "src/arpeggio-demo.html",
         dir + "player-small.min.js",
         dir + "player-small.js"
     ])

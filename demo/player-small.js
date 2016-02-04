@@ -308,7 +308,6 @@ var CPlayer = function () {
     // Create a WAVE formatted Uint8Array from the generated audio data
     this.createWave = function () {
         // Create WAVE header
-
         var headerLen = 44,
             l1        = headerLen + mNumWords * 2 - 8,
             l2        = l1 - 36,
