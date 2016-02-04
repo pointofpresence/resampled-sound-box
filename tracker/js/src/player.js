@@ -43,9 +43,9 @@ var CPlayer = function () {
             waveWords = mixBuf.length;
 
         // Create WAVE header
-        var l1        = waveWords * 2 - 8,
+        var headerLen = 44,
+            l1        = headerLen + waveWords * 2 - 8,
             l2        = l1 - 36,
-            headerLen = 44,
             wave      = new Uint8Array(headerLen + waveWords * 2);
 
         //noinspection JSCheckFunctionSignatures

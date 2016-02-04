@@ -278,16 +278,20 @@ var CPlayer = function () {
     // Create a WAVE formatted Uint8Array from the generated audio data
     this.createWave = function () {
         // Create WAVE header
-        var l1        = mNumWords * 2 - 8;
-        var l2        = l1 - 36;
-        var headerLen = 44;
-        var wave      = new Uint8Array(headerLen + mNumWords * 2);
+
+        var headerLen = 44,
+            l1        = headerLen + mNumWords * 2 - 8,
+            l2        = l1 - 36,
+            wave      = new Uint8Array(headerLen + mNumWords * 2);
+
+        //noinspection JSCheckFunctionSignatures
         wave.set(
             [82, 73, 70, 70,
                 l1 & 255, (l1 >> 8) & 255, (l1 >> 16) & 255, (l1 >> 24) & 255,
                 87, 65, 86, 69, 102, 109, 116, 32, 16, 0, 0, 0, 1, 0, 2, 0,
                 68, 172, 0, 0, 16, 177, 2, 0, 4, 0, 16, 0, 100, 97, 116, 97,
-                l2 & 255, (l2 >> 8) & 255, (l2 >> 16) & 255, (l2 >> 24) & 255]
+                l2 & 255, (l2 >> 8) & 255, (l2 >> 16) & 255, (l2 >> 24) & 255
+            ]
         );
 
         // Append actual wave data
