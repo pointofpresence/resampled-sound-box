@@ -2726,6 +2726,10 @@ var CGUI = function () {
         showOpenMidiDialog();
     }
 
+    this.onRelease_rpp = function (v) {
+        updatePatternLength();
+    };
+
     //--------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------
@@ -2734,6 +2738,8 @@ var CGUI = function () {
     var mPanRight = $("#pan-right");
 
     this.init = function () {
+        var self = this;
+
         $(".knob").knob({
             inline:      false,
             width:       50,
@@ -2743,7 +2749,14 @@ var CGUI = function () {
             inputColor:  "#ebebeb",
             angleOffset: -125,
             angleArc:    250,
-            cursor:      10
+            cursor:      10,
+            release:     function (v) {
+                var name = 'onRelease_' + this.$[0].id;
+
+                if (self[name]) {
+                    self[name](v);
+                }
+            }
         });
 
         $("input[type=range]").rsSlider({});
