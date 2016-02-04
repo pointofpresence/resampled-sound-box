@@ -18,7 +18,7 @@ global.banner = [
     '/*!',
     ' * This file is part of ReSampled SoundBox.',
     ' *',
-    ' * Based on SoundBox by Marcus Geelnard (c) 2011-2013',
+    ' * Based on SoundBox by Marcus Geelnard (c) 2011-2016',
     ' * <%= dateFormat(now, "yyyy") %> <%= pkg.author %>',
     ' * <%= pkg.title %> (<%= pkg.name %>) - <%= pkg.description %>',
     ' *',
