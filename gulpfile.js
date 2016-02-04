@@ -19,7 +19,6 @@ global.banner = [
     ' * <%= pkg.title %> (<%= pkg.name %>) - <%= pkg.description %>',
     ' *',
     ' * @version v<%= pkg.version %>',
-    ' * @build <%= dateFormat(now) %>',
     ' * @link <%= pkg.repository %>',
     ' * @license <%= pkg.license %>',
     ' *',

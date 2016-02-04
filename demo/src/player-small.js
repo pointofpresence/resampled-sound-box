@@ -165,7 +165,7 @@ var CPlayer = function() {
                     instr.i[cmdNo - 1] = instr.c[cp - 1].f[row + patternLen] || 0;
 
                     // Clear the note cache since the instrument has changed.
-                    if (cmdNo < 14) {
+                    if (cmdNo < 13) {
                         noteCache = [];
                     }
                 }
@@ -191,6 +191,7 @@ var CPlayer = function() {
                 // Generate notes for this pattern row
                 for (col = 0; col < 4; ++col) {
                     n = cp ? instr.c[cp - 1].n[row + col * patternLen] : 0;
+
                     if (n) {
                         if (!noteCache[n]) {
                             noteCache[n] = createNote(instr, n);
